@@ -4,6 +4,7 @@ import csv
 import re
 from io import BytesIO, StringIO
 from functools import wraps
+from tempfile import gettempdir
 from urllib.parse import quote_plus, unquote
 
 from datetime import date
@@ -17,7 +18,8 @@ from flask import (
     session,
     flash,
     Response,
-    abort
+    abort,
+    send_from_directory
 )
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -45,7 +47,21 @@ from reportlab.platypus import (
 
 load_dotenv()
 
-app = Flask(__name__)
+# Vercel's deployed code directory is read-only. Keep the normal static
+# assets in the deployment and put user uploads in writable temporary storage.
+IS_VERCEL = bool(
+    os.getenv("VERCEL")
+    or os.getenv("VERCEL_ENV")
+)
+STATIC_ASSET_FOLDER = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "static"
+)
+
+app = Flask(
+    __name__,
+    static_folder=None
+)
 
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
@@ -54,24 +70,33 @@ app.secret_key = os.getenv(
     "change-this-secret-key"
 )
 
-UPLOAD_FOLDER = os.path.join(
-    app.root_path,
-    "static",
-    "uploads"
+UPLOAD_ROOT = os.getenv(
+    "UPLOAD_ROOT",
+    os.path.join(gettempdir(), "college_events_hub_uploads")
+    if IS_VERCEL
+    else os.path.join(STATIC_ASSET_FOLDER, "uploads")
 )
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+UPLOAD_FOLDER = UPLOAD_ROOT
 
-for folder in [
-    "events",
-    "speakers",
-    "certificates",
-    "payments"
-]:
-    os.makedirs(
-        os.path.join(UPLOAD_FOLDER, folder),
-        exist_ok=True
-    )
+
+def ensure_upload_folder(folder=None):
+    """Create writable upload storage only when an upload is being saved."""
+    target = UPLOAD_FOLDER
+    if folder:
+        target = os.path.join(UPLOAD_FOLDER, folder)
+    os.makedirs(target, exist_ok=True)
+    return target
+
+
+@app.route("/static/<path:filename>")
+def static_assets(filename):
+    """Serve bundled assets and the current instance's temporary uploads."""
+    if filename == "uploads" or filename.startswith("uploads/"):
+        upload_name = filename.removeprefix("uploads/")
+        return send_from_directory(UPLOAD_FOLDER, upload_name)
+
+    return send_from_directory(STATIC_ASSET_FOLDER, filename)
 
 
 # ============================================================
@@ -113,15 +138,23 @@ def db():
     Create and return a MySQL database connection.
     """
 
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv(
-            "DB_NAME",
-            "college_events_hub"
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT", "3306")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD", "")
+    db_name = os.getenv("DB_NAME")
+
+    if IS_VERCEL and not all([db_host, db_user, db_name]):
+        raise RuntimeError(
+            "DB_HOST, DB_USER, and DB_NAME must be configured on Vercel."
         )
+
+    return mysql.connector.connect(
+        host=db_host or "localhost",
+        port=int(db_port),
+        user=db_user or "root",
+        password=db_password,
+        database=db_name or "college_events_hub"
     )
 
 
@@ -571,6 +604,8 @@ def save_file(file, folder):
         + "_"
         + secure_filename(file.filename)
     )
+
+    ensure_upload_folder(folder)
 
     file_path = os.path.join(
         UPLOAD_FOLDER,
@@ -4670,5 +4705,5 @@ if __name__ == "__main__":
                 "5000"
             )
         ),
-        debug=True
+        debug=False
     )
