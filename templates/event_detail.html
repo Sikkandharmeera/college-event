@@ -1,0 +1,1870 @@
+﻿{% extends "base.html" %}
+
+{% block title %}
+    {{ event.event_name or 'Event Details' }} - College Events Hub
+{% endblock %}
+
+{% block content %}
+
+<section class="event-detail-page">
+
+    <!-- =========================
+         EVENT HERO
+    ========================== -->
+    <div class="event-hero">
+
+        <div class="hero-back">
+            <a href="{{ url_for('event_list') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Events
+            </a>
+        </div>
+
+        <div class="hero-content">
+
+            <div class="hero-badges">
+
+                <span class="category-badge">
+                    <i class="fas fa-layer-group"></i>
+                    {{ event.category_name or 'Event' }}
+                </span>
+
+                {% if event.sub_event_name %}
+                    <span class="sub-event-badge">
+                        {{ event.sub_event_name }}
+                    </span>
+                {% endif %}
+
+                {% if event.status %}
+                    <span class="status-badge
+                        {% if event.status|lower == 'active' %}
+                            status-active
+                        {% elif event.status|lower == 'cancelled' %}
+                            status-cancelled
+                        {% elif event.status|lower == 'completed' %}
+                            status-completed
+                        {% else %}
+                            status-upcoming
+                        {% endif %}
+                    ">
+                        <i class="fas fa-circle"></i>
+                        {{ event.status }}
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <h1>
+                {{ event.event_name or 'College Event' }}
+            </h1>
+
+            {% if event.description %}
+                <p class="hero-description">
+                    {{ event.description }}
+                </p>
+            {% else %}
+                <p class="hero-description">
+                    Discover this exciting college event and participate
+                    in an engaging campus experience.
+                </p>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         MAIN LAYOUT
+    ========================== -->
+    <div class="event-detail-layout">
+
+        <!-- =========================
+             LEFT CONTENT
+        ========================== -->
+        <main class="event-main-content">
+
+            <!-- EVENT BANNER -->
+            <div class="event-banner-card">
+
+                {% if event.banner %}
+
+                    <img
+                        src="{{ url_for('static', filename=event.banner) }}"
+                        class="event-main-banner"
+                        alt="{{ event.event_name }}"
+                        loading="lazy"
+                    >
+
+                {% elif event.image %}
+
+                    <img
+                        src="{{ url_for('static', filename=event.image) }}"
+                        class="event-main-banner"
+                        alt="{{ event.event_name }}"
+                        loading="lazy"
+                    >
+
+                {% else %}
+
+                    <div class="event-banner-placeholder">
+                        <i class="fas fa-calendar-star"></i>
+                        <span>Campus Event</span>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =========================
+                 EVENT INFORMATION
+            ========================== -->
+            <div class="event-info-grid">
+
+                <!-- DATE -->
+                <div class="event-info-card">
+
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-days"></i>
+                    </div>
+
+                    <div class="info-content">
+                        <span>Event Date</span>
+
+                        <strong>
+                            {% if event.event_date %}
+                                {% if event.event_date.strftime is defined %}
+                                    {{ event.event_date.strftime('%d %b %Y') }}
+                                {% else %}
+                                    {{ event.event_date }}
+                                {% endif %}
+                            {% else %}
+                                Date TBA
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- TIME -->
+                <div class="event-info-card">
+
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+
+                    <div class="info-content">
+                        <span>Event Time</span>
+
+                        <strong>
+                            {% if event.event_time %}
+                                {% if event.event_time.strftime is defined %}
+                                    {{ event.event_time.strftime('%I:%M %p') }}
+                                {% else %}
+                                    {{ event.event_time }}
+                                {% endif %}
+                            {% else %}
+                                Time TBA
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- VENUE -->
+                <div class="event-info-card">
+
+                    <div class="info-icon">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+
+                    <div class="info-content">
+                        <span>Venue</span>
+
+                        <strong>
+                            {{ event.venue or 'Venue TBA' }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- FEE -->
+                <div class="event-info-card">
+
+                    <div class="info-icon">
+                        <i class="fas fa-indian-rupee-sign"></i>
+                    </div>
+
+                    <div class="info-content">
+                        <span>Registration Fee</span>
+
+                        <strong>
+                            ₹{{ "%.2f"|format(event.registration_fee or 0) }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 REGISTRATION DEADLINE
+            ========================== -->
+            {% if event.registration_deadline %}
+
+                <div class="deadline-card">
+
+                    <div class="deadline-icon">
+                        <i class="fas fa-hourglass-end"></i>
+                    </div>
+
+                    <div>
+                        <span>Registration Deadline</span>
+
+                        <strong>
+                            {% if event.registration_deadline.strftime is defined %}
+                                {{ event.registration_deadline.strftime('%d %b %Y') }}
+                            {% else %}
+                                {{ event.registration_deadline }}
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =========================
+                 ABOUT EVENT
+            ========================== -->
+            <section class="detail-content-card">
+
+                <div class="content-card-heading">
+
+                    <div class="content-heading-icon">
+                        <i class="fas fa-circle-info"></i>
+                    </div>
+
+                    <div>
+                        <span>Event Overview</span>
+                        <h2>About This Event</h2>
+                    </div>
+
+                </div>
+
+                <div class="content-text">
+
+                    {% if event.description %}
+
+                        <p>
+                            {{ event.description }}
+                        </p>
+
+                    {% else %}
+
+                        <p>
+                            Information about this event will be updated
+                            by the event coordinator soon.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 RULES
+            ========================== -->
+            <section class="detail-content-card">
+
+                <div class="content-card-heading">
+
+                    <div class="content-heading-icon">
+                        <i class="fas fa-list-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Participation Guidelines</span>
+                        <h2>Event Rules</h2>
+                    </div>
+
+                </div>
+
+                {% if rules %}
+
+                    <div class="rules-list">
+
+                        {% for r in rules %}
+
+                            <div class="rule-item">
+
+                                <div class="rule-number">
+                                    {{ loop.index }}
+                                </div>
+
+                                <div class="rule-content">
+                                    {{ r.rule_text }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-content">
+                        <i class="fas fa-clipboard-list"></i>
+
+                        <p>
+                            Rules will be announced soon.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- =========================
+                 SPEAKERS
+            ========================== -->
+            {% if speakers %}
+
+                <section class="detail-content-card">
+
+                    <div class="content-card-heading">
+
+                        <div class="content-heading-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+
+                        <div>
+                            <span>Event Guests</span>
+                            <h2>Speakers</h2>
+                        </div>
+
+                    </div>
+
+                    <div class="speaker-grid">
+
+                        {% for s in speakers %}
+
+                            <div class="speaker-card">
+
+                                <div class="speaker-avatar">
+
+                                    {% if s.name %}
+                                        {{ s.name[0]|upper }}
+                                    {% else %}
+                                        S
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="speaker-details">
+
+                                    <h3>
+                                        {{ s.name or 'Guest Speaker' }}
+                                    </h3>
+
+                                    {% if s.designation %}
+
+                                        <p>
+                                            <i class="fas fa-briefcase"></i>
+                                            {{ s.designation }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- =========================
+                 SCHEDULE
+            ========================== -->
+            <section class="detail-content-card">
+
+                <div class="content-card-heading">
+
+                    <div class="content-heading-icon">
+                        <i class="fas fa-timeline"></i>
+                    </div>
+
+                    <div>
+                        <span>Event Timeline</span>
+                        <h2>Schedule</h2>
+                    </div>
+
+                </div>
+
+                {% if schedule %}
+
+                    <div class="schedule-list">
+
+                        {% for s in schedule %}
+
+                            <div class="schedule-item">
+
+                                <div class="schedule-time">
+
+                                    {% if s.start_time %}
+
+                                        {% if s.start_time.strftime is defined %}
+                                            {{ s.start_time.strftime('%I:%M %p') }}
+                                        {% else %}
+                                            {{ s.start_time }}
+                                        {% endif %}
+
+                                    {% else %}
+                                        TBA
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="schedule-line">
+                                    <span></span>
+                                </div>
+
+                                <div class="schedule-content">
+
+                                    <h3>
+                                        {{ s.title or 'Event Session' }}
+                                    </h3>
+
+                                    {% if s.description %}
+
+                                        <p>
+                                            {{ s.description }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-content">
+                        <i class="fas fa-clock"></i>
+
+                        <p>
+                            Schedule will be updated soon.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- =========================
+                 PRIZES
+            ========================== -->
+            {% if prizes %}
+
+                <section class="detail-content-card">
+
+                    <div class="content-card-heading">
+
+                        <div class="content-heading-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+
+                        <div>
+                            <span>Rewards & Recognition</span>
+                            <h2>Prizes</h2>
+                        </div>
+
+                    </div>
+
+                    <div class="prize-grid">
+
+                        {% for p in prizes %}
+
+                            <div class="prize-card">
+
+                                <div class="prize-icon">
+                                    {% if loop.index == 1 %}
+                                        <i class="fas fa-medal"></i>
+                                    {% elif loop.index == 2 %}
+                                        <i class="fas fa-award"></i>
+                                    {% else %}
+                                        <i class="fas fa-star"></i>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+
+                                    <h3>
+                                        {{ p.title or 'Prize' }}
+                                    </h3>
+
+                                    {% if p.description %}
+                                        <p>
+                                            {{ p.description }}
+                                        </p>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- =========================
+                 EXPLORE
+            ========================== -->
+            <section class="detail-content-card">
+
+                <div class="content-card-heading">
+
+                    <div class="content-heading-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+
+                    <div>
+                        <span>More From This Event</span>
+                        <h2>Explore</h2>
+                    </div>
+
+                </div>
+
+                <div class="explore-grid">
+
+                    <a
+                        href="{{ url_for('event_gallery', eid=event.id) }}"
+                        class="explore-card"
+                    >
+                        <div class="explore-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+
+                        <div>
+                            <h3>Event Gallery</h3>
+                            <p>View photos and event memories.</p>
+                        </div>
+
+                        <i class="fas fa-arrow-right explore-arrow"></i>
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('event_ratings', eid=event.id) }}"
+                        class="explore-card"
+                    >
+                        <div class="explore-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+
+                        <div>
+                            <h3>Reviews & Ratings</h3>
+                            <p>See participant feedback and ratings.</p>
+                        </div>
+
+                        <i class="fas fa-arrow-right explore-arrow"></i>
+                    </a>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =========================
+             RIGHT SIDEBAR
+        ========================== -->
+        <aside class="event-sidebar">
+
+            <div class="registration-card">
+
+                <div class="registration-header">
+
+                    <span class="registration-eyebrow">
+                        <i class="fas fa-ticket"></i>
+                        Registration
+                    </span>
+
+                    <h2>
+                        Reserve Your Seat
+                    </h2>
+
+                    <p>
+                        Join this event and become part of the
+                        campus experience.
+                    </p>
+
+                </div>
+
+
+                <!-- PRICE -->
+                <div class="price-box">
+
+                    <span>Registration Fee</span>
+
+                    <strong>
+                        ₹{{ "%.2f"|format(event.registration_fee or 0) }}
+                    </strong>
+
+                </div>
+
+
+                <!-- STATUS -->
+                {% if event.status %}
+
+                    <div class="sidebar-status">
+
+                        <span>Status</span>
+
+                        <strong>
+                            <i class="fas fa-circle"></i>
+                            {{ event.status }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- REGISTER -->
+                <div class="registration-action">
+
+                    {% if session.get('role') == 'student' %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('register_event', eid=event.id) }}"
+                            id="registrationForm"
+                        >
+
+                            <button
+                                type="submit"
+                                class="register-main-btn"
+                                id="registerButton"
+                            >
+                                <i class="fas fa-user-plus"></i>
+                                Register Now
+                            </button>
+
+                        </form>
+
+
+                    {% elif not session.get('user_id') %}
+
+                        <a
+                            href="{{ url_for('login', role='student') }}"
+                            class="register-main-btn"
+                        >
+                            <i class="fas fa-right-to-bracket"></i>
+                            Login to Register
+                        </a>
+
+
+                    {% else %}
+
+                        <div class="student-only-message">
+
+                            <i class="fas fa-user-graduate"></i>
+
+                            <div>
+                                <strong>Student Registration</strong>
+
+                                <p>
+                                    Only student accounts can register
+                                    for college events.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- BENEFITS -->
+                <div class="registration-benefits">
+
+                    <h3>
+                        <i class="fas fa-circle-check"></i>
+                        Registration Benefits
+                    </h3>
+
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Instant registration confirmation</span>
+                    </div>
+
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Certificate eligibility</span>
+                    </div>
+
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Event updates and notifications</span>
+                    </div>
+
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Access to event gallery</span>
+                    </div>
+
+                </div>
+
+
+                <!-- STUDENT ACTIONS -->
+                {% if session.get('role') == 'student' %}
+
+                    <div class="student-actions">
+
+                        <div class="student-actions-title">
+                            Quick Actions
+                        </div>
+
+
+                        <!-- WISHLIST -->
+                        <form
+                            method="POST"
+                            action="{{ url_for('wishlist_add', eid=event.id) }}"
+                        >
+
+                            <button
+                                type="submit"
+                                class="secondary-action wishlist-action"
+                            >
+                                <i class="fas fa-heart"></i>
+                                Add to Wishlist
+                            </button>
+
+                        </form>
+
+
+                        <!-- GALLERY -->
+                        <a
+                            href="{{ url_for('event_gallery', eid=event.id) }}"
+                            class="secondary-action"
+                        >
+                            <i class="fas fa-images"></i>
+                            Event Gallery
+                        </a>
+
+
+                        <!-- REVIEWS -->
+                        <a
+                            href="{{ url_for('event_ratings', eid=event.id) }}"
+                            class="secondary-action"
+                        >
+                            <i class="fas fa-star"></i>
+                            Reviews & Ratings
+                        </a>
+
+
+                        <!-- WAITING LIST -->
+                        <form
+                            method="POST"
+                            action="{{ url_for('add_waiting_list', eid=event.id) }}"
+                        >
+
+                            <button
+                                type="submit"
+                                class="secondary-action waiting-action"
+                            >
+                                <i class="fas fa-hourglass-half"></i>
+                                Join Waiting List
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- SUPPORT -->
+                <div class="support-box">
+
+                    <i class="fas fa-headset"></i>
+
+                    <div>
+                        <strong>Need Help?</strong>
+
+                        <p>
+                            Contact your event coordinator for
+                            registration support.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PAGE STYLES
+========================== -->
+<style>
+
+.event-detail-page {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 30px 20px 70px;
+}
+
+
+/* =========================
+   HERO
+========================== */
+
+.event-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 35px;
+    margin-bottom: 28px;
+    background:
+        radial-gradient(circle at 10% 20%, rgba(99,102,241,.25), transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(139,92,246,.20), transparent 30%),
+        linear-gradient(135deg, #111827, #1e1b4b);
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.hero-back {
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.back-btn:hover {
+    color: #ffffff;
+}
+
+.hero-content {
+    max-width: 850px;
+}
+
+.hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 18px;
+}
+
+.category-badge,
+.sub-event-badge,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .3px;
+}
+
+.category-badge {
+    color: #ddd6fe;
+    background: rgba(124,58,237,.18);
+    border: 1px solid rgba(167,139,250,.25);
+}
+
+.sub-event-badge {
+    color: #bfdbfe;
+    background: rgba(37,99,235,.15);
+    border: 1px solid rgba(96,165,250,.22);
+}
+
+.status-badge {
+    color: #bbf7d0;
+    background: rgba(34,197,94,.12);
+    border: 1px solid rgba(74,222,128,.22);
+}
+
+.status-badge i {
+    font-size: 7px;
+}
+
+.status-cancelled {
+    color: #fecaca;
+    background: rgba(239,68,68,.12);
+    border-color: rgba(248,113,113,.25);
+}
+
+.status-completed {
+    color: #bae6fd;
+    background: rgba(14,165,233,.12);
+    border-color: rgba(56,189,248,.25);
+}
+
+.hero-content h1 {
+    color: #ffffff;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.05;
+    font-weight: 900;
+    margin: 0 0 18px;
+    letter-spacing: -1.5px;
+}
+
+.hero-description {
+    color: #cbd5e1;
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+
+/* =========================
+   LAYOUT
+========================== */
+
+.event-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 28px;
+    align-items: start;
+}
+
+.event-main-content {
+    min-width: 0;
+}
+
+
+/* =========================
+   BANNER
+========================== */
+
+.event-banner-card {
+    overflow: hidden;
+    border-radius: 24px;
+    background: #111827;
+    border: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 24px;
+}
+
+.event-main-banner {
+    display: block;
+    width: 100%;
+    height: 390px;
+    object-fit: cover;
+}
+
+.event-banner-placeholder {
+    height: 390px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    color: #94a3b8;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(79,70,229,.15),
+            rgba(124,58,237,.08)
+        );
+}
+
+.event-banner-placeholder i {
+    font-size: 55px;
+    color: #8b5cf6;
+}
+
+.event-banner-placeholder span {
+    font-weight: 800;
+}
+
+
+/* =========================
+   INFORMATION CARDS
+========================== */
+
+.event-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.event-info-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(15,23,42,.72);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.info-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: #c4b5fd;
+    background: rgba(124,58,237,.14);
+}
+
+.info-content {
+    min-width: 0;
+}
+
+.info-content span,
+.deadline-card span,
+.sidebar-status span {
+    display: block;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    margin-bottom: 5px;
+}
+
+.info-content strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================
+   DEADLINE
+========================== */
+
+.deadline-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 17px 20px;
+    margin-bottom: 24px;
+    border-radius: 18px;
+    background: rgba(245,158,11,.08);
+    border: 1px solid rgba(245,158,11,.20);
+}
+
+.deadline-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: #fbbf24;
+    background: rgba(245,158,11,.12);
+}
+
+.deadline-card strong {
+    color: #fef3c7;
+}
+
+
+/* =========================
+   CONTENT CARDS
+========================== */
+
+.detail-content-card {
+    margin-bottom: 24px;
+    padding: 27px;
+    border-radius: 24px;
+    background: rgba(15,23,42,.68);
+    border: 1px solid rgba(255,255,255,.07);
+    box-shadow: 0 12px 35px rgba(0,0,0,.10);
+}
+
+.content-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 23px;
+}
+
+.content-heading-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 14px;
+    color: #c4b5fd;
+    background: rgba(124,58,237,.14);
+}
+
+.content-card-heading span {
+    display: block;
+    color: #8b5cf6;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .9px;
+    margin-bottom: 4px;
+}
+
+.content-card-heading h2 {
+    color: #f8fafc;
+    font-size: 23px;
+    font-weight: 850;
+    margin: 0;
+}
+
+.content-text p {
+    color: #cbd5e1;
+    font-size: 15px;
+    line-height: 1.9;
+    margin: 0;
+}
+
+
+/* =========================
+   RULES
+========================== */
+
+.rules-list {
+    display: grid;
+    gap: 12px;
+}
+
+.rule-item {
+    display: flex;
+    gap: 13px;
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.05);
+}
+
+.rule-number {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #ddd6fe;
+    background: rgba(124,58,237,.18);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.rule-content {
+    color: #cbd5e1;
+    line-height: 1.7;
+    padding-top: 3px;
+}
+
+.empty-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    border-radius: 15px;
+    color: #94a3b8;
+    background: rgba(255,255,255,.025);
+}
+
+.empty-content i {
+    color: #8b5cf6;
+}
+
+
+/* =========================
+   SPEAKERS
+========================== */
+
+.speaker-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.speaker-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px;
+    border-radius: 17px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.05);
+}
+
+.speaker-avatar {
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    color: #ffffff;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-weight: 900;
+    font-size: 18px;
+}
+
+.speaker-details h3 {
+    color: #f8fafc;
+    font-size: 15px;
+    margin: 0 0 5px;
+}
+
+.speaker-details p {
+    color: #94a3b8;
+    margin: 0;
+    font-size: 12px;
+}
+
+.speaker-details p i {
+    margin-right: 5px;
+}
+
+
+/* =========================
+   SCHEDULE
+========================== */
+
+.schedule-list {
+    display: grid;
+    gap: 0;
+}
+
+.schedule-item {
+    display: grid;
+    grid-template-columns: 100px 25px 1fr;
+    gap: 10px;
+    min-height: 80px;
+}
+
+.schedule-time {
+    color: #a78bfa;
+    font-weight: 900;
+    font-size: 13px;
+    padding-top: 5px;
+}
+
+.schedule-line {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.schedule-line::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(139,92,246,.25);
+}
+
+.schedule-line span {
+    position: relative;
+    width: 11px;
+    height: 11px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: #8b5cf6;
+    box-shadow: 0 0 0 5px rgba(139,92,246,.12);
+}
+
+.schedule-content {
+    padding-bottom: 25px;
+}
+
+.schedule-content h3 {
+    color: #f8fafc;
+    font-size: 15px;
+    margin: 0 0 6px;
+}
+
+.schedule-content p {
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+
+/* =========================
+   PRIZES
+========================== */
+
+.prize-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.prize-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 18px;
+    border-radius: 17px;
+    background: rgba(245,158,11,.06);
+    border: 1px solid rgba(245,158,11,.13);
+}
+
+.prize-icon {
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: #fbbf24;
+    background: rgba(245,158,11,.12);
+}
+
+.prize-card h3 {
+    color: #f8fafc;
+    font-size: 15px;
+    margin: 0 0 6px;
+}
+
+.prize-card p {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+
+/* =========================
+   EXPLORE
+========================== */
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.explore-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 17px;
+    text-decoration: none;
+    border-radius: 17px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.06);
+    transition: .2s ease;
+}
+
+.explore-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(139,92,246,.35);
+    background: rgba(124,58,237,.07);
+}
+
+.explore-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #c4b5fd;
+    background: rgba(124,58,237,.14);
+}
+
+.explore-card h3 {
+    color: #f8fafc;
+    font-size: 14px;
+    margin: 0 0 4px;
+}
+
+.explore-card p {
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.explore-arrow {
+    margin-left: auto;
+    color: #64748b;
+}
+
+
+/* =========================
+   SIDEBAR
+========================== */
+
+.event-sidebar {
+    position: sticky;
+    top: 90px;
+}
+
+.registration-card {
+    overflow: hidden;
+    border-radius: 24px;
+    background: rgba(15,23,42,.82);
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 20px 55px rgba(0,0,0,.20);
+}
+
+.registration-header {
+    padding: 26px 24px 20px;
+}
+
+.registration-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #a78bfa;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .9px;
+    margin-bottom: 12px;
+}
+
+.registration-header h2 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 900;
+    margin: 0 0 8px;
+}
+
+.registration-header p {
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.price-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 24px 18px;
+    padding: 17px;
+    border-radius: 16px;
+    background: rgba(124,58,237,.09);
+    border: 1px solid rgba(139,92,246,.18);
+}
+
+.price-box span {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.price-box strong {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.sidebar-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 24px 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.sidebar-status strong {
+    color: #86efac;
+    font-size: 12px;
+}
+
+.sidebar-status strong i {
+    font-size: 7px;
+    margin-right: 5px;
+}
+
+.registration-action {
+    padding: 0 24px;
+}
+
+.register-main-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 14px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-weight: 900;
+    text-decoration: none;
+    transition: .2s ease;
+    cursor: pointer;
+}
+
+.register-main-btn:hover {
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99,102,241,.25);
+}
+
+.student-only-message {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 14px;
+    color: #bfdbfe;
+    background: rgba(59,130,246,.08);
+    border: 1px solid rgba(96,165,250,.15);
+}
+
+.student-only-message > i {
+    margin-top: 3px;
+}
+
+.student-only-message strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.student-only-message p {
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+/* =========================
+   BENEFITS
+========================== */
+
+.registration-benefits {
+    padding: 22px 24px;
+}
+
+.registration-benefits h3 {
+    color: #e2e8f0;
+    font-size: 13px;
+    margin: 0 0 14px;
+}
+
+.registration-benefits h3 i {
+    color: #86efac;
+    margin-right: 5px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #94a3b8;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.benefit-item i {
+    color: #4ade80;
+    font-size: 10px;
+}
+
+
+/* =========================
+   STUDENT ACTIONS
+========================== */
+
+.student-actions {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.student-actions-title {
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 12px;
+}
+
+.student-actions form {
+    margin: 0 0 9px;
+}
+
+.secondary-action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    margin-bottom: 9px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    color: #cbd5e1;
+    background: rgba(255,255,255,.025);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.secondary-action:hover {
+    color: #ffffff;
+    background: rgba(124,58,237,.10);
+    border-color: rgba(139,92,246,.25);
+}
+
+.wishlist-action i {
+    color: #f472b6;
+}
+
+.waiting-action i {
+    color: #fbbf24;
+}
+
+
+/* =========================
+   SUPPORT
+========================== */
+
+.support-box {
+    display: flex;
+    gap: 12px;
+    padding: 18px 24px;
+    color: #94a3b8;
+}
+
+.support-box > i {
+    color: #60a5fa;
+    margin-top: 3px;
+}
+
+.support-box strong {
+    display: block;
+    color: #cbd5e1;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.support-box p {
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 1000px) {
+
+    .event-detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .event-sidebar {
+        position: static;
+    }
+
+    .registration-card {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .event-detail-page {
+        padding: 20px 14px 50px;
+    }
+
+    .event-hero {
+        padding: 24px;
+        border-radius: 22px;
+    }
+
+    .hero-content h1 {
+        font-size: 34px;
+    }
+
+    .event-main-banner,
+    .event-banner-placeholder {
+        height: 250px;
+    }
+
+    .event-info-grid,
+    .speaker-grid,
+    .prize-grid,
+    .explore-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-content-card {
+        padding: 21px;
+        border-radius: 20px;
+    }
+
+    .schedule-item {
+        grid-template-columns: 78px 20px 1fr;
+    }
+
+    .registration-card {
+        border-radius: 20px;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .hero-badges {
+        gap: 6px;
+    }
+
+    .category-badge,
+    .sub-event-badge,
+    .status-badge {
+        font-size: 10px;
+        padding: 7px 9px;
+    }
+
+    .hero-content h1 {
+        font-size: 29px;
+    }
+
+    .hero-description {
+        font-size: 13px;
+    }
+
+    .event-info-card {
+        padding: 14px;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .info-content strong {
+        font-size: 13px;
+    }
+
+    .schedule-item {
+        grid-template-columns: 70px 15px 1fr;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================
+     PAGE JAVASCRIPT
+========================== -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const registrationForm =
+        document.getElementById("registrationForm");
+
+    const registerButton =
+        document.getElementById("registerButton");
+
+
+    if (registrationForm && registerButton) {
+
+        registrationForm.addEventListener("submit", function () {
+
+            registerButton.disabled = true;
+
+            registerButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+        });
+
+    }
+
+
+    /*
+     * Add confirmation before joining
+     * the waiting list.
+     */
+
+    const waitingForms =
+        document.querySelectorAll(
+            'form[action*="add_waiting_list"]'
+        );
+
+    waitingForms.forEach(function (form) {
+
+        form.addEventListener("submit", function (event) {
+
+            const confirmed = confirm(
+                "Do you want to join the waiting list for this event?"
+            );
+
+            if (!confirmed) {
+                event.preventDefault();
+            }
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

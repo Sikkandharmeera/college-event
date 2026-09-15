@@ -1,0 +1,291 @@
+﻿{% extends "base.html" %}
+
+{% block title %}
+Events - College Events Hub
+{% endblock %}
+
+{% block content %}
+
+<section class="page-shell">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <span class="eyebrow">
+            All Experiences
+        </span>
+
+        <h1>
+            Events & Activities
+        </h1>
+
+        <p>
+            Choose from the latest competitions, workshops,
+            cultural showcases, and innovation-driven experiences
+            happening across campus.
+        </p>
+
+    </div>
+
+
+    <!-- Search -->
+    <form
+        method="GET"
+        action="{{ url_for('event_list') }}"
+        class="hero-search"
+        style="max-width: 640px; margin-bottom: 20px;"
+    >
+
+        <input
+            type="text"
+            name="q"
+            value="{{ request.args.get('q', '') }}"
+            placeholder="Search for events, workshops, competitions..."
+            aria-label="Search events"
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+
+    <!-- Category Filters -->
+    <div class="filter-row">
+
+        <a
+            href="{{ url_for('event_list') }}"
+            class="filter-chip {% if not request.args.get('category_id') %}active{% endif %}"
+        >
+            All
+        </a>
+
+        {% for c in categories %}
+
+            <a
+                href="{{ url_for('event_list', category_id=c.id) }}"
+                class="filter-chip {% if request.args.get('category_id')|string == c.id|string %}active{% endif %}"
+            >
+                {{ c.name }}
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- Student View -->
+    {% if session.get('role') == 'student' %}
+
+        <form
+            method="POST"
+            action="{{ url_for('checkout_events') }}"
+            class="selection-form"
+        >
+
+            <div class="list-box">
+
+                {% for e in events %}
+
+                    <label class="list-item">
+
+                        <input
+                            type="checkbox"
+                            name="event_ids"
+                            value="{{ e.id }}"
+                        >
+
+                        <div class="list-item-body">
+
+                            <div class="list-item-head">
+
+                                <div>
+
+                                    <small>
+                                        {{ e.category_name }}
+
+                                        {% if e.sub_event_name %}
+                                            / {{ e.sub_event_name }}
+                                        {% endif %}
+                                    </small>
+
+                                    <h3>
+                                        {{ e.event_name }}
+                                    </h3>
+
+                                </div>
+
+
+                                <div class="price-side">
+
+                                    <span class="price-tag">
+                                        ₹{{ e.registration_fee or 0 }}
+                                    </span>
+
+                                    {% if e.registration_fee|float <= 0 %}
+
+                                        <span class="free-badge">
+                                            Free
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <p>
+                                {% if e.description %}
+                                    {{ e.description[:170] }}
+                                    {% if e.description|length > 170 %}...{% endif %}
+                                {% else %}
+                                    View complete event details.
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+                    </label>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <p>
+                            No events available.
+                        </p>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            {% if events %}
+
+                <button
+                    type="submit"
+                    class="btn btn-primary full-width"
+                >
+                    Register Selected Events
+                </button>
+
+            {% endif %}
+
+        </form>
+
+
+    <!-- Admin / Coordinator / Guest View -->
+    {% else %}
+
+        <div class="event-grid">
+
+            {% for e in events %}
+
+                <a
+                    class="event-card"
+                    href="{{ url_for('event_detail', eid=e.id) }}"
+                >
+
+                    <!-- Event Image -->
+                    {% if e.banner %}
+
+                        <img
+                            src="{{ url_for('static', filename=e.banner) }}"
+                            alt="{{ e.event_name }}"
+                            loading="lazy"
+                        >
+
+                    {% else %}
+
+                        <div
+                            class="event-card-image placeholder"
+                            aria-label="No event image available"
+                        ></div>
+
+                    {% endif %}
+
+
+                    <!-- Event Details -->
+                    <div class="event-card-body">
+
+                        <div class="meta-row">
+
+                            <span>
+                                {{ e.category_name }}
+                            </span>
+
+                            {% if e.sub_event_name %}
+
+                                <span class="dot"></span>
+
+                                <span>
+                                    {{ e.sub_event_name }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <h3>
+                            {{ e.event_name }}
+                        </h3>
+
+
+                        <p>
+
+                            {% if e.description %}
+
+                                {{ e.description[:160] }}
+
+                                {% if e.description|length > 160 %}
+                                    ...
+                                {% endif %}
+
+                            {% else %}
+
+                                Explore complete event details.
+
+                            {% endif %}
+
+                        </p>
+
+
+                        <!-- Bottom Information -->
+                        <div class="card-bottom">
+
+                            <span>
+                                {{ e.event_date or 'Date TBA' }}
+                            </span>
+
+                            <strong>
+                                ₹{{ e.registration_fee or 0 }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <p>
+                        No events available.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

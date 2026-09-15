@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Coordinators - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section coordinator-management">
+
+    <div class="container-fluid">
+
+        <!-- =========================
+             PAGE HEADER
+        ========================== -->
+        <div class="coordinator-page-header">
+
+            <div class="header-left">
+
+                <div class="header-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+
+                <div>
+                    <span class="eyebrow">
+                        Admin Panel
+                    </span>
+
+                    <h1>
+                        Manage Coordinators
+                    </h1>
+
+                    <p>
+                        Create, manage, edit, and remove event coordinator accounts.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="header-actions">
+
+                <a href="{{ url_for('admin_coordinator_new') }}"
+                   class="btn coordinator-add-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Add Coordinator
+                </a>
+
+                <a href="{{ url_for('admin_dashboard') }}"
+                   class="btn coordinator-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SUMMARY
+        ========================== -->
+        <div class="coordinator-summary">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span>Total Coordinators</span>
+
+                    <strong>
+                        {{ staff|length if staff else 0 }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon active-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span>Active Coordinators</span>
+
+                    <strong>
+                        {% if staff %}
+                            {{ staff|selectattr('active', 'equalto', 1)|list|length }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon inactive-icon">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span>Inactive Coordinators</span>
+
+                    <strong>
+                        {% if staff %}
+                            {{ staff|rejectattr('active', 'equalto', 1)|list|length }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             COORDINATOR TABLE
+        ========================== -->
+        <div class="coordinator-card">
+
+            <div class="coordinator-card-header">
+
+                <div>
+                    <span class="card-eyebrow">
+                        Coordinator Accounts
+                    </span>
+
+                    <h2>
+                        All Coordinators
+                    </h2>
+
+                    <p>
+                        View and manage all coordinator accounts registered in the system.
+                    </p>
+                </div>
+
+                {% if staff %}
+                    <div class="coordinator-count">
+                        <i class="fas fa-users"></i>
+                        {{ staff|length }} Account{{ 's' if staff|length != 1 else '' }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="coordinator-card-body">
+
+                {% if staff %}
+
+                <div class="table-responsive">
+
+                    <table class="table coordinator-table">
+
+                        <thead>
+                            <tr>
+                                <th class="serial-column">#</th>
+                                <th>Coordinator</th>
+                                <th>Email Address</th>
+                                <th>Status</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for s in staff %}
+
+                            <tr>
+
+                                <!-- Serial Number -->
+                                <td class="serial-number">
+                                    {{ loop.index }}
+                                </td>
+
+
+                                <!-- Coordinator -->
+                                <td>
+
+                                    <div class="coordinator-info">
+
+                                        <div class="coordinator-avatar">
+                                            {{ s.full_name[0]|upper if s.full_name else 'C' }}
+                                        </div>
+
+                                        <div class="coordinator-details">
+
+                                            <strong>
+                                                {{ s.full_name|default('Unknown Coordinator') }}
+                                            </strong>
+
+                                            <small>
+                                                <i class="fas fa-user-tie"></i>
+                                                Event Coordinator
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Email -->
+                                <td>
+
+                                    <div class="email-info">
+
+                                        <i class="fas fa-envelope"></i>
+
+                                        <span>
+                                            {{ s.email|default('No email available') }}
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    {% if s.active %}
+
+                                        <span class="status-badge status-active">
+                                            <span class="status-dot"></span>
+                                            Active
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status-badge status-inactive">
+                                            <span class="status-dot"></span>
+                                            Inactive
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Actions -->
+                                <td>
+
+                                    <div class="action-buttons">
+
+                                        <!-- Edit -->
+                                        <a
+                                            href="{{ url_for('admin_coordinator_edit', sid=s.id) }}"
+                                            class="action-btn edit-btn"
+                                            title="Edit coordinator"
+                                        >
+                                            <i class="fas fa-edit"></i>
+                                            <span>Edit</span>
+                                        </a>
+
+
+                                        <!-- Delete -->
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for('admin_coordinator_delete', sid=s.id) }}"
+                                            class="delete-form"
+                                            data-coordinator-name="{{ s.full_name|default('this coordinator')|e }}"
+                                            onsubmit="return confirmDelete(this.dataset.coordinatorName);"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="action-btn delete-btn"
+                                                title="Delete coordinator"
+                                            >
+                                                <i class="fas fa-trash-alt"></i>
+                                                <span>Delete</span>
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Table Footer -->
+                <div class="table-footer">
+
+                    <div class="footer-info">
+                        <i class="fas fa-info-circle"></i>
+
+                        <span>
+                            Active coordinators can access coordinator-level features.
+                        </span>
+                    </div>
+
+                    <a
+                        href="{{ url_for('admin_coordinator_new') }}"
+                        class="footer-add-link"
+                    >
+                        <i class="fas fa-plus"></i>
+                        Add New Coordinator
+                    </a>
+
+                </div>
+
+
+                {% else %}
+
+                <!-- =========================
+                     EMPTY STATE
+                ========================== -->
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+
+                    <h3>
+                        No Coordinators Found
+                    </h3>
+
+                    <p>
+                        There are currently no coordinator accounts in the system.
+                        Create your first coordinator to start managing college events.
+                    </p>
+
+                    <a
+                        href="{{ url_for('admin_coordinator_new') }}"
+                        class="btn empty-add-btn"
+                    >
+                        <i class="fas fa-user-plus"></i>
+                        Add First Coordinator
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+<script>
+
+function confirmDelete(name) {
+
+    return confirm(
+        "Delete Coordinator\n\n" +
+        "Are you sure you want to remove " + name + "?\n\n" +
+        "This action cannot be undone."
+    );
+
+}
+
+</script>
+
+{% endblock %}

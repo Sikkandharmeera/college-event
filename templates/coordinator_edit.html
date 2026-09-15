@@ -1,0 +1,2278 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Event - Coordinator | Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section coordinator-edit-page">
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="edit-page-header">
+
+        <div class="edit-header-content">
+
+            <div class="edit-header-icon">
+                <i class="fas fa-calendar-pen"></i>
+            </div>
+
+            <div>
+
+                <span class="eyebrow">
+                    Event Management
+                </span>
+
+                <h1>
+                    Edit Assigned Event
+                </h1>
+
+                <p>
+                    Update the details, schedule, venue, registration
+                    information and banner of your assigned event.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="edit-header-actions">
+
+            <a
+                href="{{ url_for('coordinator_dashboard') }}"
+                class="btn edit-secondary-btn"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         EVENT SUMMARY
+    ========================================== -->
+
+    <div class="event-summary-card">
+
+        <div class="event-summary-main">
+
+            <div class="summary-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+
+            <div>
+
+                <span class="summary-label">
+                    Editing Event
+                </span>
+
+                <h2>
+                    {{ event.event_name or 'Untitled Event' }}
+                </h2>
+
+                <p>
+                    Event ID: #{{ event.id }}
+                    {% if event.category_name %}
+                    • {{ event.category_name }}
+                    {% endif %}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-status">
+
+            {% if event.status == 'Published' %}
+
+            <span class="summary-status-badge published">
+                <i class="fas fa-circle-check"></i>
+                Published
+            </span>
+
+            {% elif event.status == 'Draft' %}
+
+            <span class="summary-status-badge draft">
+                <i class="fas fa-file-pen"></i>
+                Draft
+            </span>
+
+            {% elif event.status == 'Closed' %}
+
+            <span class="summary-status-badge closed">
+                <i class="fas fa-lock"></i>
+                Closed
+            </span>
+
+            {% elif event.status == 'Cancelled' %}
+
+            <span class="summary-status-badge cancelled">
+                <i class="fas fa-circle-xmark"></i>
+                Cancelled
+            </span>
+
+            {% else %}
+
+            <span class="summary-status-badge unknown">
+                <i class="fas fa-circle-question"></i>
+                {{ event.status or 'Unknown' }}
+            </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         MAIN FORM
+    ========================================== -->
+
+    <form
+        class="coordinator-edit-form"
+        method="POST"
+        enctype="multipart/form-data"
+        action="{{ url_for('coordinator_edit', eid=event.id) }}"
+        id="eventEditForm"
+    >
+
+
+        <!-- =====================================
+             BASIC INFORMATION
+        ====================================== -->
+
+        <div class="edit-form-card">
+
+            <div class="edit-card-header">
+
+                <div class="edit-card-icon">
+                    <i class="fas fa-circle-info"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Step 01
+                    </span>
+
+                    <h3>
+                        Basic Information
+                    </h3>
+
+                    <p>
+                        Enter the main information about your event.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edit-card-body">
+
+                <!-- Event Name -->
+
+                <div class="form-group">
+
+                    <label for="event_name">
+                        <i class="fas fa-heading"></i>
+                        Event Name
+                        <span class="required-mark">*</span>
+                    </label>
+
+                    <input
+                        id="event_name"
+                        type="text"
+                        name="event_name"
+                        value="{{ event.event_name or '' }}"
+                        placeholder="Enter event name"
+                        maxlength="150"
+                        required
+                    >
+
+                    <small>
+                        Use a clear and meaningful name for your event.
+                    </small>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="form-group">
+
+                    <div class="label-row">
+
+                        <label for="description">
+                            <i class="fas fa-align-left"></i>
+                            Event Description
+                        </label>
+
+                        <span
+                            class="character-count"
+                            id="descriptionCount"
+                        >
+                            0 characters
+                        </span>
+
+                    </div>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="7"
+                        maxlength="1000"
+                        placeholder="Describe the event, activities, purpose and important information..."
+                    >{{ event.description or '' }}</textarea>
+
+                    <small>
+                        Provide useful information that students should know
+                        before registering.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             DATE & LOCATION
+        ====================================== -->
+
+        <div class="edit-form-card">
+
+            <div class="edit-card-header">
+
+                <div class="edit-card-icon">
+                    <i class="fas fa-calendar-days"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Step 02
+                    </span>
+
+                    <h3>
+                        Date, Time & Location
+                    </h3>
+
+                    <p>
+                        Set when and where the event will take place.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edit-card-body">
+
+                <div class="form-grid-2">
+
+                    <!-- Date -->
+
+                    <div class="form-group">
+
+                        <label for="event_date">
+                            <i class="fas fa-calendar-day"></i>
+                            Event Date
+                        </label>
+
+                        <input
+                            id="event_date"
+                            type="date"
+                            name="event_date"
+                            value="{{ event.event_date.strftime('%Y-%m-%d') if event.event_date else '' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Time -->
+
+                    <div class="form-group">
+
+                        <label for="event_time">
+                            <i class="fas fa-clock"></i>
+                            Event Time
+                        </label>
+
+                        <input
+                            id="event_time"
+                            type="time"
+                            name="event_time"
+                            value="{{ event.event_time.strftime('%H:%M') if event.event_time else '' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Registration Deadline -->
+
+                    <div class="form-group">
+
+                        <label for="registration_deadline">
+                            <i class="fas fa-hourglass-end"></i>
+                            Registration Deadline
+                        </label>
+
+                        <input
+                            id="registration_deadline"
+                            type="date"
+                            name="registration_deadline"
+                            value="{{ event.registration_deadline.strftime('%Y-%m-%d') if event.registration_deadline else '' }}"
+                        >
+
+                        <small>
+                            Students should complete registration before this date.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Venue -->
+
+                    <div class="form-group">
+
+                        <label for="venue">
+                            <i class="fas fa-location-dot"></i>
+                            Venue
+                            <span class="required-mark">*</span>
+                        </label>
+
+                        <input
+                            id="venue"
+                            type="text"
+                            name="venue"
+                            value="{{ event.venue or '' }}"
+                            placeholder="Example: Seminar Hall, Block A"
+                            maxlength="200"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             REGISTRATION SETTINGS
+        ====================================== -->
+
+        <div class="edit-form-card">
+
+            <div class="edit-card-header">
+
+                <div class="edit-card-icon">
+                    <i class="fas fa-ticket"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Step 03
+                    </span>
+
+                    <h3>
+                        Registration Settings
+                    </h3>
+
+                    <p>
+                        Configure the registration fee and event status.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edit-card-body">
+
+                <div class="form-grid-2">
+
+                    <!-- Fee -->
+
+                    <div class="form-group">
+
+                        <label for="registration_fee">
+                            <i class="fas fa-indian-rupee-sign"></i>
+                            Registration Fee
+                        </label>
+
+                        <div class="input-with-prefix">
+
+                            <span>
+                                ₹
+                            </span>
+
+                            <input
+                                id="registration_fee"
+                                type="number"
+                                name="registration_fee"
+                                value="{{ event.registration_fee or 0 }}"
+                                min="0"
+                                step="0.01"
+                                placeholder="0.00"
+                            >
+
+                        </div>
+
+                        <small>
+                            Enter 0 if the event is free.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="form-group">
+
+                        <label for="status">
+                            <i class="fas fa-toggle-on"></i>
+                            Event Status
+                            <span class="required-mark">*</span>
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            required
+                        >
+
+                            <option
+                                value="Draft"
+                                {% if event.status == 'Draft' %}selected{% endif %}
+                            >
+                                Draft
+                            </option>
+
+                            <option
+                                value="Published"
+                                {% if event.status == 'Published' %}selected{% endif %}
+                            >
+                                Published
+                            </option>
+
+                            <option
+                                value="Closed"
+                                {% if event.status == 'Closed' %}selected{% endif %}
+                            >
+                                Closed
+                            </option>
+
+                            <option
+                                value="Cancelled"
+                                {% if event.status == 'Cancelled' %}selected{% endif %}
+                            >
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                        <small>
+                            Published events are visible to students.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status Information -->
+
+                <div class="status-help-box">
+
+                    <div class="status-help-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Status Guide
+                        </strong>
+
+                        <p>
+                            <b>Draft:</b> Event is still being prepared.
+                            <b>Published:</b> Event is available to students.
+                            <b>Closed:</b> Registration or participation is closed.
+                            <b>Cancelled:</b> Event has been cancelled.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             EVENT BANNER
+        ====================================== -->
+
+        <div class="edit-form-card">
+
+            <div class="edit-card-header">
+
+                <div class="edit-card-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Step 04
+                    </span>
+
+                    <h3>
+                        Event Banner
+                    </h3>
+
+                    <p>
+                        View the existing banner or upload a replacement.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edit-card-body">
+
+                <!-- Current Banner -->
+
+                {% if event.banner %}
+
+                <div class="current-banner-section">
+
+                    <div class="banner-label">
+
+                        <span>
+                            Current Banner
+                        </span>
+
+                        <small>
+                            Existing event image
+                        </small>
+
+                    </div>
+
+                    <div class="current-banner-wrapper">
+
+                        <img
+                            src="{{ url_for('static', filename=event.banner) }}"
+                            alt="Current banner for {{ event.event_name or 'event' }}"
+                            class="current-banner"
+                            id="currentBanner"
+                        >
+
+                    </div>
+
+                </div>
+
+                {% elif event.image %}
+
+                <div class="current-banner-section">
+
+                    <div class="banner-label">
+
+                        <span>
+                            Current Event Image
+                        </span>
+
+                        <small>
+                            Existing event image
+                        </small>
+
+                    </div>
+
+                    <div class="current-banner-wrapper">
+
+                        <img
+                            src="{{ url_for('static', filename=event.image) }}"
+                            alt="Current image for {{ event.event_name or 'event' }}"
+                            class="current-banner"
+                            id="currentBanner"
+                        >
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- Upload -->
+
+                <div class="form-group banner-upload-group">
+
+                    <label for="banner">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        Replace Event Banner
+                    </label>
+
+                    <div class="upload-area">
+
+                        <input
+                            id="banner"
+                            type="file"
+                            name="banner"
+                            accept="image/png,image/jpeg,image/jpg,image/webp"
+                        >
+
+                        <div class="upload-content">
+
+                            <i class="fas fa-image"></i>
+
+                            <strong>
+                                Choose a new banner
+                            </strong>
+
+                            <span>
+                                PNG, JPG, JPEG or WEBP
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <small>
+                        Leave this field empty to keep the current banner.
+                    </small>
+
+                </div>
+
+
+                <!-- New Image Preview -->
+
+                <div
+                    id="bannerPreviewContainer"
+                    class="banner-preview-container"
+                    style="display:none;"
+                >
+
+                    <div class="banner-label">
+
+                        <span>
+                            New Banner Preview
+                        </span>
+
+                        <small>
+                            This image will replace the current banner.
+                        </small>
+
+                    </div>
+
+                    <img
+                        id="bannerPreview"
+                        class="banner-preview"
+                        alt="New banner preview"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             EVENT RULES
+        ====================================== -->
+
+        <div class="edit-form-card">
+
+            <div class="edit-card-header">
+
+                <div class="edit-card-icon">
+                    <i class="fas fa-list-check"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Step 05
+                    </span>
+
+                    <h3>
+                        Event Rules
+                    </h3>
+
+                    <p>
+                        Add important rules and instructions for participants.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edit-card-body">
+
+                <div
+                    id="rules-container"
+                    class="rules-container"
+                >
+
+                    {% if rules %}
+
+                        {% for r in rules %}
+
+                        <div class="rule-row">
+
+                            <div class="rule-number">
+                                {{ loop.index }}
+                            </div>
+
+                            <div class="rule-input-wrapper">
+
+                                <input
+                                    type="text"
+                                    name="rules"
+                                    value="{{ r.rule_text or '' }}"
+                                    placeholder="Enter event rule or instruction"
+                                    maxlength="300"
+                                >
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="remove-rule"
+                                aria-label="Remove rule"
+                                title="Remove rule"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </button>
+
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                    <div class="rule-row">
+
+                        <div class="rule-number">
+                            1
+                        </div>
+
+                        <div class="rule-input-wrapper">
+
+                            <input
+                                type="text"
+                                name="rules"
+                                placeholder="Enter event rule or instruction"
+                                maxlength="300"
+                            >
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="remove-rule"
+                            aria-label="Remove rule"
+                            title="Remove rule"
+                        >
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="add-rule"
+                    class="add-rule-btn"
+                >
+                    <i class="fas fa-plus"></i>
+                    Add Another Rule
+                </button>
+
+
+                <div class="rules-tip">
+
+                    <i class="fas fa-circle-info"></i>
+
+                    <span>
+                        Examples: Bring your college ID, report 15 minutes
+                        before the event, maintain discipline, or carry
+                        required materials.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             FORM ACTIONS
+        ====================================== -->
+
+        <div class="edit-form-actions">
+
+            <div class="action-note">
+
+                <i class="fas fa-shield-halved"></i>
+
+                <span>
+                    Your changes will be applied to this assigned event.
+                </span>
+
+            </div>
+
+
+            <div class="action-buttons">
+
+                <a
+                    href="{{ url_for('coordinator_dashboard') }}"
+                    class="btn cancel-edit-btn"
+                >
+                    <i class="fas fa-xmark"></i>
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn save-event-btn"
+                >
+                    <i class="fas fa-floppy-disk"></i>
+                    Save Changes
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =========================================
+       DESCRIPTION CHARACTER COUNT
+    ========================================== */
+
+    const description =
+        document.getElementById("description");
+
+    const descriptionCount =
+        document.getElementById("descriptionCount");
+
+
+    function updateDescriptionCount() {
+
+        if (!description || !descriptionCount) {
+            return;
+        }
+
+        const length = description.value.length;
+
+        descriptionCount.textContent =
+            length + " character" + (length === 1 ? "" : "s");
+
+    }
+
+
+    if (description) {
+
+        updateDescriptionCount();
+
+        description.addEventListener(
+            "input",
+            updateDescriptionCount
+        );
+
+    }
+
+
+    /* =========================================
+       BANNER IMAGE PREVIEW
+    ========================================== */
+
+    const bannerInput =
+        document.getElementById("banner");
+
+    const bannerPreviewContainer =
+        document.getElementById("bannerPreviewContainer");
+
+    const bannerPreview =
+        document.getElementById("bannerPreview");
+
+
+    if (bannerInput) {
+
+        bannerInput.addEventListener(
+            "change",
+            function () {
+
+                const file = this.files[0];
+
+                if (!file) {
+
+                    bannerPreviewContainer.style.display =
+                        "none";
+
+                    bannerPreview.removeAttribute("src");
+
+                    return;
+
+                }
+
+
+                if (!file.type.startsWith("image/")) {
+
+                    alert(
+                        "Please select a valid image file."
+                    );
+
+                    this.value = "";
+
+                    bannerPreviewContainer.style.display =
+                        "none";
+
+                    return;
+
+                }
+
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    function (event) {
+
+                        bannerPreview.src =
+                            event.target.result;
+
+                        bannerPreviewContainer.style.display =
+                            "block";
+
+                    };
+
+
+                reader.readAsDataURL(file);
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       EVENT RULES
+    ========================================== */
+
+    const addRuleButton =
+        document.getElementById("add-rule");
+
+    const rulesContainer =
+        document.getElementById("rules-container");
+
+
+    function updateRuleNumbers() {
+
+        if (!rulesContainer) {
+            return;
+        }
+
+        const rows =
+            rulesContainer.querySelectorAll(".rule-row");
+
+
+        rows.forEach(function (row, index) {
+
+            const number =
+                row.querySelector(".rule-number");
+
+            if (number) {
+
+                number.textContent =
+                    index + 1;
+
+            }
+
+        });
+
+    }
+
+
+    function attachRemoveButton(button) {
+
+        if (!button) {
+            return;
+        }
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const row =
+                    button.closest(".rule-row");
+
+
+                if (!row) {
+                    return;
+                }
+
+
+                const rows =
+                    rulesContainer.querySelectorAll(
+                        ".rule-row"
+                    );
+
+
+                /*
+                 * Keep one empty row instead of
+                 * removing the entire rule section.
+                 */
+
+                if (rows.length === 1) {
+
+                    const input =
+                        row.querySelector("input");
+
+                    if (input) {
+                        input.value = "";
+                    }
+
+                    return;
+
+                }
+
+
+                row.remove();
+
+                updateRuleNumbers();
+
+            }
+        );
+
+    }
+
+
+    if (rulesContainer) {
+
+        rulesContainer
+            .querySelectorAll(".remove-rule")
+            .forEach(function (button) {
+
+                attachRemoveButton(button);
+
+            });
+
+    }
+
+
+    if (addRuleButton && rulesContainer) {
+
+        addRuleButton.addEventListener(
+            "click",
+            function () {
+
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "rule-row";
+
+
+                row.innerHTML = `
+                    <div class="rule-number"></div>
+
+                    <div class="rule-input-wrapper">
+                        <input
+                            type="text"
+                            name="rules"
+                            placeholder="Enter event rule or instruction"
+                            maxlength="300"
+                        >
+                    </div>
+
+                    <button
+                        type="button"
+                        class="remove-rule"
+                        aria-label="Remove rule"
+                        title="Remove rule"
+                    >
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+
+
+                rulesContainer.appendChild(row);
+
+
+                attachRemoveButton(
+                    row.querySelector(".remove-rule")
+                );
+
+
+                updateRuleNumbers();
+
+
+                const input =
+                    row.querySelector("input");
+
+                if (input) {
+                    input.focus();
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       FORM SUBMIT PROTECTION
+    ========================================== */
+
+    const form =
+        document.getElementById("eventEditForm");
+
+    const saveButton =
+        document.querySelector(".save-event-btn");
+
+
+    if (form && saveButton) {
+
+        form.addEventListener(
+            "submit",
+            function () {
+
+                saveButton.disabled = true;
+
+                saveButton.innerHTML = `
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Saving Changes...
+                `;
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       DATE VALIDATION
+    ========================================== */
+
+    const eventDate =
+        document.getElementById("event_date");
+
+    const deadline =
+        document.getElementById(
+            "registration_deadline"
+        );
+
+
+    function validateDates() {
+
+        if (!eventDate || !deadline) {
+            return;
+        }
+
+
+        if (
+            eventDate.value &&
+            deadline.value &&
+            deadline.value > eventDate.value
+        ) {
+
+            deadline.setCustomValidity(
+                "Registration deadline should not be after the event date."
+            );
+
+        } else {
+
+            deadline.setCustomValidity("");
+
+        }
+
+    }
+
+
+    if (eventDate) {
+        eventDate.addEventListener(
+            "change",
+            validateDates
+        );
+    }
+
+
+    if (deadline) {
+        deadline.addEventListener(
+            "change",
+            validateDates
+        );
+    }
+
+
+    validateDates();
+
+});
+
+</script>
+
+
+<!-- =====================================================
+     PAGE STYLES
+===================================================== -->
+
+<style>
+
+/* =========================================
+   PAGE
+========================================= */
+
+.coordinator-edit-page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.edit-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 25px;
+
+    margin-bottom: 25px;
+}
+
+.edit-header-content {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 17px;
+}
+
+.edit-header-icon {
+    width: 58px;
+    height: 58px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(99, 102, 241, 0.22),
+            rgba(37, 99, 235, 0.13)
+        );
+
+    border: 1px solid rgba(129, 140, 248, 0.23);
+
+    color: #a5b4fc;
+
+    font-size: 1.3rem;
+}
+
+.edit-page-header h1 {
+    margin: 5px 0 7px;
+
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+
+    font-weight: 800;
+
+    letter-spacing: -0.04em;
+}
+
+.edit-page-header p {
+    margin: 0;
+
+    max-width: 700px;
+
+    opacity: 0.65;
+
+    line-height: 1.65;
+}
+
+.edit-header-actions {
+    flex-shrink: 0;
+}
+
+.edit-secondary-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 42px;
+
+    padding: 10px 15px;
+
+    border-radius: 10px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   EVENT SUMMARY
+========================================= */
+
+.event-summary-card {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 22px;
+
+    margin-bottom: 22px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(99, 102, 241, 0.12),
+            rgba(59, 130, 246, 0.05)
+        );
+
+    border: 1px solid rgba(129, 140, 248, 0.16);
+}
+
+.event-summary-main {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+}
+
+.summary-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: rgba(99, 102, 241, 0.14);
+
+    color: #818cf8;
+}
+
+.summary-label {
+    display: block;
+
+    font-size: 0.68rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    font-weight: 800;
+
+    opacity: 0.5;
+}
+
+.event-summary-main h2 {
+    margin: 3px 0 3px;
+
+    font-size: 1.1rem;
+
+    font-weight: 800;
+}
+
+.event-summary-main p {
+    margin: 0;
+
+    font-size: 0.76rem;
+
+    opacity: 0.52;
+}
+
+.summary-status-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 8px 12px;
+
+    border-radius: 999px;
+
+    font-size: 0.73rem;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.summary-status-badge.published {
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.summary-status-badge.draft {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.12);
+}
+
+.summary-status-badge.closed {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.12);
+}
+
+.summary-status-badge.cancelled {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.summary-status-badge.unknown {
+    color: #cbd5e1;
+    background: rgba(148, 163, 184, 0.1);
+}
+
+
+/* =========================================
+   FORM CARD
+========================================= */
+
+.coordinator-edit-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.edit-form-card {
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 15px 40px rgba(15, 23, 42, 0.12);
+}
+
+.edit-card-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 19px 22px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.edit-card-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(99, 102, 241, 0.11);
+
+    color: #818cf8;
+
+    font-size: 0.95rem;
+}
+
+.edit-card-header span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 0.64rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    font-weight: 800;
+
+    opacity: 0.43;
+}
+
+.edit-card-header h3 {
+    margin: 0 0 3px;
+
+    font-size: 1rem;
+
+    font-weight: 800;
+}
+
+.edit-card-header p {
+    margin: 0;
+
+    font-size: 0.76rem;
+
+    opacity: 0.52;
+}
+
+.edit-card-body {
+    padding: 23px;
+}
+
+
+/* =========================================
+   FORM FIELDS
+========================================= */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 0.82rem;
+
+    font-weight: 750;
+}
+
+.form-group label i {
+    margin-right: 6px;
+
+    color: #818cf8;
+}
+
+.required-mark {
+    color: #f87171;
+
+    margin-left: 3px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+
+    border-radius: 11px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    background: rgba(15, 23, 42, 0.45);
+
+    color: inherit;
+
+    padding: 11px 13px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: rgba(129, 140, 248, 0.55);
+
+    background: rgba(15, 23, 42, 0.65);
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.09);
+}
+
+.form-group textarea {
+    resize: vertical;
+
+    min-height: 150px;
+
+    line-height: 1.6;
+}
+
+.form-group small {
+    display: block;
+
+    margin-top: 7px;
+
+    font-size: 0.7rem;
+
+    opacity: 0.46;
+
+    line-height: 1.5;
+}
+
+.form-grid-2 {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.label-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.character-count {
+    font-size: 0.68rem;
+
+    opacity: 0.45;
+}
+
+
+/* =========================================
+   FEE INPUT
+========================================= */
+
+.input-with-prefix {
+    position: relative;
+}
+
+.input-with-prefix > span {
+    position: absolute;
+
+    left: 13px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-weight: 800;
+
+    color: #a5b4fc;
+
+    z-index: 2;
+}
+
+.input-with-prefix input {
+    padding-left: 30px;
+}
+
+
+/* =========================================
+   STATUS HELP
+========================================= */
+
+.status-help-box {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    margin-top: 4px;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background: rgba(99, 102, 241, 0.06);
+
+    border: 1px solid rgba(129, 140, 248, 0.1);
+}
+
+.status-help-icon {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: rgba(99, 102, 241, 0.12);
+
+    color: #818cf8;
+}
+
+.status-help-box strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 0.78rem;
+}
+
+.status-help-box p {
+    margin: 0;
+
+    font-size: 0.72rem;
+
+    line-height: 1.6;
+
+    opacity: 0.58;
+}
+
+
+/* =========================================
+   BANNER
+========================================= */
+
+.current-banner-section {
+    margin-bottom: 23px;
+}
+
+.banner-label {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 9px;
+}
+
+.banner-label span {
+    font-size: 0.8rem;
+
+    font-weight: 800;
+}
+
+.banner-label small {
+    margin: 0;
+
+    font-size: 0.67rem;
+}
+
+.current-banner-wrapper {
+    width: 100%;
+
+    max-height: 300px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.current-banner {
+    display: block;
+
+    width: 100%;
+
+    max-height: 300px;
+
+    object-fit: cover;
+}
+
+.banner-upload-group {
+    margin-bottom: 0;
+}
+
+.upload-area {
+    position: relative;
+
+    min-height: 130px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    border: 1px dashed rgba(129, 140, 248, 0.28);
+
+    background: rgba(99, 102, 241, 0.04);
+
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: rgba(129, 140, 248, 0.5);
+
+    background: rgba(99, 102, 241, 0.07);
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+
+    cursor: pointer;
+
+    z-index: 2;
+}
+
+.upload-content {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    pointer-events: none;
+}
+
+.upload-content i {
+    font-size: 1.7rem;
+
+    color: #818cf8;
+
+    margin-bottom: 4px;
+}
+
+.upload-content strong {
+    font-size: 0.8rem;
+}
+
+.upload-content span {
+    font-size: 0.68rem;
+
+    opacity: 0.45;
+}
+
+.banner-preview-container {
+    margin-top: 22px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.banner-preview {
+    width: 100%;
+
+    max-height: 300px;
+
+    object-fit: cover;
+
+    display: block;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================
+   RULES
+========================================= */
+
+.rules-container {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-bottom: 13px;
+}
+
+.rule-row {
+    display: grid;
+
+    grid-template-columns:
+        34px minmax(0, 1fr) 40px;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.rule-number {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: rgba(99, 102, 241, 0.1);
+
+    color: #a5b4fc;
+
+    font-size: 0.75rem;
+
+    font-weight: 800;
+}
+
+.rule-input-wrapper input {
+    margin: 0;
+}
+
+.remove-rule {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(239, 68, 68, 0.15);
+
+    background: rgba(239, 68, 68, 0.07);
+
+    color: #f87171;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.remove-rule:hover {
+    background: rgba(239, 68, 68, 0.14);
+
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.add-rule-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    border-radius: 9px;
+
+    border: 1px solid rgba(129, 140, 248, 0.18);
+
+    background: rgba(99, 102, 241, 0.07);
+
+    color: #a5b4fc;
+
+    font-size: 0.76rem;
+
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+.add-rule-btn:hover {
+    background: rgba(99, 102, 241, 0.13);
+}
+
+.rules-tip {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    margin-top: 15px;
+
+    padding: 11px 13px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    color: inherit;
+
+    font-size: 0.7rem;
+
+    line-height: 1.5;
+
+    opacity: 0.55;
+}
+
+.rules-tip i {
+    margin-top: 2px;
+
+    color: #818cf8;
+}
+
+
+/* =========================================
+   FORM ACTIONS
+========================================= */
+
+.edit-form-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 20px;
+
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.action-note {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 0.72rem;
+
+    opacity: 0.5;
+}
+
+.action-note i {
+    color: #818cf8;
+}
+
+.action-buttons {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+.cancel-edit-btn,
+.save-event-btn {
+    min-height: 43px;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    font-weight: 750;
+}
+
+.cancel-edit-btn {
+    background: rgba(255, 255, 255, 0.05);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.save-event-btn {
+    border: none;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #2563eb
+        );
+
+    box-shadow:
+        0 9px 22px rgba(37, 99, 235, 0.2);
+}
+
+.save-event-btn:hover {
+    color: #fff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 12px 26px rgba(37, 99, 235, 0.3);
+}
+
+.save-event-btn:disabled {
+    opacity: 0.7;
+
+    cursor: wait;
+
+    transform: none;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .edit-page-header {
+        flex-direction: column;
+    }
+
+    .edit-header-actions {
+        width: 100%;
+    }
+
+    .edit-secondary-btn {
+        width: 100%;
+    }
+
+    .event-summary-card {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .summary-status {
+        margin-left: 62px;
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-form-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .action-note {
+        justify-content: center;
+
+        text-align: center;
+    }
+
+    .action-buttons {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cancel-edit-btn,
+    .save-event-btn {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .edit-header-content {
+        flex-direction: column;
+    }
+
+    .edit-header-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .edit-page-header h1 {
+        font-size: 1.7rem;
+    }
+
+    .edit-card-header {
+        padding: 16px;
+    }
+
+    .edit-card-body {
+        padding: 17px;
+    }
+
+    .rule-row {
+        grid-template-columns:
+            30px minmax(0, 1fr) 38px;
+
+        gap: 7px;
+    }
+
+    .rule-number {
+        width: 30px;
+        height: 30px;
+    }
+
+    .remove-rule {
+        width: 38px;
+        height: 38px;
+    }
+
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

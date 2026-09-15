@@ -1,0 +1,1091 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Login - College Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="login-page">
+
+    <div class="login-container">
+
+        <!-- Left Information Panel -->
+        <div class="login-info">
+
+            <div class="login-brand-icon">
+                <i class="fas fa-calendar-days"></i>
+            </div>
+
+            <span class="login-eyebrow">
+                CAMPUS EVENTS HUB
+            </span>
+
+            <h1>
+                Welcome<br>
+                <span>Back!</span>
+            </h1>
+
+            <p>
+                Login to discover college events, register for activities,
+                manage your participation, and stay connected with campus life.
+            </p>
+
+            <div class="login-features">
+
+                <div class="login-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <strong>Discover Events</strong>
+                        <span>Explore seminars, workshops and competitions.</span>
+                    </div>
+                </div>
+
+                <div class="login-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-ticket"></i>
+                    </div>
+                    <div>
+                        <strong>Easy Registration</strong>
+                        <span>Register for events quickly and easily.</span>
+                    </div>
+                </div>
+
+                <div class="login-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <strong>Stay Updated</strong>
+                        <span>Get notifications about upcoming events.</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Login Card -->
+        <div class="login-card">
+
+            <div class="login-card-header">
+
+                <div class="mobile-login-icon">
+                    <i class="fas fa-right-to-bracket"></i>
+                </div>
+
+                <span class="eyebrow">
+                    ACCOUNT ACCESS
+                </span>
+
+                <h2>Login to your account</h2>
+
+                <p>
+                    Enter your credentials to continue to Campus Events Hub.
+                </p>
+
+            </div>
+
+
+            <!-- Login Hint -->
+            {% if login_hint %}
+                <div class="login-hint">
+                    <i class="fas fa-circle-info"></i>
+                    <span>{{ login_hint }}</span>
+                </div>
+            {% endif %}
+
+
+            <!-- Login Form -->
+            <form
+                method="POST"
+                action="{{ url_for('login') }}"
+                class="login-form"
+                id="loginForm"
+            >
+
+                <!-- Email -->
+                <div class="form-group">
+
+                    <label for="email">
+                        <span>
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </span>
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fas fa-envelope input-icon"></i>
+
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email address"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="form-group">
+
+                    <label for="password">
+                        <span>
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </span>
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fas fa-lock input-icon"></i>
+
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()"
+                            aria-label="Show password"
+                        >
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Remember / Help -->
+                <div class="login-options">
+
+                    <label class="remember-me">
+                        <input
+                            type="checkbox"
+                            name="remember"
+                            value="1"
+                        >
+                        <span>Remember me</span>
+                    </label>
+
+                    <span class="login-help">
+                        <i class="fas fa-shield-halved"></i>
+                        Secure Login
+                    </span>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button
+                    class="login-submit"
+                    type="submit"
+                    id="loginButton"
+                >
+                    <span>
+                        <i class="fas fa-right-to-bracket"></i>
+                        Login
+                    </span>
+
+                    <i class="fas fa-arrow-right submit-arrow"></i>
+                </button>
+
+            </form>
+
+
+            <!-- Divider -->
+            <div class="login-divider">
+                <span>Other Login Options</span>
+            </div>
+
+
+            <!-- Role Login -->
+            <div class="role-login-grid">
+
+                <a
+                    href="{{ url_for('login', role='admin') }}"
+                    class="role-login admin-login"
+                >
+                    <div class="role-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+
+                    <div>
+                        <strong>Admin</strong>
+                        <span>System management</span>
+                    </div>
+
+                    <i class="fas fa-chevron-right role-arrow"></i>
+                </a>
+
+
+                <a
+                    href="{{ url_for('login', role='coordinator') }}"
+                    class="role-login coordinator-login"
+                >
+                    <div class="role-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+
+                    <div>
+                        <strong>Coordinator</strong>
+                        <span>Event management</span>
+                    </div>
+
+                    <i class="fas fa-chevron-right role-arrow"></i>
+                </a>
+
+            </div>
+
+
+            <!-- Registration -->
+            <div class="register-section">
+
+                <div class="register-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+
+                <div class="register-text">
+                    <span>Don't have a student account?</span>
+
+                    <a href="{{ url_for('register') }}">
+                        Create Account
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </div>
+
+
+            <!-- Security Footer -->
+            <div class="security-note">
+
+                <i class="fas fa-lock"></i>
+
+                <span>
+                    Your account information is protected and handled securely.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+
+/* =========================================
+   LOGIN PAGE
+========================================= */
+
+.login-page {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    position: relative;
+}
+
+
+/* Background Glow */
+
+.login-page::before {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    background: rgba(99, 102, 241, 0.14);
+    filter: blur(100px);
+    border-radius: 50%;
+    top: 5%;
+    left: 5%;
+    pointer-events: none;
+}
+
+.login-page::after {
+    content: "";
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    background: rgba(168, 85, 247, 0.12);
+    filter: blur(100px);
+    border-radius: 50%;
+    bottom: 5%;
+    right: 5%;
+    pointer-events: none;
+}
+
+
+/* Main Container */
+
+.login-container {
+    width: min(1100px, 100%);
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 35px;
+    align-items: stretch;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================
+   LEFT PANEL
+========================================= */
+
+.login-info {
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 28px;
+    padding: 48px 42px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(30, 41, 75, 0.92),
+            rgba(15, 23, 42, 0.96)
+        );
+    box-shadow: 0 25px 70px rgba(0,0,0,0.30);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.login-info::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 1px solid rgba(139,92,246,0.18);
+    right: -90px;
+    top: -80px;
+}
+
+
+.login-brand-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #8b5cf6
+    );
+    color: white;
+    font-size: 26px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 35px rgba(99,102,241,0.30);
+}
+
+
+.login-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #a5b4fc;
+    margin-bottom: 12px;
+}
+
+
+.login-info h1 {
+    font-size: clamp(40px, 5vw, 62px);
+    line-height: 1;
+    font-weight: 900;
+    color: #f8fafc;
+    margin: 0 0 22px;
+}
+
+
+.login-info h1 span {
+    background: linear-gradient(
+        90deg,
+        #818cf8,
+        #c084fc
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+.login-info > p {
+    color: #94a3b8;
+    line-height: 1.8;
+    font-size: 15px;
+    max-width: 440px;
+    margin-bottom: 35px;
+}
+
+
+/* Features */
+
+.login-features {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+.login-feature {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.feature-icon {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(129,140,248,0.16);
+    color: #a5b4fc;
+}
+
+
+.login-feature strong {
+    display: block;
+    color: #e2e8f0;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+
+.login-feature span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   LOGIN CARD
+========================================= */
+
+.login-card {
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 28px;
+    padding: 42px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.30);
+    backdrop-filter: blur(20px);
+}
+
+
+/* Header */
+
+.login-card-header {
+    margin-bottom: 25px;
+}
+
+
+.mobile-login-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(99,102,241,0.13);
+    color: #a5b4fc;
+    font-size: 20px;
+    margin-bottom: 18px;
+}
+
+
+.login-card-header .eyebrow {
+    color: #818cf8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+
+.login-card-header h2 {
+    color: #f8fafc;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 7px 0 8px;
+}
+
+
+.login-card-header p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+
+/* Hint */
+
+.login-hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.16);
+    color: #93c5fd;
+    font-size: 12px;
+    margin-bottom: 22px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+
+.form-group label {
+    display: block;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+
+.form-group label i {
+    color: #818cf8;
+    margin-right: 6px;
+}
+
+
+.input-wrapper {
+    position: relative;
+}
+
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+
+.input-wrapper input {
+    width: 100%;
+    height: 52px;
+    padding: 0 48px 0 44px;
+    border-radius: 13px;
+    border: 1px solid rgba(148,163,184,0.16);
+    background: rgba(30,41,59,0.70);
+    color: #f8fafc;
+    outline: none;
+    font-size: 14px;
+    transition: 0.25s ease;
+    box-sizing: border-box;
+}
+
+
+.input-wrapper input::placeholder {
+    color: #64748b;
+}
+
+
+.input-wrapper input:focus {
+    border-color: rgba(129,140,248,0.70);
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.10);
+    background: rgba(30,41,59,0.90);
+}
+
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    padding: 8px;
+}
+
+
+.password-toggle:hover {
+    color: #a5b4fc;
+}
+
+
+/* Options */
+
+.login-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: -3px;
+}
+
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+
+.remember-me input {
+    accent-color: #6366f1;
+}
+
+
+.login-help {
+    color: #64748b;
+    font-size: 11px;
+}
+
+
+.login-help i {
+    color: #818cf8;
+    margin-right: 4px;
+}
+
+
+/* Submit */
+
+.login-submit {
+    width: 100%;
+    height: 53px;
+    border: 0;
+    border-radius: 13px;
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #8b5cf6
+    );
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px 0 20px;
+    box-shadow: 0 12px 30px rgba(99,102,241,0.25);
+    transition: 0.25s ease;
+}
+
+
+.login-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 35px rgba(99,102,241,0.35);
+}
+
+
+.submit-arrow {
+    transition: 0.25s ease;
+}
+
+
+.login-submit:hover .submit-arrow {
+    transform: translateX(4px);
+}
+
+
+/* =========================================
+   DIVIDER
+========================================= */
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 18px;
+}
+
+
+.login-divider::before,
+.login-divider::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: rgba(148,163,184,0.12);
+}
+
+
+.login-divider span {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+/* =========================================
+   ROLE LOGIN
+========================================= */
+
+.role-login-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+
+.role-login {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px;
+    border-radius: 14px;
+    text-decoration: none;
+    background: rgba(30,41,59,0.55);
+    border: 1px solid rgba(148,163,184,0.12);
+    transition: 0.25s ease;
+}
+
+
+.role-login:hover {
+    transform: translateY(-2px);
+    background: rgba(30,41,59,0.85);
+    border-color: rgba(129,140,248,0.35);
+}
+
+
+.role-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: rgba(99,102,241,0.12);
+    color: #a5b4fc;
+}
+
+
+.role-login strong {
+    display: block;
+    color: #e2e8f0;
+    font-size: 12px;
+}
+
+
+.role-login span {
+    display: block;
+    color: #64748b;
+    font-size: 9px;
+    margin-top: 2px;
+}
+
+
+.role-arrow {
+    margin-left: auto;
+    color: #475569;
+    font-size: 10px;
+}
+
+
+/* =========================================
+   REGISTER
+========================================= */
+
+.register-section {
+    margin-top: 22px;
+    padding: 15px;
+    border-radius: 14px;
+    background: rgba(99,102,241,0.06);
+    border: 1px solid rgba(99,102,241,0.10);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.register-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(139,92,246,0.12);
+    color: #c084fc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.register-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+
+.register-text span {
+    color: #64748b;
+    font-size: 11px;
+}
+
+
+.register-text a {
+    color: #a5b4fc;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+.register-text a:hover {
+    color: #c4b5fd;
+}
+
+
+.register-text a i {
+    font-size: 9px;
+    margin-left: 3px;
+}
+
+
+/* Security */
+
+.security-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    margin-top: 20px;
+    color: #475569;
+    font-size: 10px;
+    text-align: center;
+}
+
+
+.security-note i {
+    color: #64748b;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .login-container {
+        grid-template-columns: 1fr;
+        max-width: 620px;
+    }
+
+    .login-info {
+        padding: 35px;
+    }
+
+    .login-info h1 {
+        font-size: 46px;
+    }
+
+    .login-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .login-page {
+        padding: 30px 14px;
+    }
+
+    .login-info {
+        padding: 28px 24px;
+        border-radius: 22px;
+    }
+
+    .login-info h1 {
+        font-size: 40px;
+    }
+
+    .login-info > p {
+        font-size: 13px;
+    }
+
+    .login-features {
+        grid-template-columns: 1fr;
+    }
+
+    .login-card {
+        padding: 26px 20px;
+        border-radius: 22px;
+    }
+
+    .login-card-header h2 {
+        font-size: 23px;
+    }
+
+    .role-login-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .login-options {
+        align-items: flex-start;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .login-page {
+        padding: 20px 10px;
+    }
+
+    .login-card {
+        padding: 22px 16px;
+    }
+
+    .login-info {
+        padding: 24px 20px;
+    }
+
+    .login-info h1 {
+        font-size: 36px;
+    }
+
+}
+
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .login-submit,
+    .role-login,
+    .input-wrapper input,
+    .submit-arrow {
+        transition: none;
+    }
+
+}
+
+
+/* =========================================
+   DISABLED SUBMIT
+========================================= */
+
+.login-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+</style>
+
+
+<script>
+
+/* =========================================
+   PASSWORD VISIBILITY
+========================================= */
+
+function togglePassword() {
+
+    const password = document.getElementById("password");
+    const icon = document.getElementById("passwordIcon");
+
+    if (!password || !icon) {
+        return;
+    }
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+
+    } else {
+
+        password.type = "password";
+
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+
+    }
+
+}
+
+
+/* =========================================
+   LOGIN SUBMIT PROTECTION
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+
+    if (!form || !button) {
+        return;
+    }
+
+    form.addEventListener("submit", function () {
+
+        if (!form.checkValidity()) {
+            return;
+        }
+
+        button.disabled = true;
+
+        button.innerHTML = `
+            <span>
+                <i class="fas fa-spinner fa-spin"></i>
+                Signing in...
+            </span>
+            <i class="fas fa-arrow-right"></i>
+        `;
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

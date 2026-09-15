@@ -1,0 +1,1910 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - College Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="student-dashboard">
+
+    <div class="dashboard-container">
+
+        <!-- =====================================================
+             WELCOME HEADER
+        ====================================================== -->
+        <div class="dashboard-header">
+
+            <div class="welcome-content">
+
+                <div class="welcome-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+
+                <div>
+                    <span class="dashboard-eyebrow">
+                        STUDENT DASHBOARD
+                    </span>
+
+                    <h1>
+                        Welcome,
+                        {{ session.get('name', 'Student') }}
+                        <span class="wave">👋</span>
+                    </h1>
+
+                    <p>
+                        Manage your registrations, payments, wishlist
+                        and college event activities from one place.
+                    </p>
+                </div>
+
+            </div>
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="browse-btn"
+            >
+                <i class="fas fa-compass"></i>
+                Explore Events
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             STATISTICS
+        ====================================================== -->
+
+        {% set total_registrations = registrations|length if registrations else 0 %}
+
+        {% set attended_count = registrations
+            |selectattr('status', 'equalto', 'Attended')
+            |list
+            |length if registrations else 0 %}
+
+        {% set pending_payment_count = registrations
+            |selectattr('payment_status', 'in', ['Pending', 'Submitted'])
+            |list
+            |length if registrations else 0 %}
+
+        {% set verified_payment_count = registrations
+            |selectattr('payment_status', 'equalto', 'Verified')
+            |list
+            |length if registrations else 0 %}
+
+
+        <div class="stats-grid">
+
+            <!-- Total Registrations -->
+            <div class="stat-card">
+
+                <div class="stat-icon registration-icon">
+                    <i class="fas fa-ticket"></i>
+                </div>
+
+                <div class="stat-content">
+                    <span>Total Registrations</span>
+                    <strong>{{ total_registrations }}</strong>
+                    <small>
+                        Events registered
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- Attended -->
+            <div class="stat-card">
+
+                <div class="stat-icon attended-icon">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+
+                <div class="stat-content">
+                    <span>Events Attended</span>
+                    <strong>{{ attended_count }}</strong>
+                    <small>
+                        Completed participation
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- Pending Payments -->
+            <div class="stat-card">
+
+                <div class="stat-icon payment-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+
+                <div class="stat-content">
+                    <span>Payment Pending</span>
+                    <strong>{{ pending_payment_count }}</strong>
+                    <small>
+                        Need attention
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- Verified Payments -->
+            <div class="stat-card">
+
+                <div class="stat-icon verified-icon">
+                    <i class="fas fa-shield-check"></i>
+                </div>
+
+                <div class="stat-content">
+                    <span>Payments Verified</span>
+                    <strong>{{ verified_payment_count }}</strong>
+                    <small>
+                        Successfully verified
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             QUICK ACTIONS
+        ====================================================== -->
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    QUICK ACCESS
+                </span>
+
+                <h2>Student Services</h2>
+
+                <p>
+                    Quickly access the most important features.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="quick-grid">
+
+            <!-- Browse Events -->
+            <a
+                href="{{ url_for('event_list') }}"
+                class="quick-card"
+            >
+                <div class="quick-icon purple">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+
+                <div>
+                    <h3>Browse Events</h3>
+                    <p>
+                        Discover seminars, workshops,
+                        competitions and other events.
+                    </p>
+                </div>
+
+                <i class="fas fa-arrow-right quick-arrow"></i>
+            </a>
+
+
+            <!-- Wishlist -->
+            <a
+                href="{{ url_for('wishlist') }}"
+                class="quick-card"
+            >
+                <div class="quick-icon pink">
+                    <i class="fas fa-heart"></i>
+                </div>
+
+                <div>
+                    <h3>My Wishlist</h3>
+                    <p>
+                        View events you have saved
+                        for later.
+                    </p>
+                </div>
+
+                <i class="fas fa-arrow-right quick-arrow"></i>
+            </a>
+
+
+            <!-- Calendar -->
+            <a
+                href="{{ url_for('calendar_view') }}"
+                class="quick-card"
+            >
+                <div class="quick-icon blue">
+                    <i class="fas fa-calendar-days"></i>
+                </div>
+
+                <div>
+                    <h3>Event Calendar</h3>
+                    <p>
+                        Check event dates and schedules
+                        in calendar view.
+                    </p>
+                </div>
+
+                <i class="fas fa-arrow-right quick-arrow"></i>
+            </a>
+
+
+            <!-- Leaderboard -->
+            <a
+                href="{{ url_for('leaderboard') }}"
+                class="quick-card"
+            >
+                <div class="quick-icon gold">
+                    <i class="fas fa-trophy"></i>
+                </div>
+
+                <div>
+                    <h3>Leaderboard</h3>
+                    <p>
+                        View student rankings and
+                        participation achievements.
+                    </p>
+                </div>
+
+                <i class="fas fa-arrow-right quick-arrow"></i>
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             REGISTRATIONS SECTION
+        ====================================================== -->
+
+        <div class="section-heading registrations-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    MY ACTIVITIES
+                </span>
+
+                <h2>My Event Registrations</h2>
+
+                <p>
+                    Track your registered events and payment status.
+                </p>
+            </div>
+
+            {% if registrations %}
+
+            <div class="registration-count">
+                <i class="fas fa-ticket"></i>
+
+                {{ total_registrations }}
+                Registration{% if total_registrations != 1 %}s{% endif %}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================================
+             REGISTRATION LIST
+        ====================================================== -->
+
+        {% if registrations %}
+
+        <div class="registration-list">
+
+            {% for r in registrations %}
+
+            <article class="registration-card">
+
+                <!-- Event Icon -->
+                <div class="event-symbol">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+
+
+                <!-- Event Information -->
+                <div class="event-info">
+
+                    <span class="event-label">
+                        REGISTERED EVENT
+                    </span>
+
+                    <h3>
+                        {{ r.event_name or 'Unknown Event' }}
+                    </h3>
+
+                    <div class="event-meta">
+
+                        <span>
+                            <i class="fas fa-calendar"></i>
+                            {{ r.event_date or 'Date TBA' }}
+                        </span>
+
+                        <span>
+                            <i class="fas fa-location-dot"></i>
+                            {{ r.venue or 'Venue TBA' }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Registration Status -->
+                <div class="status-column">
+
+                    <span class="status-label">
+                        Registration
+                    </span>
+
+                    {% if r.status == 'Attended' %}
+
+                        <span class="status-badge attended">
+                            <i class="fas fa-check"></i>
+                            Attended
+                        </span>
+
+                    {% elif r.status == 'Cancelled' %}
+
+                        <span class="status-badge cancelled">
+                            <i class="fas fa-xmark"></i>
+                            Cancelled
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge registered">
+                            <i class="fas fa-ticket"></i>
+                            {{ r.status or 'Registered' }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Payment Status -->
+                <div class="status-column">
+
+                    <span class="status-label">
+                        Payment
+                    </span>
+
+                    {% if r.payment_status == 'Verified' %}
+
+                        <span class="status-badge verified">
+                            <i class="fas fa-circle-check"></i>
+                            Verified
+                        </span>
+
+                    {% elif r.payment_status == 'Submitted' %}
+
+                        <span class="status-badge submitted">
+                            <i class="fas fa-hourglass-half"></i>
+                            Submitted
+                        </span>
+
+                    {% elif r.payment_status == 'Pending' %}
+
+                        <span class="status-badge pending">
+                            <i class="fas fa-clock"></i>
+                            Pending
+                        </span>
+
+                    {% elif r.payment_status == 'Rejected' %}
+
+                        <span class="status-badge rejected">
+                            <i class="fas fa-circle-xmark"></i>
+                            Rejected
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge free">
+                            <i class="fas fa-gift"></i>
+                            Free
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="event-actions">
+
+                    {% if r.payment_status in ['Pending', 'Rejected'] %}
+
+                        <button
+                            type="button"
+                            class="action-btn payment-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#paymentModal{{ r.id }}"
+                        >
+                            <i class="fas fa-cloud-arrow-up"></i>
+                            Upload Receipt
+                        </button>
+
+
+                        <!-- ==========================
+                             PAYMENT MODAL
+                        =========================== -->
+
+                        <div
+                            class="modal fade"
+                            id="paymentModal{{ r.id }}"
+                            tabindex="-1"
+                            aria-labelledby="paymentModalLabel{{ r.id }}"
+                            aria-hidden="true"
+                        >
+
+                            <div class="modal-dialog modal-dialog-centered">
+
+                                <div class="modal-content payment-modal">
+
+                                    <div class="modal-header">
+
+                                        <div>
+                                            <span class="modal-eyebrow">
+                                                PAYMENT
+                                            </span>
+
+                                            <h5
+                                                class="modal-title"
+                                                id="paymentModalLabel{{ r.id }}"
+                                            >
+                                                Upload Payment Receipt
+                                            </h5>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="btn-close btn-close-white"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close"
+                                        ></button>
+
+                                    </div>
+
+
+                                    <form
+                                        method="POST"
+                                        enctype="multipart/form-data"
+                                        action="{{ url_for('payment_launch', rid=r.id) }}"
+                                        class="receipt-form"
+                                    >
+
+                                        <div class="modal-body">
+
+                                            <div class="payment-event-info">
+
+                                                <div class="modal-event-icon">
+                                                    <i class="fas fa-receipt"></i>
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        {{ r.event_name or 'Event' }}
+                                                    </strong>
+
+                                                    <span>
+                                                        Upload your payment
+                                                        proof for verification.
+                                                    </span>
+                                                </div>
+
+                                            </div>
+
+
+                                            <label
+                                                for="receipt{{ r.id }}"
+                                                class="upload-area"
+                                            >
+
+                                                <i class="fas fa-cloud-arrow-up"></i>
+
+                                                <strong>
+                                                    Choose payment receipt
+                                                </strong>
+
+                                                <span>
+                                                    JPG, PNG or PDF
+                                                </span>
+
+                                                <input
+                                                    type="file"
+                                                    id="receipt{{ r.id }}"
+                                                    name="receipt"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    required
+                                                >
+
+                                            </label>
+
+
+                                            <div class="upload-note">
+
+                                                <i class="fas fa-circle-info"></i>
+
+                                                Make sure the receipt is clear
+                                                and the payment details are visible.
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="modal-footer">
+
+                                            <button
+                                                type="button"
+                                                class="modal-cancel"
+                                                data-bs-dismiss="modal"
+                                            >
+                                                Cancel
+                                            </button>
+
+                                            <button
+                                                type="submit"
+                                                class="modal-submit"
+                                            >
+                                                <i class="fas fa-paper-plane"></i>
+                                                Submit Receipt
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    {% elif r.status == 'Attended' %}
+
+                        <a
+                            href="{{ url_for('rate_event', eid=r.event_id) }}"
+                            class="action-btn rate-btn"
+                        >
+                            <i class="fas fa-star"></i>
+                            Rate Event
+                        </a>
+
+
+                    {% else %}
+
+                        <a
+                            href="{{ url_for('event_detail', eid=r.event_id) }}"
+                            class="action-btn view-btn"
+                        >
+                            <i class="fas fa-eye"></i>
+                            View Event
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- View All -->
+        <div class="view-events-wrap">
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="view-events-btn"
+            >
+                <i class="fas fa-calendar-plus"></i>
+                Discover More Events
+                <i class="fas fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =====================================================
+             EMPTY STATE
+        ====================================================== -->
+
+        <div class="empty-dashboard">
+
+            <div class="empty-icon">
+                <i class="fas fa-calendar-xmark"></i>
+            </div>
+
+            <span class="section-eyebrow">
+                NO ACTIVITY YET
+            </span>
+
+            <h3>No Event Registrations</h3>
+
+            <p>
+                You have not registered for any college events yet.
+                Explore upcoming events and start participating.
+            </p>
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="empty-action"
+            >
+                <i class="fas fa-compass"></i>
+                Explore Events
+            </a>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             STUDENT TIPS
+        ====================================================== -->
+
+        <div class="dashboard-tip">
+
+            <div class="tip-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+
+            <div>
+                <strong>Student Tip</strong>
+
+                <p>
+                    Keep checking the event calendar for upcoming
+                    seminars, workshops, competitions and campus activities.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+
+/* =========================================================
+   STUDENT DASHBOARD
+========================================================= */
+
+.student-dashboard {
+    min-height: calc(100vh - 80px);
+    padding: 50px 20px 70px;
+}
+
+.dashboard-container {
+    width: min(1200px, 100%);
+    margin: auto;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    margin-bottom: 30px;
+}
+
+.welcome-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.welcome-icon {
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,58,237,.25),
+            rgba(59,130,246,.18)
+        );
+
+    border: 1px solid rgba(167,139,250,.18);
+
+    color: #a78bfa;
+    font-size: 27px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.25);
+}
+
+.dashboard-eyebrow,
+.section-eyebrow {
+    display: block;
+
+    color: #a78bfa;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 1.8px;
+}
+
+.dashboard-header h1 {
+    margin: 5px 0;
+
+    color: #f8fafc;
+
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 900;
+}
+
+.wave {
+    display: inline-block;
+}
+
+.dashboard-header p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+.browse-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 13px 18px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    box-shadow:
+        0 12px 30px rgba(79,70,229,.22);
+
+    transition: .2s ease;
+}
+
+.browse-btn:hover {
+    color: white;
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 45px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.90),
+            rgba(30,41,59,.72)
+        );
+
+    border: 1px solid rgba(148,163,184,.12);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.20);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 19px;
+}
+
+.registration-icon {
+    background: rgba(139,92,246,.13);
+    color: #a78bfa;
+}
+
+.attended-icon {
+    background: rgba(34,197,94,.11);
+    color: #4ade80;
+}
+
+.payment-icon {
+    background: rgba(245,158,11,.11);
+    color: #fbbf24;
+}
+
+.verified-icon {
+    background: rgba(59,130,246,.11);
+    color: #60a5fa;
+}
+
+.stat-content span {
+    display: block;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.stat-content strong {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #f8fafc;
+
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.stat-content small {
+    color: #64748b;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+.section-heading h2 {
+    margin: 5px 0;
+
+    color: #f8fafc;
+
+    font-size: 23px;
+    font-weight: 850;
+}
+
+.section-heading p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.registrations-heading {
+    margin-top: 48px;
+}
+
+.registration-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    border-radius: 10px;
+
+    background: rgba(124,58,237,.10);
+
+    border: 1px solid rgba(139,92,246,.18);
+
+    color: #c4b5fd;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.quick-card {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background:
+        rgba(15,23,42,.75);
+
+    border: 1px solid rgba(148,163,184,.11);
+
+    text-decoration: none;
+
+    transition: .22s ease;
+}
+
+.quick-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(139,92,246,.30);
+
+    background:
+        rgba(30,41,59,.82);
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.24);
+}
+
+.quick-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 18px;
+}
+
+.quick-icon.purple {
+    background: rgba(139,92,246,.13);
+    color: #a78bfa;
+}
+
+.quick-icon.pink {
+    background: rgba(236,72,153,.12);
+    color: #f472b6;
+}
+
+.quick-icon.blue {
+    background: rgba(59,130,246,.12);
+    color: #60a5fa;
+}
+
+.quick-icon.gold {
+    background: rgba(245,158,11,.12);
+    color: #fbbf24;
+}
+
+.quick-card h3 {
+    margin: 0 0 4px;
+
+    color: #f1f5f9;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.quick-card p {
+    margin: 0;
+
+    max-width: 430px;
+
+    color: #64748b;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.quick-arrow {
+    margin-left: auto;
+
+    color: #475569;
+
+    transition: .2s ease;
+}
+
+.quick-card:hover .quick-arrow {
+    color: #a78bfa;
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   REGISTRATION CARDS
+========================================================= */
+
+.registration-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.registration-card {
+    display: grid;
+
+    grid-template-columns:
+        auto minmax(200px, 1fr)
+        auto auto auto;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 19px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.92),
+            rgba(30,41,59,.72)
+        );
+
+    border: 1px solid rgba(148,163,184,.12);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.18);
+
+    transition: .2s ease;
+}
+
+.registration-card:hover {
+    border-color: rgba(139,92,246,.25);
+    transform: translateY(-2px);
+}
+
+.event-symbol {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: rgba(124,58,237,.12);
+
+    color: #a78bfa;
+
+    font-size: 18px;
+}
+
+.event-label,
+.status-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.2px;
+}
+
+.event-info h3 {
+    margin: 0 0 9px;
+
+    color: #f1f5f9;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.event-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.event-meta i {
+    color: #8b5cf6;
+}
+
+.status-column {
+    min-width: 100px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.status-badge.attended,
+.status-badge.verified {
+    background: rgba(34,197,94,.10);
+    color: #4ade80;
+}
+
+.status-badge.cancelled,
+.status-badge.rejected {
+    background: rgba(239,68,68,.10);
+    color: #f87171;
+}
+
+.status-badge.registered {
+    background: rgba(59,130,246,.10);
+    color: #60a5fa;
+}
+
+.status-badge.submitted {
+    background: rgba(245,158,11,.10);
+    color: #fbbf24;
+}
+
+.status-badge.pending {
+    background: rgba(239,68,68,.10);
+    color: #f87171;
+}
+
+.status-badge.free {
+    background: rgba(100,116,139,.12);
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.action-btn {
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 0 12px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    border: 1px solid transparent;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.payment-btn {
+    background: rgba(124,58,237,.13);
+    border-color: rgba(139,92,246,.20);
+    color: #c4b5fd;
+}
+
+.payment-btn:hover {
+    background: rgba(124,58,237,.22);
+    color: white;
+}
+
+.rate-btn {
+    background: rgba(245,158,11,.12);
+    border-color: rgba(245,158,11,.18);
+    color: #fbbf24;
+}
+
+.rate-btn:hover {
+    color: #fcd34d;
+}
+
+.view-btn {
+    background: rgba(59,130,246,.10);
+    border-color: rgba(59,130,246,.16);
+    color: #60a5fa;
+}
+
+.view-btn:hover {
+    color: #93c5fd;
+}
+
+
+/* =========================================================
+   VIEW MORE
+========================================================= */
+
+.view-events-wrap {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 22px;
+}
+
+.view-events-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 11px 17px;
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.04);
+
+    border: 1px solid rgba(255,255,255,.09);
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    transition: .2s ease;
+}
+
+.view-events-btn:hover {
+    color: white;
+    background: rgba(255,255,255,.07);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-dashboard {
+    padding: 55px 25px;
+
+    text-align: center;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.90),
+            rgba(30,41,59,.70)
+        );
+
+    border: 1px dashed rgba(148,163,184,.18);
+}
+
+.empty-icon {
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    border-radius: 20px;
+
+    background: rgba(139,92,246,.10);
+
+    color: #a78bfa;
+
+    font-size: 27px;
+}
+
+.empty-dashboard h3 {
+    margin: 8px 0;
+
+    color: #f1f5f9;
+
+    font-size: 20px;
+    font-weight: 850;
+}
+
+.empty-dashboard p {
+    max-width: 520px;
+
+    margin: 0 auto 20px;
+
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.empty-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border-radius: 10px;
+
+    background: #7c3aed;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.empty-action:hover {
+    color: white;
+    background: #6d28d9;
+}
+
+
+/* =========================================================
+   PAYMENT MODAL
+========================================================= */
+
+.payment-modal {
+    background:
+        linear-gradient(
+            145deg,
+            #0f172a,
+            #1e293b
+        );
+
+    border: 1px solid rgba(148,163,184,.15);
+
+    border-radius: 20px;
+
+    color: #fff;
+}
+
+.payment-modal .modal-header {
+    padding: 20px 22px;
+
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.modal-eyebrow {
+    color: #a78bfa;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.payment-modal .modal-title {
+    margin-top: 4px;
+
+    color: #f8fafc;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.payment-modal .modal-body {
+    padding: 22px;
+}
+
+.payment-event-info {
+    display: flex;
+    gap: 12px;
+
+    padding: 14px;
+
+    margin-bottom: 18px;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,.035);
+
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.modal-event-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    background: rgba(139,92,246,.12);
+
+    color: #a78bfa;
+}
+
+.payment-event-info strong {
+    display: block;
+
+    color: #e2e8f0;
+
+    font-size: 13px;
+}
+
+.payment-event-info span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* Upload Area */
+
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 150px;
+
+    padding: 25px;
+
+    border: 1px dashed rgba(139,92,246,.35);
+
+    border-radius: 15px;
+
+    background: rgba(139,92,246,.045);
+
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.upload-area:hover {
+    background: rgba(139,92,246,.08);
+
+    border-color: rgba(139,92,246,.60);
+}
+
+.upload-area > i {
+    margin-bottom: 10px;
+
+    color: #a78bfa;
+
+    font-size: 27px;
+}
+
+.upload-area strong {
+    color: #e2e8f0;
+
+    font-size: 13px;
+}
+
+.upload-area span {
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+.upload-area input {
+    margin-top: 13px;
+
+    max-width: 100%;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.upload-note {
+    display: flex;
+    gap: 8px;
+
+    margin-top: 12px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+}
+
+.upload-note i {
+    color: #60a5fa;
+}
+
+
+/* Modal Footer */
+
+.payment-modal .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+
+    padding: 16px 22px;
+
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.modal-cancel,
+.modal-submit {
+    min-height: 40px;
+
+    padding: 0 14px;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.modal-cancel {
+    border: 1px solid rgba(148,163,184,.15);
+
+    background: rgba(255,255,255,.04);
+
+    color: #94a3b8;
+}
+
+.modal-submit {
+    border: 1px solid rgba(139,92,246,.35);
+
+    background: #7c3aed;
+
+    color: white;
+}
+
+
+/* =========================================================
+   TIP
+========================================================= */
+
+.dashboard-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+
+    margin-top: 25px;
+    padding: 17px;
+
+    border-radius: 15px;
+
+    background: rgba(59,130,246,.045);
+
+    border: 1px solid rgba(59,130,246,.10);
+}
+
+.tip-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: rgba(59,130,246,.10);
+
+    color: #60a5fa;
+}
+
+.dashboard-tip strong {
+    display: block;
+
+    color: #dbeafe;
+
+    font-size: 12px;
+}
+
+.dashboard-tip p {
+    margin: 3px 0 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .registration-card {
+        grid-template-columns:
+            auto 1fr
+            auto auto;
+    }
+
+    .event-actions {
+        grid-column: 2 / -1;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .student-dashboard {
+        padding: 35px 14px 50px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .browse-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .quick-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-card {
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+    }
+
+    .status-column {
+        grid-column: 2;
+    }
+
+    .event-actions {
+        grid-column: 1 / -1;
+    }
+
+    .event-actions .action-btn {
+        width: 100%;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .welcome-content {
+        align-items: flex-start;
+    }
+
+    .welcome-icon {
+        width: 52px;
+        height: 52px;
+
+        border-radius: 15px;
+
+        font-size: 21px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 26px;
+    }
+
+    .dashboard-header p {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .section-heading {
+        flex-direction: column;
+    }
+
+    .registration-count {
+        align-self: flex-start;
+    }
+
+    .registration-card {
+        grid-template-columns: 1fr;
+    }
+
+    .event-symbol {
+        width: 42px;
+        height: 42px;
+    }
+
+    .status-column {
+        grid-column: auto;
+    }
+
+    .event-actions {
+        grid-column: auto;
+    }
+
+    .event-meta {
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .dashboard-tip {
+        align-items: flex-start;
+    }
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   RECEIPT FILE VALIDATION
+========================================================= */
+
+document.querySelectorAll(
+    'input[type="file"][name="receipt"]'
+).forEach(function (input) {
+
+    input.addEventListener("change", function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+        ];
+
+        const maxSize = 5 * 1024 * 1024;
+
+        if (!allowedTypes.includes(file.type)) {
+
+            alert(
+                "Invalid file type. Please upload JPG, PNG or PDF."
+            );
+
+            this.value = "";
+
+            return;
+        }
+
+        if (file.size > maxSize) {
+
+            alert(
+                "File size is too large. Maximum allowed size is 5 MB."
+            );
+
+            this.value = "";
+
+            return;
+        }
+
+    });
+
+});
+
+
+/* =========================================================
+   PAYMENT FORM SUBMIT
+========================================================= */
+
+document.querySelectorAll(".receipt-form").forEach(function (form) {
+
+    form.addEventListener("submit", function () {
+
+        const button = form.querySelector(".modal-submit");
+
+        if (button) {
+
+            button.disabled = true;
+
+            button.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

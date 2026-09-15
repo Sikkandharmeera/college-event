@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}My Wishlist - College Events Hub{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Wishlist</h1>
+
+        <a href="{{ url_for('event_list') }}" class="btn btn-outline-primary">
+            <i class="fas fa-search"></i>
+            Browse Events
+        </a>
+    </div>
+
+    {% if wishlist_items %}
+
+        <div class="row">
+
+            {% for event in wishlist_items %}
+
+                <div class="col-md-6 col-lg-4 mb-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <!-- Event Image -->
+                        {% if event.banner %}
+
+                            <img
+                                src="{{ url_for('static', filename=event.banner) }}"
+                                class="card-img-top"
+                                alt="{{ event.event_name }}"
+                                style="height: 200px; object-fit: cover;"
+                                loading="lazy"
+                            >
+
+                        {% else %}
+
+                            <div
+                                class="d-flex align-items-center justify-content-center bg-light"
+                                style="height: 200px;"
+                            >
+                                <i class="fas fa-calendar-alt fa-4x text-muted"></i>
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Event Details -->
+                        <div class="card-body d-flex flex-column">
+
+                            <h5 class="card-title">
+                                {{ event.event_name or 'Untitled Event' }}
+                            </h5>
+
+
+                            {% if event.category_name %}
+
+                                <p class="text-muted small mb-2">
+                                    <i class="fas fa-tag"></i>
+                                    {{ event.category_name }}
+                                </p>
+
+                            {% endif %}
+
+
+                            <!-- Description -->
+                            <p class="card-text">
+
+                                {% if event.description %}
+
+                                    {{ event.description[:100] }}
+
+                                    {% if event.description|length > 100 %}
+                                        ...
+                                    {% endif %}
+
+                                {% else %}
+
+                                    No description available.
+
+                                {% endif %}
+
+                            </p>
+
+
+                            <!-- Event Information -->
+                            <ul class="list-unstyled small mb-3">
+
+                                <li class="mb-2">
+                                    <i class="fas fa-calendar text-primary"></i>
+
+                                    <strong>Date:</strong>
+                                    {{ event.event_date or 'Date TBA' }}
+                                </li>
+
+
+                                <li class="mb-2">
+                                    <i class="fas fa-map-marker-alt text-danger"></i>
+
+                                    <strong>Venue:</strong>
+                                    {{ event.venue or 'Venue TBA' }}
+                                </li>
+
+
+                                <li class="mb-2">
+                                    <i class="fas fa-rupee-sign text-success"></i>
+
+                                    <strong>Fee:</strong>
+
+                                    {% if event.registration_fee is not none %}
+
+                                        ₹{{ event.registration_fee }}
+
+                                    {% else %}
+
+                                        Free
+
+                                    {% endif %}
+
+                                </li>
+
+                            </ul>
+
+
+                            <!-- Buttons -->
+                            <div class="mt-auto d-flex gap-2">
+
+                                <a
+                                    href="{{ url_for('event_detail', eid=event.id) }}"
+                                    class="btn btn-primary btn-sm flex-grow-1"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('wishlist_remove', eid=event.id) }}"
+                                    onsubmit="return confirm('Remove this event from your wishlist?');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        title="Remove from wishlist"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                        Remove
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <!-- Empty Wishlist -->
+        <div class="alert alert-info text-center py-5">
+
+            <i class="fas fa-heart fa-3x mb-3"></i>
+
+            <h4>Your Wishlist is Empty</h4>
+
+            <p class="mb-3">
+                You haven't added any events to your wishlist yet.
+            </p>
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="btn btn-primary"
+            >
+                <i class="fas fa-search"></i>
+                Browse Events
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

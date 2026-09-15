@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Home Page - College Events Hub
+{% endblock %}
+
+{% block content %}
+
+<section class="form">
+
+    <form
+        class="card wide"
+        method="POST"
+        action="{{ url_for('admin_home') }}"
+    >
+
+        <h1>Edit Home Page</h1>
+
+        <!-- Small Heading -->
+        <label>
+            Small Heading
+
+            <input
+                type="text"
+                name="hero_small"
+                value="{{ home.hero_small if home else 'SHREE VENKATESHWARA COLLEGE EVENT MANAGEMENT' }}"
+                required
+            >
+        </label>
+
+
+        <!-- Main Title -->
+        <label>
+            Main Title
+
+            <textarea
+                name="hero_title"
+                rows="2"
+                required
+            >{{ home.hero_title if home else 'Discover. Participate. Achieve.' }}</textarea>
+
+        </label>
+
+
+        <!-- Description -->
+        <label>
+            Description
+
+            <textarea
+                name="hero_description"
+                rows="4"
+                required
+            >{{ home.hero_description if home else 'One attractive platform for seminars, webinars, conferences, workshops and inter-college competitions at SVASC College.' }}</textarea>
+
+        </label>
+
+
+        <!-- Button Text -->
+        <label>
+            Button Text
+
+            <input
+                type="text"
+                name="hero_button_text"
+                value="{{ home.hero_button_text if home else 'Explore Events' }}"
+                required
+            >
+        </label>
+
+
+        <!-- Button Link -->
+        <label>
+            Button Link
+
+            <input
+                type="text"
+                name="hero_button_link"
+                value="{{ home.hero_button_link if home else url_for('event_list') }}"
+                required
+            >
+        </label>
+
+
+        <!-- Submit -->
+        <button
+            class="btn btn-primary"
+            type="submit"
+        >
+            Save Home Content
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

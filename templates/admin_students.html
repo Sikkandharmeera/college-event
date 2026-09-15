@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Students - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section admin-students-page">
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+    <div class="students-page-header">
+
+        <div class="students-header-content">
+
+            <div class="students-header-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+
+            <div>
+                <span class="students-eyebrow">
+                    ADMIN PANEL
+                </span>
+
+                <h1>Manage Students</h1>
+
+                <p>
+                    View, monitor, and manage all students registered
+                    in the Campus Events Hub.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="students-header-actions">
+
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="students-btn students-btn-secondary">
+
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SUMMARY CARDS
+    ========================== -->
+    <div class="student-stats-grid">
+
+        <!-- Total Students -->
+        <div class="student-stat-card">
+
+            <div class="student-stat-icon students-total-icon">
+                <i class="fas fa-users"></i>
+            </div>
+
+            <div class="student-stat-content">
+
+                <span class="student-stat-label">
+                    Total Students
+                </span>
+
+                <strong class="student-stat-number">
+                    {{ students|length }}
+                </strong>
+
+                <small>
+                    Registered students
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- Student Records -->
+        <div class="student-stat-card">
+
+            <div class="student-stat-icon students-record-icon">
+                <i class="fas fa-id-card"></i>
+            </div>
+
+            <div class="student-stat-content">
+
+                <span class="student-stat-label">
+                    Student Records
+                </span>
+
+                <strong class="student-stat-number">
+                    {{ students|length }}
+                </strong>
+
+                <small>
+                    Available in system
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- Management -->
+        <div class="student-stat-card">
+
+            <div class="student-stat-icon students-management-icon">
+                <i class="fas fa-user-cog"></i>
+            </div>
+
+            <div class="student-stat-content">
+
+                <span class="student-stat-label">
+                    Management
+                </span>
+
+                <strong class="student-stat-number">
+                    ACTIVE
+                </strong>
+
+                <small>
+                    Student management enabled
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         STUDENTS TABLE
+    ========================== -->
+    <div class="students-management-card">
+
+        <!-- Card Header -->
+        <div class="students-card-header">
+
+            <div class="students-card-title">
+
+                <div class="students-card-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+
+                <div>
+                    <span class="card-eyebrow">
+                        STUDENT DIRECTORY
+                    </span>
+
+                    <h5>
+                        Registered Students
+                    </h5>
+
+                    <p>
+                        Complete list of students registered
+                        with the event management system.
+                    </p>
+                </div>
+
+            </div>
+
+            {% if students %}
+
+            <div class="students-count-badge">
+
+                <i class="fas fa-users"></i>
+
+                {{ students|length }}
+
+                {% if students|length == 1 %}
+                    Student
+                {% else %}
+                    Students
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Card Body -->
+        <div class="students-card-body">
+
+            {% if students %}
+
+            <div class="table-responsive">
+
+                <table class="table students-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Student</th>
+
+                            <th>Email</th>
+
+                            <th>Register No.</th>
+
+                            <th>College</th>
+
+                            <th>Department</th>
+
+                            <th>Course</th>
+
+                            <th>Year / Semester</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for s in students %}
+
+                        <tr>
+
+                            <!-- Serial Number -->
+                            <td>
+
+                                <span class="student-number">
+                                    {{ loop.index }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- Student -->
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+
+                                        {{ (s.full_name or 'S')[:1]|upper }}
+
+                                    </div>
+
+                                    <div class="student-details">
+
+                                        <strong>
+                                            {{ s.full_name or 'Unknown Student' }}
+                                        </strong>
+
+                                        <small>
+                                            Student ID:
+                                            {{ s.id }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- Email -->
+                            <td>
+
+                                <div class="student-email">
+
+                                    <i class="fas fa-envelope"></i>
+
+                                    <span>
+                                        {{ s.email or '-' }}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- Register Number -->
+                            <td>
+
+                                {% if s.register_number %}
+
+                                <span class="register-badge">
+
+                                    <i class="fas fa-id-badge"></i>
+
+                                    {{ s.register_number }}
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="not-available">
+                                    Not Available
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- College -->
+                            <td>
+
+                                <div class="college-info">
+
+                                    <i class="fas fa-building"></i>
+
+                                    <span>
+                                        {{ s.college_name or '-' }}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- Department -->
+                            <td>
+
+                                {% if s.department %}
+
+                                <span class="info-badge">
+                                    {{ s.department }}
+                                </span>
+
+                                {% else %}
+
+                                <span class="not-available">
+                                    -
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Course -->
+                            <td>
+
+                                {% if s.course %}
+
+                                <span class="info-badge">
+                                    {{ s.course }}
+                                </span>
+
+                                {% else %}
+
+                                <span class="not-available">
+                                    -
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Year / Semester -->
+                            <td>
+
+                                {% if s.year_semester %}
+
+                                <span class="semester-badge">
+
+                                    <i class="fas fa-graduation-cap"></i>
+
+                                    {{ s.year_semester }}
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="not-available">
+                                    -
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Action -->
+                            <td>
+
+                                <form method="POST"
+                                      action="{{ url_for('admin_student_delete', sid=s.id) }}"
+                                      onsubmit="return confirmStudentDelete({{ (s.full_name or 'this student')|tojson }});"
+                                      class="student-delete-form">
+
+                                    <button type="submit"
+                                            class="student-delete-btn">
+
+                                        <i class="fas fa-trash-alt"></i>
+
+                                        <span>Delete</span>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Table Footer -->
+            <div class="students-table-footer">
+
+                <div class="students-footer-info">
+
+                    <i class="fas fa-info-circle"></i>
+
+                    <span>
+                        Showing all registered students
+                    </span>
+
+                </div>
+
+                <div class="students-total-display">
+
+                    Total:
+                    <strong>{{ students|length }}</strong>
+
+                </div>
+
+            </div>
+
+
+            {% else %}
+
+            <!-- =========================
+                 EMPTY STATE
+            ========================== -->
+
+            <div class="students-empty-state">
+
+                <div class="empty-student-icon">
+
+                    <i class="fas fa-user-slash"></i>
+
+                </div>
+
+                <span class="empty-eyebrow">
+                    STUDENT DIRECTORY
+                </span>
+
+                <h3>
+                    No Students Found
+                </h3>
+
+                <p>
+                    There are currently no registered students
+                    in the Campus Events Hub.
+                </p>
+
+                <a href="{{ url_for('admin_dashboard') }}"
+                   class="empty-back-btn">
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    Back to Dashboard
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     DELETE CONFIRMATION
+========================== -->
+<script>
+
+function confirmStudentDelete(studentName) {
+
+    return confirm(
+        "Are you sure you want to remove " +
+        studentName +
+        " from the student records?\n\n" +
+        "This action cannot be undone."
+    );
+
+}
+
+</script>
+
+{% endblock %}

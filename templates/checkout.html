@@ -1,0 +1,3598 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Checkout - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section payment-page">
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="payment-page-header">
+
+        <div class="payment-header-content">
+
+            <div class="payment-header-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+
+            <div>
+
+                <span class="payment-eyebrow">
+                    <i class="fas fa-lock"></i>
+                    Secure Payment
+                </span>
+
+                <h1>Payment Checkout</h1>
+
+                <p>
+                    Review your event registrations, complete the UPI payment,
+                    and upload your payment receipt for verification.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="secure-badge">
+
+            <i class="fas fa-shield-halved"></i>
+
+            Secure Checkout
+
+        </div>
+
+    </div>
+
+
+    {% if payments %}
+
+    <!-- =========================================
+         PAYMENT SUMMARY CARDS
+    ========================================== -->
+
+    <div class="payment-stats-grid">
+
+        <div class="payment-stat-card">
+
+            <div class="payment-stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+
+            <div>
+
+                <span class="payment-stat-label">
+                    Selected Events
+                </span>
+
+                <strong>
+                    {{ payments|length }}
+                </strong>
+
+                <small>
+                    Registration{{ '' if payments|length == 1 else 's' }}
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-stat-card">
+
+            <div class="payment-stat-icon amount-icon">
+                <i class="fas fa-indian-rupee-sign"></i>
+            </div>
+
+            <div>
+
+                <span class="payment-stat-label">
+                    Total Amount
+                </span>
+
+                <strong>
+                    ₹{{ "%.2f"|format(total|float) }}
+                </strong>
+
+                <small>
+                    Amount payable
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-stat-card">
+
+            <div class="payment-stat-icon receipt-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+
+            <div>
+
+                <span class="payment-stat-label">
+                    Receipt
+                </span>
+
+                <strong>
+                    Required
+                </strong>
+
+                <small>
+                    Upload after payment
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-stat-card">
+
+            <div class="payment-stat-icon secure-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <div>
+
+                <span class="payment-stat-label">
+                    Payment Method
+                </span>
+
+                <strong>
+                    UPI
+                </strong>
+
+                <small>
+                    QR / UPI payment
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         PAYMENT STEPS
+    ========================================== -->
+
+    <div class="payment-steps">
+
+        <div class="payment-step active">
+
+            <div class="step-number">
+                1
+            </div>
+
+            <div>
+                <strong>Review</strong>
+                <span>Check registrations</span>
+            </div>
+
+        </div>
+
+
+        <div class="step-line"></div>
+
+
+        <div class="payment-step">
+
+            <div class="step-number">
+                2
+            </div>
+
+            <div>
+                <strong>Pay</strong>
+                <span>Scan the QR code</span>
+            </div>
+
+        </div>
+
+
+        <div class="step-line"></div>
+
+
+        <div class="payment-step">
+
+            <div class="step-number">
+                3
+            </div>
+
+            <div>
+                <strong>Upload</strong>
+                <span>Submit receipt</span>
+            </div>
+
+        </div>
+
+
+        <div class="step-line"></div>
+
+
+        <div class="payment-step">
+
+            <div class="step-number">
+                4
+            </div>
+
+            <div>
+                <strong>Verify</strong>
+                <span>Await confirmation</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         MAIN PAYMENT CARD
+    ========================================== -->
+
+    <div class="payment-main-card">
+
+        <!-- =====================================
+             SELECTED EVENTS
+        ====================================== -->
+
+        <div class="payment-section">
+
+            <div class="section-title-row">
+
+                <div class="section-title-icon">
+                    <i class="fas fa-ticket"></i>
+                </div>
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        Registration Summary
+                    </span>
+
+                    <h2>Selected Events</h2>
+
+                    <p>
+                        Review the events included in this payment.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="payment-table-wrapper">
+
+                <table class="payment-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Event</th>
+
+                            <th>Date</th>
+
+                            <th>Amount</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for p in payments %}
+
+                        <tr>
+
+                            <td>
+
+                                <span class="payment-row-number">
+                                    {{ loop.index }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="payment-event-info">
+
+                                    <div class="payment-event-icon">
+                                        <i class="fas fa-calendar-star"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ p.event_name or 'Event' }}
+                                        </strong>
+
+                                        <span>
+                                            College Event Registration
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="payment-date">
+
+                                    <i class="fas fa-calendar-day"></i>
+
+                                    <span>
+                                        {{ p.event_date or 'Date TBA' }}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <strong class="payment-amount">
+                                    ₹{{ "%.2f"|format(p.amount|float) }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                {% if p.status == 'Pending' %}
+
+                                    <span class="payment-status pending">
+
+                                        <i class="fas fa-clock"></i>
+
+                                        Pending
+
+                                    </span>
+
+                                {% elif p.status == 'Rejected' %}
+
+                                    <span class="payment-status rejected">
+
+                                        <i class="fas fa-circle-xmark"></i>
+
+                                        Rejected
+
+                                    </span>
+
+                                {% elif p.status == 'Submitted' %}
+
+                                    <span class="payment-status submitted">
+
+                                        <i class="fas fa-paper-plane"></i>
+
+                                        Submitted
+
+                                    </span>
+
+                                {% elif p.status == 'Verified' %}
+
+                                    <span class="payment-status verified">
+
+                                        <i class="fas fa-circle-check"></i>
+
+                                        Verified
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="payment-status">
+
+                                        <i class="fas fa-circle-info"></i>
+
+                                        {{ p.status or 'Pending' }}
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- TOTAL -->
+
+            <div class="payment-total">
+
+                <div>
+
+                    <span>
+                        Total Payable Amount
+                    </span>
+
+                    <small>
+                        For {{ payments|length }} selected event{{ '' if payments|length == 1 else 's' }}
+                    </small>
+
+                </div>
+
+                <strong>
+                    ₹{{ "%.2f"|format(total|float) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             PAYMENT INSTRUCTIONS
+        ====================================== -->
+
+        <div class="payment-instructions">
+
+            <div class="instruction-icon">
+                <i class="fas fa-circle-info"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    How to complete your payment
+                </strong>
+
+                <p>
+                    Open your preferred UPI application, scan the QR code,
+                    verify the amount and complete the payment. After payment,
+                    upload the transaction receipt below.
+                </p>
+
+                <div class="upi-apps">
+
+                    <span>
+                        <i class="fas fa-mobile-screen-button"></i>
+                        Google Pay
+                    </span>
+
+                    <span>
+                        <i class="fas fa-mobile-screen-button"></i>
+                        PhonePe
+                    </span>
+
+                    <span>
+                        <i class="fas fa-mobile-screen-button"></i>
+                        Paytm
+                    </span>
+
+                    <span>
+                        <i class="fas fa-wallet"></i>
+                        Other UPI
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             QR PAYMENT
+        ====================================== -->
+
+        {% if qr_images %}
+
+        <div class="payment-section qr-section">
+
+            <div class="section-title-row">
+
+                <div class="section-title-icon qr-title-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        UPI Payment
+                    </span>
+
+                    <h2>Scan to Pay</h2>
+
+                    <p>
+                        Scan the QR code using your UPI application.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="qr-payment-layout">
+
+                <div class="qr-payment-info">
+
+                    <div class="qr-instruction-list">
+
+                        <div class="qr-instruction">
+
+                            <span>1</span>
+
+                            <div>
+                                <strong>Open UPI App</strong>
+                                <p>
+                                    Open Google Pay, PhonePe, Paytm or another UPI app.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="qr-instruction">
+
+                            <span>2</span>
+
+                            <div>
+                                <strong>Scan QR Code</strong>
+                                <p>
+                                    Scan the payment QR code displayed here.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="qr-instruction">
+
+                            <span>3</span>
+
+                            <div>
+                                <strong>Verify Amount</strong>
+                                <p>
+                                    Make sure the payment amount matches the total shown above.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="qr-instruction">
+
+                            <span>4</span>
+
+                            <div>
+                                <strong>Complete Payment</strong>
+                                <p>
+                                    Complete the UPI transaction and save your receipt.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="qr-container">
+
+                    {% for qr in qr_images %}
+
+                        {% if qr %}
+
+                        <div class="qr-item">
+
+                            <div class="qr-frame">
+
+                                <img
+                                    src="{{ url_for('static', filename=qr) }}"
+                                    alt="UPI Payment QR Code"
+                                    class="qr-code"
+                                >
+
+                            </div>
+
+                            <div class="qr-label">
+
+                                <i class="fas fa-qrcode"></i>
+
+                                UPI Payment QR
+
+                            </div>
+
+                        </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            {% if merchant_upi_id %}
+
+            <div class="upi-details">
+
+                <div class="upi-details-icon">
+                    <i class="fas fa-at"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Merchant UPI ID
+                    </span>
+
+                    <strong>
+                        {{ merchant_upi_id }}
+                    </strong>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="copy-upi-btn"
+                    onclick="copyUPI()"
+                >
+
+                    <i class="fas fa-copy"></i>
+
+                    Copy
+
+                </button>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% else %}
+
+        <div class="qr-unavailable">
+
+            <div class="qr-warning-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    Payment QR code unavailable
+                </strong>
+
+                <p>
+                    Please contact the event coordinator for the correct
+                    payment details before making a payment.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =====================================
+             RECEIPT UPLOAD
+        ====================================== -->
+
+        <div class="payment-section receipt-section">
+
+            <div class="section-title-row">
+
+                <div class="section-title-icon receipt-title-icon">
+                    <i class="fas fa-file-arrow-up"></i>
+                </div>
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        Payment Confirmation
+                    </span>
+
+                    <h2>Upload Payment Receipt</h2>
+
+                    <p>
+                        Upload the receipt after successfully completing your payment.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                class="checkout-form"
+                method="post"
+                enctype="multipart/form-data"
+                action="{{ url_for('payment_launch_batch') }}"
+                id="payment-form"
+            >
+
+                <input
+                    type="hidden"
+                    name="registration_ids"
+                    value="{{ registration_ids }}"
+                >
+
+
+                <!-- FILE UPLOAD -->
+
+                <div class="receipt-upload-area">
+
+                    <label
+                        for="receipt-input"
+                        class="receipt-dropzone"
+                        id="receipt-dropzone"
+                    >
+
+                        <div class="upload-icon">
+
+                            <i class="fas fa-cloud-arrow-up"></i>
+
+                        </div>
+
+                        <div class="upload-content">
+
+                            <strong>
+                                Choose your payment receipt
+                            </strong>
+
+                            <span>
+                                Click here to browse your files
+                            </span>
+
+                            <small>
+                                JPG, JPEG or PDF • Maximum 5 MB
+                            </small>
+
+                        </div>
+
+                        <div class="upload-browse">
+                            Browse File
+                        </div>
+
+                    </label>
+
+
+                    <input
+                        id="receipt-input"
+                        type="file"
+                        name="receipt"
+                        accept=".jpg,.jpeg,.pdf,image/jpeg,application/pdf"
+                        required
+                        hidden
+                    >
+
+
+                    <!-- SELECTED FILE -->
+
+                    <div
+                        id="file-info"
+                        class="selected-file"
+                        style="display:none;"
+                    >
+
+                        <div class="selected-file-icon">
+                            <i class="fas fa-file-circle-check"></i>
+                        </div>
+
+                        <div class="selected-file-details">
+
+                            <span>
+                                Selected Receipt
+                            </span>
+
+                            <strong id="file-name">
+                                -
+                            </strong>
+
+                            <small id="file-size">
+                                -
+                            </small>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="remove-file-btn"
+                            id="remove-file-btn"
+                            aria-label="Remove selected file"
+                        >
+
+                            <i class="fas fa-xmark"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM HELP -->
+
+                <div class="receipt-help-grid">
+
+                    <div class="receipt-help">
+
+                        <i class="fas fa-file-image"></i>
+
+                        <div>
+                            <strong>Supported Files</strong>
+                            <span>JPG, JPEG and PDF</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="receipt-help">
+
+                        <i class="fas fa-weight-hanging"></i>
+
+                        <div>
+                            <strong>Maximum Size</strong>
+                            <span>5 MB per receipt</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="receipt-help">
+
+                        <i class="fas fa-shield-halved"></i>
+
+                        <div>
+                            <strong>Secure Upload</strong>
+                            <span>Used for payment verification</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    id="pay-btn"
+                    class="submit-payment-btn"
+                    type="submit"
+                    disabled
+                >
+
+                    <span class="submit-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </span>
+
+                    <span class="submit-text">
+                        Submit Payment Receipt
+                    </span>
+
+                    <i class="fas fa-arrow-right submit-arrow"></i>
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================
+             SECURITY NOTICE
+        ====================================== -->
+
+        <div class="security-notice">
+
+            <div class="security-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    Payment Verification
+                </strong>
+
+                <p>
+                    Your uploaded receipt will be reviewed by the event
+                    coordinator or administrator. Please make sure the
+                    receipt clearly shows the transaction details.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- =========================================
+         EMPTY PAYMENT STATE
+    ========================================== -->
+
+    <div class="payment-empty-state">
+
+        <div class="empty-payment-icon">
+
+            <i class="fas fa-receipt"></i>
+
+        </div>
+
+        <span class="payment-eyebrow">
+            Payment Center
+        </span>
+
+        <h2>No Pending Payments</h2>
+
+        <p>
+            There are currently no payments waiting for submission.
+            Register for an event to continue with the payment process.
+        </p>
+
+        <a
+            href="{{ url_for('student_dashboard') }}"
+            class="back-dashboard-btn"
+        >
+
+            <i class="fas fa-arrow-left"></i>
+
+            Back to Dashboard
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input =
+        document.getElementById("receipt-input");
+
+    const button =
+        document.getElementById("pay-btn");
+
+    const fileInfo =
+        document.getElementById("file-info");
+
+    const fileName =
+        document.getElementById("file-name");
+
+    const fileSize =
+        document.getElementById("file-size");
+
+    const removeButton =
+        document.getElementById("remove-file-btn");
+
+    const dropzone =
+        document.getElementById("receipt-dropzone");
+
+    const form =
+        document.getElementById("payment-form");
+
+
+    if (!input || !button) {
+        return;
+    }
+
+
+    /*
+     * Maximum file size:
+     * 5 MB
+     */
+
+    const maxSize =
+        5 * 1024 * 1024;
+
+
+    /*
+     * Allowed extensions
+     */
+
+    const allowedExtensions = [
+        ".jpg",
+        ".jpeg",
+        ".pdf"
+    ];
+
+
+    /*
+     * Format file size
+     */
+
+    function formatFileSize(bytes) {
+
+        if (bytes < 1024) {
+            return bytes + " B";
+        }
+
+        if (bytes < 1024 * 1024) {
+            return (bytes / 1024).toFixed(1) + " KB";
+        }
+
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+
+    }
+
+
+    /*
+     * Reset file
+     */
+
+    function resetFile() {
+
+        input.value = "";
+
+        button.disabled = true;
+
+        if (fileInfo) {
+            fileInfo.style.display = "none";
+        }
+
+        if (dropzone) {
+            dropzone.classList.remove("has-file");
+        }
+
+    }
+
+
+    /*
+     * Validate file
+     */
+
+    input.addEventListener("change", function () {
+
+        if (!input.files || input.files.length === 0) {
+
+            resetFile();
+
+            return;
+
+        }
+
+
+        const file =
+            input.files[0];
+
+
+        const name =
+            file.name.toLowerCase();
+
+
+        const validExtension =
+            allowedExtensions.some(
+                extension =>
+                    name.endsWith(extension)
+            );
+
+
+        /*
+         * Validate extension
+         */
+
+        if (!validExtension) {
+
+            alert(
+                "Invalid file type. Please upload a JPG, JPEG or PDF receipt."
+            );
+
+            resetFile();
+
+            return;
+
+        }
+
+
+        /*
+         * Validate file size
+         */
+
+        if (file.size > maxSize) {
+
+            alert(
+                "File is too large. Please upload a receipt smaller than 5 MB."
+            );
+
+            resetFile();
+
+            return;
+
+        }
+
+
+        /*
+         * Valid file
+         */
+
+        button.disabled = false;
+
+
+        if (fileInfo) {
+
+            fileInfo.style.display =
+                "flex";
+
+        }
+
+
+        if (fileName) {
+
+            fileName.textContent =
+                file.name;
+
+        }
+
+
+        if (fileSize) {
+
+            fileSize.textContent =
+                formatFileSize(file.size);
+
+        }
+
+
+        if (dropzone) {
+
+            dropzone.classList.add(
+                "has-file"
+            );
+
+        }
+
+    });
+
+
+    /*
+     * Remove selected file
+     */
+
+    if (removeButton) {
+
+        removeButton.addEventListener(
+            "click",
+            function () {
+
+                resetFile();
+
+            }
+        );
+
+    }
+
+
+    /*
+     * Drag and drop
+     */
+
+    if (dropzone) {
+
+        dropzone.addEventListener(
+            "dragover",
+            function (event) {
+
+                event.preventDefault();
+
+                dropzone.classList.add(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        dropzone.addEventListener(
+            "dragleave",
+            function () {
+
+                dropzone.classList.remove(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        dropzone.addEventListener(
+            "drop",
+            function (event) {
+
+                event.preventDefault();
+
+                dropzone.classList.remove(
+                    "dragging"
+                );
+
+
+                if (
+                    event.dataTransfer &&
+                    event.dataTransfer.files.length
+                ) {
+
+                    input.files =
+                        event.dataTransfer.files;
+
+                    input.dispatchEvent(
+                        new Event("change")
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /*
+     * Prevent double submission
+     */
+
+    if (form) {
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                if (
+                    !input.files ||
+                    input.files.length === 0
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Please select your payment receipt."
+                    );
+
+                    return;
+
+                }
+
+
+                button.disabled = true;
+
+                button.classList.add(
+                    "submitting"
+                );
+
+
+                button.querySelector(
+                    ".submit-text"
+                ).textContent =
+                    "Submitting Receipt...";
+
+            }
+        );
+
+    }
+
+});
+
+
+/*
+ * Copy UPI ID
+ */
+
+function copyUPI() {
+
+    const upiElement =
+        document.querySelector(
+            ".upi-details strong"
+        );
+
+
+    if (!upiElement) {
+        return;
+    }
+
+
+    const upi =
+        upiElement.textContent.trim();
+
+
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
+
+        navigator.clipboard.writeText(upi)
+            .then(function () {
+
+                showCopyMessage();
+
+            })
+            .catch(function () {
+
+                fallbackCopy(upi);
+
+            });
+
+    } else {
+
+        fallbackCopy(upi);
+
+    }
+
+}
+
+
+/*
+ * Fallback copy method
+ */
+
+function fallbackCopy(text) {
+
+    const textarea =
+        document.createElement("textarea");
+
+    textarea.value = text;
+
+    document.body.appendChild(
+        textarea
+    );
+
+    textarea.select();
+
+    try {
+
+        document.execCommand("copy");
+
+        showCopyMessage();
+
+    } catch (error) {
+
+        alert(
+            "UPI ID: " + text
+        );
+
+    }
+
+    textarea.remove();
+
+}
+
+
+/*
+ * Copy confirmation
+ */
+
+function showCopyMessage() {
+
+    const button =
+        document.querySelector(
+            ".copy-upi-btn"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    const original =
+        button.innerHTML;
+
+
+    button.innerHTML =
+        '<i class="fas fa-check"></i> Copied';
+
+
+    setTimeout(function () {
+
+        button.innerHTML =
+            original;
+
+    }, 1800);
+
+}
+
+</script>
+
+
+<!-- =========================================
+     PAGE CSS
+========================================= -->
+
+<style>
+
+/* =========================================
+   PAGE
+========================================= */
+
+.payment-page {
+
+    width: 100%;
+
+    max-width: 1250px;
+
+    margin: 0 auto;
+
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.payment-page-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding: 28px;
+
+    margin-bottom: 22px;
+
+    border: 1px solid rgba(148, 163, 184, 0.14);
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30, 41, 59, 0.94),
+            rgba(15, 23, 42, 0.97)
+        );
+
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.18);
+
+}
+
+
+.payment-header-content {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+}
+
+
+.payment-header-icon {
+
+    width: 64px;
+
+    height: 64px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 17px;
+
+    color: white;
+
+    font-size: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 12px 30px rgba(124, 58, 237, 0.28);
+
+}
+
+
+.payment-eyebrow {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: #a78bfa;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.09em;
+
+}
+
+
+.payment-page-header h1 {
+
+    margin: 5px 0 7px;
+
+    color: #f8fafc;
+
+    font-size: clamp(1.9rem, 4vw, 2.5rem);
+
+    font-weight: 800;
+
+}
+
+
+.payment-page-header p {
+
+    max-width: 700px;
+
+    margin: 0;
+
+    color: #94a3b8;
+
+    line-height: 1.65;
+
+}
+
+
+.secure-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    border: 1px solid rgba(52, 211, 153, 0.2);
+
+    border-radius: 20px;
+
+    color: #6ee7b7;
+
+    background:
+        rgba(16, 185, 129, 0.08);
+
+    font-size: 0.76rem;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.payment-stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.payment-stat-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    border-radius: 17px;
+
+    background:
+        rgba(15, 23, 42, 0.82);
+
+    transition: 0.25s ease;
+
+}
+
+
+.payment-stat-card:hover {
+
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(124, 58, 237, 0.3);
+
+}
+
+
+.payment-stat-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.14);
+
+}
+
+
+.amount-icon {
+
+    color: #67e8f9;
+
+    background:
+        rgba(6, 182, 212, 0.12);
+
+}
+
+
+.receipt-icon {
+
+    color: #fbbf24;
+
+    background:
+        rgba(245, 158, 11, 0.12);
+
+}
+
+
+.secure-icon {
+
+    color: #6ee7b7;
+
+    background:
+        rgba(16, 185, 129, 0.12);
+
+}
+
+
+.payment-stat-label {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+}
+
+
+.payment-stat-card strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #f8fafc;
+
+    font-size: 1.15rem;
+
+}
+
+
+.payment-stat-card small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 0.68rem;
+
+}
+
+
+/* =========================================
+   STEPS
+========================================= */
+
+.payment-steps {
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 17px 20px;
+
+    margin-bottom: 22px;
+
+    border: 1px solid rgba(148, 163, 184, 0.1);
+
+    border-radius: 16px;
+
+    background:
+        rgba(15, 23, 42, 0.68);
+
+}
+
+
+.payment-step {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-width: max-content;
+
+}
+
+
+.step-number {
+
+    width: 30px;
+
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #94a3b8;
+
+    background: #1e293b;
+
+    font-size: 0.75rem;
+
+    font-weight: 800;
+
+}
+
+
+.payment-step.active .step-number {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+}
+
+
+.payment-step strong {
+
+    display: block;
+
+    color: #cbd5e1;
+
+    font-size: 0.76rem;
+
+}
+
+
+.payment-step span {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.65rem;
+
+}
+
+
+.step-line {
+
+    flex: 1;
+
+    height: 1px;
+
+    margin: 0 13px;
+
+    background:
+        rgba(148, 163, 184, 0.15);
+
+}
+
+
+/* =========================================
+   MAIN CARD
+========================================= */
+
+.payment-main-card {
+
+    overflow: hidden;
+
+    border: 1px solid rgba(148, 163, 184, 0.13);
+
+    border-radius: 22px;
+
+    background:
+        rgba(15, 23, 42, 0.91);
+
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.17);
+
+}
+
+
+.payment-section {
+
+    padding: 26px;
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.1);
+
+}
+
+
+.section-title-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 21px;
+
+}
+
+
+.section-title-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.13);
+
+}
+
+
+.qr-title-icon {
+
+    color: #67e8f9;
+
+    background:
+        rgba(6, 182, 212, 0.11);
+
+}
+
+
+.receipt-title-icon {
+
+    color: #6ee7b7;
+
+    background:
+        rgba(16, 185, 129, 0.11);
+
+}
+
+
+.section-eyebrow {
+
+    color: #8b5cf6;
+
+    font-size: 0.68rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+}
+
+
+.section-title-row h2 {
+
+    margin: 3px 0;
+
+    color: #f8fafc;
+
+    font-size: 1.2rem;
+
+    font-weight: 800;
+
+}
+
+
+.section-title-row p {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 0.78rem;
+
+}
+
+
+/* =========================================
+   PAYMENT TABLE
+========================================= */
+
+.payment-table-wrapper {
+
+    overflow-x: auto;
+
+    border: 1px solid rgba(148, 163, 184, 0.1);
+
+    border-radius: 14px;
+
+}
+
+
+.payment-table {
+
+    width: 100%;
+
+    min-width: 720px;
+
+    margin: 0;
+
+    border-collapse: collapse;
+
+}
+
+
+.payment-table th {
+
+    padding: 13px 15px;
+
+    background:
+        rgba(30, 41, 59, 0.7);
+
+    color: #64748b;
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.1);
+
+    font-size: 0.68rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+}
+
+
+.payment-table td {
+
+    padding: 15px;
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.07);
+
+    color: #cbd5e1;
+
+    vertical-align: middle;
+
+}
+
+
+.payment-table tbody tr:last-child td {
+
+    border-bottom: 0;
+
+}
+
+
+.payment-table tbody tr {
+
+    transition: 0.2s ease;
+
+}
+
+
+.payment-table tbody tr:hover {
+
+    background:
+        rgba(124, 58, 237, 0.045);
+
+}
+
+
+.payment-row-number {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    color: #a78bfa;
+
+    background:
+        rgba(124, 58, 237, 0.1);
+
+    font-size: 0.7rem;
+
+    font-weight: 800;
+
+}
+
+
+.payment-event-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.payment-event-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.11);
+
+}
+
+
+.payment-event-info strong {
+
+    display: block;
+
+    color: #f8fafc;
+
+    font-size: 0.82rem;
+
+}
+
+
+.payment-event-info span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 0.65rem;
+
+}
+
+
+.payment-date {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #94a3b8;
+
+    font-size: 0.76rem;
+
+}
+
+
+.payment-date i {
+
+    color: #60a5fa;
+
+}
+
+
+.payment-amount {
+
+    color: #f8fafc;
+
+    font-size: 0.85rem;
+
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.payment-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 9px;
+
+    border-radius: 20px;
+
+    color: #cbd5e1;
+
+    background:
+        rgba(148, 163, 184, 0.1);
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+}
+
+
+.payment-status.pending {
+
+    color: #fbbf24;
+
+    background:
+        rgba(245, 158, 11, 0.1);
+
+}
+
+
+.payment-status.rejected {
+
+    color: #fb7185;
+
+    background:
+        rgba(244, 63, 94, 0.1);
+
+}
+
+
+.payment-status.submitted {
+
+    color: #67e8f9;
+
+    background:
+        rgba(6, 182, 212, 0.1);
+
+}
+
+
+.payment-status.verified {
+
+    color: #6ee7b7;
+
+    background:
+        rgba(16, 185, 129, 0.1);
+
+}
+
+
+/* =========================================
+   TOTAL
+========================================= */
+
+.payment-total {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 18px;
+
+    padding: 17px 19px;
+
+    border: 1px solid rgba(124, 58, 237, 0.2);
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124, 58, 237, 0.1),
+            rgba(79, 70, 229, 0.05)
+        );
+
+}
+
+
+.payment-total span {
+
+    display: block;
+
+    color: #cbd5e1;
+
+    font-weight: 700;
+
+}
+
+
+.payment-total small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #64748b;
+
+    font-size: 0.7rem;
+
+}
+
+
+.payment-total strong {
+
+    color: #c4b5fd;
+
+    font-size: 1.55rem;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================
+   INSTRUCTIONS
+========================================= */
+
+.payment-instructions {
+
+    display: flex;
+
+    gap: 13px;
+
+    margin: 24px 26px 0;
+
+    padding: 17px;
+
+    border: 1px solid rgba(96, 165, 250, 0.15);
+
+    border-radius: 14px;
+
+    background:
+        rgba(37, 99, 235, 0.06);
+
+}
+
+
+.instruction-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #60a5fa;
+
+    background:
+        rgba(37, 99, 235, 0.12);
+
+}
+
+
+.payment-instructions strong {
+
+    color: #e2e8f0;
+
+    font-size: 0.85rem;
+
+}
+
+
+.payment-instructions p {
+
+    margin: 5px 0 10px;
+
+    color: #64748b;
+
+    font-size: 0.76rem;
+
+    line-height: 1.6;
+
+}
+
+
+.upi-apps {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+}
+
+
+.upi-apps span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    color: #94a3b8;
+
+    background:
+        rgba(148, 163, 184, 0.08);
+
+    font-size: 0.64rem;
+
+}
+
+
+/* =========================================
+   QR PAYMENT
+========================================= */
+
+.qr-payment-layout {
+
+    display: grid;
+
+    grid-template-columns: 1fr 280px;
+
+    gap: 30px;
+
+    align-items: center;
+
+}
+
+
+.qr-instruction-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+}
+
+
+.qr-instruction {
+
+    display: flex;
+
+    gap: 11px;
+
+}
+
+
+.qr-instruction > span {
+
+    width: 27px;
+
+    height: 27px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+    font-size: 0.68rem;
+
+    font-weight: 800;
+
+}
+
+
+.qr-instruction strong {
+
+    display: block;
+
+    color: #e2e8f0;
+
+    font-size: 0.78rem;
+
+}
+
+
+.qr-instruction p {
+
+    margin: 3px 0 0;
+
+    color: #64748b;
+
+    font-size: 0.7rem;
+
+    line-height: 1.5;
+
+}
+
+
+.qr-container {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+}
+
+
+.qr-item {
+
+    text-align: center;
+
+}
+
+
+.qr-frame {
+
+    display: inline-flex;
+
+    padding: 12px;
+
+    border-radius: 17px;
+
+    background: white;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.25);
+
+}
+
+
+.qr-code {
+
+    display: block;
+
+    width: 190px;
+
+    height: 190px;
+
+    object-fit: contain;
+
+}
+
+
+.qr-label {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 9px;
+
+    color: #94a3b8;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   UPI DETAILS
+========================================= */
+
+.upi-details {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    margin-top: 22px;
+
+    padding: 14px 16px;
+
+    border: 1px solid rgba(148, 163, 184, 0.1);
+
+    border-radius: 12px;
+
+    background:
+        rgba(30, 41, 59, 0.55);
+
+}
+
+
+.upi-details-icon {
+
+    width: 37px;
+
+    height: 37px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    color: #67e8f9;
+
+    background:
+        rgba(6, 182, 212, 0.1);
+
+}
+
+
+.upi-details > div:nth-child(2) {
+
+    flex: 1;
+
+}
+
+
+.upi-details span {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.64rem;
+
+}
+
+
+.upi-details strong {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #e2e8f0;
+
+    font-size: 0.82rem;
+
+}
+
+
+.copy-upi-btn {
+
+    border: 0;
+
+    border-radius: 8px;
+
+    padding: 8px 11px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.1);
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+
+.copy-upi-btn:hover {
+
+    color: white;
+
+    background:
+        rgba(124, 58, 237, 0.2);
+
+}
+
+
+/* =========================================
+   QR WARNING
+========================================= */
+
+.qr-unavailable {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin: 25px 26px;
+
+    padding: 17px;
+
+    border: 1px solid rgba(245, 158, 11, 0.18);
+
+    border-radius: 14px;
+
+    background:
+        rgba(245, 158, 11, 0.06);
+
+}
+
+
+.qr-warning-icon {
+
+    width: 40px;
+
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #fbbf24;
+
+    background:
+        rgba(245, 158, 11, 0.11);
+
+}
+
+
+.qr-unavailable strong {
+
+    color: #fbbf24;
+
+    font-size: 0.82rem;
+
+}
+
+
+.qr-unavailable p {
+
+    margin: 4px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 0.73rem;
+
+}
+
+
+/* =========================================
+   RECEIPT UPLOAD
+========================================= */
+
+.receipt-upload-area {
+
+    margin-top: 5px;
+
+}
+
+
+.receipt-dropzone {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 22px;
+
+    border: 1.5px dashed rgba(124, 58, 237, 0.38);
+
+    border-radius: 16px;
+
+    background:
+        rgba(124, 58, 237, 0.035);
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+
+}
+
+
+.receipt-dropzone:hover,
+.receipt-dropzone.dragging {
+
+    border-color: #8b5cf6;
+
+    background:
+        rgba(124, 58, 237, 0.08);
+
+}
+
+
+.receipt-dropzone.has-file {
+
+    border-color: rgba(52, 211, 153, 0.45);
+
+    background:
+        rgba(16, 185, 129, 0.045);
+
+}
+
+
+.upload-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    color: #a78bfa;
+
+    background:
+        rgba(124, 58, 237, 0.13);
+
+    font-size: 21px;
+
+}
+
+
+.upload-content {
+
+    flex: 1;
+
+}
+
+
+.upload-content strong {
+
+    display: block;
+
+    color: #e2e8f0;
+
+    font-size: 0.86rem;
+
+}
+
+
+.upload-content span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 0.72rem;
+
+}
+
+
+.upload-content small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #64748b;
+
+    font-size: 0.64rem;
+
+}
+
+
+.upload-browse {
+
+    padding: 9px 13px;
+
+    border-radius: 9px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   SELECTED FILE
+========================================= */
+
+.selected-file {
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 12px;
+
+    padding: 13px;
+
+    border: 1px solid rgba(52, 211, 153, 0.18);
+
+    border-radius: 12px;
+
+    background:
+        rgba(16, 185, 129, 0.055);
+
+}
+
+
+.selected-file-icon {
+
+    width: 39px;
+
+    height: 39px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #6ee7b7;
+
+    background:
+        rgba(16, 185, 129, 0.11);
+
+}
+
+
+.selected-file-details {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+.selected-file-details span {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.62rem;
+
+}
+
+
+.selected-file-details strong {
+
+    display: block;
+
+    overflow: hidden;
+
+    margin-top: 2px;
+
+    color: #d1fae5;
+
+    font-size: 0.76rem;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.selected-file-details small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 0.62rem;
+
+}
+
+
+.remove-file-btn {
+
+    width: 31px;
+
+    height: 31px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    color: #fb7185;
+
+    background:
+        rgba(244, 63, 94, 0.08);
+
+    cursor: pointer;
+
+}
+
+
+.remove-file-btn:hover {
+
+    background:
+        rgba(244, 63, 94, 0.16);
+
+}
+
+
+/* =========================================
+   RECEIPT HELP
+========================================= */
+
+.receipt-help-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-top: 13px;
+
+}
+
+
+.receipt-help {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 11px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(30, 41, 59, 0.5);
+
+}
+
+
+.receipt-help > i {
+
+    color: #8b5cf6;
+
+    font-size: 14px;
+
+}
+
+
+.receipt-help strong {
+
+    display: block;
+
+    color: #cbd5e1;
+
+    font-size: 0.67rem;
+
+}
+
+
+.receipt-help span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 0.6rem;
+
+}
+
+
+/* =========================================
+   SUBMIT BUTTON
+========================================= */
+
+.submit-payment-btn {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    padding: 14px 18px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    font-size: 0.83rem;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+
+    box-shadow:
+        0 10px 25px rgba(79, 70, 229, 0.2);
+
+}
+
+
+.submit-payment-btn:disabled {
+
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+
+}
+
+
+.submit-payment-btn:not(:disabled):hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 30px rgba(79, 70, 229, 0.32);
+
+}
+
+
+.submit-icon {
+
+    display: flex;
+
+}
+
+
+.submit-arrow {
+
+    margin-left: auto;
+
+}
+
+
+.submit-payment-btn.submitting {
+
+    opacity: 0.75;
+
+    cursor: wait;
+
+}
+
+
+/* =========================================
+   SECURITY
+========================================= */
+
+.security-notice {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 0;
+
+    padding: 17px 26px;
+
+    background:
+        rgba(16, 185, 129, 0.035);
+
+}
+
+
+.security-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #6ee7b7;
+
+    background:
+        rgba(16, 185, 129, 0.1);
+
+}
+
+
+.security-notice strong {
+
+    color: #d1fae5;
+
+    font-size: 0.76rem;
+
+}
+
+
+.security-notice p {
+
+    margin: 3px 0 0;
+
+    color: #64748b;
+
+    font-size: 0.68rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.payment-empty-state {
+
+    padding: 70px 25px;
+
+    text-align: center;
+
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    border-radius: 22px;
+
+    background:
+        rgba(15, 23, 42, 0.85);
+
+}
+
+
+.empty-payment-icon {
+
+    width: 75px;
+
+    height: 75px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    border-radius: 20px;
+
+    color: #a78bfa;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+    font-size: 28px;
+
+}
+
+
+.payment-empty-state h2 {
+
+    margin: 8px 0;
+
+    color: #f8fafc;
+
+    font-size: 1.5rem;
+
+    font-weight: 800;
+
+}
+
+
+.payment-empty-state p {
+
+    max-width: 520px;
+
+    margin: 0 auto 22px;
+
+    color: #64748b;
+
+    line-height: 1.7;
+
+}
+
+
+.back-dashboard-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 16px;
+
+    border-radius: 10px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    text-decoration: none;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1050px) {
+
+    .payment-stats-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+    .qr-payment-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .qr-container {
+
+        justify-content: flex-start;
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .payment-page-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+    .secure-badge {
+
+        align-self: flex-start;
+
+    }
+
+    .payment-steps {
+
+        overflow-x: auto;
+
+    }
+
+    .receipt-help-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .payment-stats-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .payment-page-header {
+
+        padding: 20px;
+
+    }
+
+    .payment-header-content {
+
+        align-items: flex-start;
+
+    }
+
+    .payment-header-icon {
+
+        width: 52px;
+
+        height: 52px;
+
+        font-size: 20px;
+
+    }
+
+    .payment-page-header h1 {
+
+        font-size: 1.75rem;
+
+    }
+
+    .payment-section {
+
+        padding: 20px 15px;
+
+    }
+
+    .payment-instructions {
+
+        margin-left: 15px;
+
+        margin-right: 15px;
+
+    }
+
+    .security-notice {
+
+        padding-left: 15px;
+
+        padding-right: 15px;
+
+    }
+
+    .receipt-dropzone {
+
+        flex-wrap: wrap;
+
+    }
+
+    .upload-browse {
+
+        width: 100%;
+
+        text-align: center;
+
+    }
+
+    .payment-total {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+    .payment-total strong {
+
+        font-size: 1.35rem;
+
+    }
+
+    .upi-details {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+    .copy-upi-btn {
+
+        width: 100%;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .payment-header-content {
+
+        gap: 11px;
+
+    }
+
+    .payment-header-icon {
+
+        width: 46px;
+
+        height: 46px;
+
+        border-radius: 12px;
+
+    }
+
+    .payment-page-header h1 {
+
+        font-size: 1.5rem;
+
+    }
+
+    .payment-page-header p {
+
+        font-size: 0.76rem;
+
+    }
+
+    .payment-stat-card {
+
+        padding: 15px;
+
+    }
+
+    .payment-steps {
+
+        padding: 13px;
+
+    }
+
+    .payment-step span {
+
+        display: none;
+
+    }
+
+    .step-line {
+
+        margin: 0 8px;
+
+    }
+
+    .qr-code {
+
+        width: 170px;
+
+        height: 170px;
+
+    }
+
+    .qr-frame {
+
+        padding: 9px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

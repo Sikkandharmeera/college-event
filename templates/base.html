@@ -1,0 +1,651 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =========================================================
+         BASIC META INFORMATION
+    ========================================================== -->
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Campus Events Hub - Discover, register and manage college events.">
+
+    <meta name="theme-color"
+          content="#0f172a">
+
+    <title>
+        {% block title %}
+            Campus Events Hub
+        {% endblock %}
+    </title>
+
+
+    <!-- =========================================================
+         GOOGLE FONT
+    ========================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+
+    <!-- =========================================================
+         BOOTSTRAP CSS
+    ========================================================== -->
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+          rel="stylesheet">
+
+
+    <!-- =========================================================
+         FONT AWESOME
+    ========================================================== -->
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          rel="stylesheet">
+
+
+    <!-- =========================================================
+         PROJECT CSS
+    ========================================================== -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/custom.css') }}">
+
+
+    <!-- =========================================================
+         PAGE-SPECIFIC CSS
+    ========================================================== -->
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+
+<body class="site-shell">
+
+
+    <!-- =========================================================
+         BACKGROUND EFFECTS
+    ========================================================== -->
+
+    <div class="page-bg-glow page-bg-glow-one"></div>
+
+    <div class="page-bg-glow page-bg-glow-two"></div>
+
+
+    <!-- =========================================================
+         NAVIGATION BAR
+    ========================================================== -->
+
+    <header class="topbar">
+
+        <!-- =====================================================
+             BRAND
+        ====================================================== -->
+
+        <div class="brand-wrap">
+
+            <a href="{{ url_for('home') }}"
+               class="brand-mark"
+               aria-label="Campus Events Home">
+
+                C
+
+            </a>
+
+
+            <a href="{{ url_for('home') }}"
+               class="brand-name">
+
+                Campus Events
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             MOBILE MENU BUTTON
+        ====================================================== -->
+
+        <button class="mobile-menu-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="mainNavigation"
+                onclick="toggleMobileMenu()">
+
+            <i class="fas fa-bars"></i>
+
+        </button>
+
+
+        <!-- =====================================================
+             MAIN NAVIGATION
+        ====================================================== -->
+
+        <nav id="mainNavigation"
+             class="main-nav"
+             aria-label="Main navigation">
+
+
+            <!-- =================================================
+                 HOME
+            ================================================== -->
+
+            <a href="{{ url_for('home') }}"
+               class="{% if request.endpoint == 'home' %}active{% endif %}">
+
+                <i class="fas fa-house"></i>
+
+                <span>Home</span>
+
+            </a>
+
+
+            <!-- =================================================
+                 EVENTS
+            ================================================== -->
+
+            <a href="{{ url_for('event_list') }}"
+               class="{% if request.endpoint == 'event_list' %}active{% endif %}">
+
+                <i class="fas fa-calendar-days"></i>
+
+                <span>Events</span>
+
+            </a>
+
+
+            <!-- =================================================
+                 CALENDAR
+            ================================================== -->
+
+            <a href="{{ url_for('calendar_view') }}"
+               class="{% if request.endpoint == 'calendar_view' %}active{% endif %}">
+
+                <i class="fas fa-calendar"></i>
+
+                <span>Calendar</span>
+
+            </a>
+
+
+            <!-- =================================================
+                 LEADERBOARD
+            ================================================== -->
+
+            <a href="{{ url_for('leaderboard') }}"
+               class="{% if request.endpoint == 'leaderboard' %}active{% endif %}">
+
+                <i class="fas fa-trophy"></i>
+
+                <span>Leaderboard</span>
+
+            </a>
+
+
+            <!-- =================================================
+                 STUDENT NAVIGATION
+            ================================================== -->
+
+            {% if session.get('role') == 'student' %}
+
+
+                <a href="{{ url_for('student_dashboard') }}"
+                   class="{% if request.endpoint == 'student_dashboard' %}active{% endif %}">
+
+                    <i class="fas fa-gauge"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <a href="{{ url_for('wishlist') }}"
+                   class="{% if request.endpoint == 'wishlist' %}active{% endif %}">
+
+                    <i class="fas fa-heart"></i>
+
+                    <span>Wishlist</span>
+
+                </a>
+
+
+                <a href="{{ url_for('notifications') }}"
+                   class="{% if request.endpoint == 'notifications' %}active{% endif %}">
+
+                    <i class="fas fa-bell"></i>
+
+                    <span>Notifications</span>
+
+                </a>
+
+
+            <!-- =================================================
+                 ADMIN NAVIGATION
+            ================================================== -->
+
+            {% elif session.get('role') == 'admin' %}
+
+
+                <a href="{{ url_for('admin_dashboard') }}"
+                   class="{% if request.endpoint in ['admin_dashboard', 'admin_students', 'admin_coordinators', 'admin_home'] %}active{% endif %}">
+
+                    <i class="fas fa-user-shield"></i>
+
+                    <span>Admin</span>
+
+                </a>
+
+
+                <a href="{{ url_for('admin_analytics') }}"
+                   class="{% if request.endpoint == 'admin_analytics' %}active{% endif %}">
+
+                    <i class="fas fa-chart-line"></i>
+
+                    <span>Analytics</span>
+
+                </a>
+
+
+            <!-- =================================================
+                 COORDINATOR NAVIGATION
+            ================================================== -->
+
+            {% elif session.get('role') == 'coordinator' %}
+
+
+                <a href="{{ url_for('coordinator_dashboard') }}"
+                   class="{% if request.endpoint == 'coordinator_dashboard' %}active{% endif %}">
+
+                    <i class="fas fa-user-tie"></i>
+
+                    <span>Coordinator</span>
+
+                </a>
+
+
+            {% endif %}
+
+        </nav>
+
+
+        <!-- =====================================================
+             LOGIN / LOGOUT ACTIONS
+        ====================================================== -->
+
+        <div class="nav-actions">
+
+
+            {% if session.get('user_id') %}
+
+                <!-- Logged-in user -->
+
+                <div class="user-role-badge">
+
+                    {% if session.get('role') == 'admin' %}
+
+                        <i class="fas fa-shield-halved"></i>
+
+                        Admin
+
+                    {% elif session.get('role') == 'coordinator' %}
+
+                        <i class="fas fa-user-tie"></i>
+
+                        Coordinator
+
+                    {% elif session.get('role') == 'student' %}
+
+                        <i class="fas fa-user"></i>
+
+                        Student
+
+                    {% else %}
+
+                        <i class="fas fa-user"></i>
+
+                        User
+
+                    {% endif %}
+
+                </div>
+
+
+                <a href="{{ url_for('logout') }}"
+                   class="btn btn-ghost">
+
+                    <i class="fas fa-right-from-bracket"></i>
+
+                    <span>Logout</span>
+
+                </a>
+
+
+            {% else %}
+
+                <!-- Guest user -->
+
+                <a href="{{ url_for('login') }}"
+                   class="btn btn-ghost">
+
+                    <i class="fas fa-right-to-bracket"></i>
+
+                    <span>Login</span>
+
+                </a>
+
+
+                <a href="{{ url_for('register') }}"
+                   class="btn btn-primary">
+
+                    <i class="fas fa-user-plus"></i>
+
+                    <span>Register</span>
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         FLASH MESSAGES
+    ========================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="flash-stack"
+                 aria-live="polite"
+                 aria-atomic="true">
+
+                {% for category, message in messages %}
+
+                    {% set alert_class = {
+                        'success': 'success',
+                        'error': 'danger',
+                        'danger': 'danger',
+                        'warning': 'warning',
+                        'info': 'info'
+                    }.get(category, 'info') %}
+
+
+                    <div class="alert alert-{{ alert_class }} alert-dismissible fade show"
+                         role="alert">
+
+
+                        {% if alert_class == 'success' %}
+
+                            <i class="fas fa-circle-check me-2"></i>
+
+                        {% elif alert_class == 'danger' %}
+
+                            <i class="fas fa-circle-exclamation me-2"></i>
+
+                        {% elif alert_class == 'warning' %}
+
+                            <i class="fas fa-triangle-exclamation me-2"></i>
+
+                        {% else %}
+
+                            <i class="fas fa-circle-info me-2"></i>
+
+                        {% endif %}
+
+
+                        <span>
+                            {{ message }}
+                        </span>
+
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main class="site-main">
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer class="site-footer">
+
+        <div class="footer-content">
+
+
+            <!-- Footer Brand -->
+
+            <div class="footer-brand">
+
+                <a href="{{ url_for('home') }}"
+                   class="brand-mark small"
+                   aria-label="Campus Events Home">
+
+                    C
+
+                </a>
+
+
+                <div>
+
+                    <strong>
+                        Campus Events Hub
+                    </strong>
+
+                    <span>
+                        College Event Management System
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer Information -->
+
+            <div class="footer-info">
+
+                <span>
+                    <i class="fas fa-calendar-check"></i>
+                    Discover. Register. Participate.
+                </span>
+
+                <span>
+                    <i class="fas fa-shield-halved"></i>
+                    Secure Campus Platform
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                &copy; 2026 Campus Events Hub.
+                All rights reserved.
+            </p>
+
+
+            <p>
+                Built for College Events Management
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         BOOTSTRAP JAVASCRIPT
+    ========================================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- =========================================================
+         PROJECT JAVASCRIPT
+    ========================================================== -->
+
+    <script src="{{ url_for('static', filename='js/script.js') }}">
+    </script>
+
+
+    <!-- =========================================================
+         MOBILE NAVIGATION
+    ========================================================== -->
+
+    <script>
+
+        function toggleMobileMenu() {
+
+            const navigation =
+                document.getElementById("mainNavigation");
+
+            const button =
+                document.querySelector(".mobile-menu-toggle");
+
+            if (!navigation || !button) {
+                return;
+            }
+
+            const isOpen =
+                navigation.classList.toggle("mobile-open");
+
+            button.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+            const icon =
+                button.querySelector("i");
+
+            if (icon) {
+
+                icon.className =
+                    isOpen
+                    ? "fas fa-xmark"
+                    : "fas fa-bars";
+
+            }
+
+        }
+
+
+        /* Close mobile menu after clicking a link */
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const navigation =
+                document.getElementById("mainNavigation");
+
+            if (!navigation) {
+                return;
+            }
+
+            navigation
+                .querySelectorAll("a")
+                .forEach(function (link) {
+
+                    link.addEventListener("click", function () {
+
+                        if (
+                            window.innerWidth <= 900 &&
+                            navigation.classList.contains("mobile-open")
+                        ) {
+
+                            navigation.classList.remove(
+                                "mobile-open"
+                            );
+
+                            const button =
+                                document.querySelector(
+                                    ".mobile-menu-toggle"
+                                );
+
+                            if (button) {
+
+                                button.setAttribute(
+                                    "aria-expanded",
+                                    "false"
+                                );
+
+                                const icon =
+                                    button.querySelector("i");
+
+                                if (icon) {
+
+                                    icon.className =
+                                        "fas fa-bars";
+
+                                }
+
+                            }
+
+                        }
+
+                    });
+
+                });
+
+        });
+
+    </script>
+
+
+    <!-- =========================================================
+         PAGE-SPECIFIC JAVASCRIPT
+    ========================================================== -->
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Event - College Events Hub{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <h2 class="card-title mb-4">
+                        Rate Event: {{ event.event_name }}
+                    </h2>
+
+                    <form method="POST">
+
+                        <!-- Rating -->
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Your Rating:
+                            </label>
+
+                            <div class="rating-stars">
+
+                                {% for i in range(1, 6) %}
+
+                                    <input
+                                        type="radio"
+                                        name="rating"
+                                        value="{{ i }}"
+                                        id="star{{ i }}"
+                                        {% if existing_rating and existing_rating.rating == i %}
+                                            checked
+                                        {% elif not existing_rating and i == 3 %}
+                                            checked
+                                        {% endif %}
+                                        required
+                                    >
+
+                                    <label
+                                        for="star{{ i }}"
+                                        class="star"
+                                        title="{{ i }} star{% if i != 1 %}s{% endif %}"
+                                    >
+                                        ★
+                                    </label>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <small class="text-muted">
+                                Click a star to rate this event.
+                            </small>
+
+                        </div>
+
+
+                        <!-- Review -->
+                        <div class="mb-3">
+
+                            <label
+                                for="review"
+                                class="form-label"
+                            >
+                                Your Review (optional):
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                id="review"
+                                name="review"
+                                rows="4"
+                                placeholder="Share your experience..."
+                            >{{ existing_rating.review if existing_rating else '' }}</textarea>
+
+                        </div>
+
+
+                        <!-- Submit -->
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            Submit Rating
+                        </button>
+
+
+                        <!-- Cancel -->
+                        <a
+                            href="{{ url_for('student_dashboard') }}"
+                            class="btn btn-secondary w-100 mt-2"
+                        >
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Rating Star CSS -->
+<style>
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+    font-size: 2rem;
+}
+
+.rating-stars input {
+    display: none;
+}
+
+.rating-stars label {
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.2s ease;
+}
+
+.rating-stars input:checked ~ label {
+    color: #ffc107;
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+</style>
+
+{% endblock %}

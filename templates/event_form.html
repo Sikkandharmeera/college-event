@@ -1,0 +1,850 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ "Edit Event" if event else "Add Event" }} - College Events Hub
+{% endblock %}
+
+{% block content %}
+
+<section class="event-form-section">
+
+    <div class="event-form-header">
+        <h1 class="event-form-title">
+            <i class="fas fa-{% if event %}pen-to-square{% else %}calendar-plus{% endif %}"></i>
+            {{ "Edit Event" if event else "Add Event" }}
+        </h1>
+        <p class="event-form-subtitle">
+            {% if event %}
+                Update event details and information
+            {% else %}
+                Create a new event and share it with students
+            {% endif %}
+        </p>
+    </div>
+
+    <form
+        class="event-form-card"
+        method="POST"
+        enctype="multipart/form-data"
+        action="{% if event %}{{ url_for('event_edit', eid=event.id) }}{% else %}{{ url_for('event_new') }}{% endif %}"
+    >
+
+        <!-- =========================
+             EVENT BASIC INFORMATION
+        ========================== -->
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i> Basic Information
+            </h2>
+
+            <div class="form-grid-3">
+
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category_id" class="form-label">
+                        <i class="fas fa-tag"></i> Category
+                    </label>
+                    <select id="category_id" name="category_id" class="form-control" required>
+                        <option value="">Select Category</option>
+                        {% for c in categories %}
+                            <option value="{{ c.id }}" {% if event and event.category_id == c.id %}selected{% endif %}>
+                                {{ c.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Sub Event -->
+                <div class="form-group">
+                    <label for="sub_event_id" class="form-label">
+                        <i class="fas fa-code-branch"></i> Sub Event
+                    </label>
+                    <select id="sub_event_id" name="sub_event_id" class="form-control">
+                        <option value="">None</option>
+                        {% for s in subs %}
+                            <option value="{{ s.id }}" {% if event and event.sub_event_id == s.id %}selected{% endif %}>
+                                {{ s.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Coordinator -->
+                <div class="form-group">
+                    <label for="coordinator_id" class="form-label">
+                        <i class="fas fa-user-tie"></i> Coordinator
+                    </label>
+                    <select id="coordinator_id" name="coordinator_id" class="form-control">
+                        <option value="">Not Assigned</option>
+                        {% for s in staff %}
+                            <option value="{{ s.id }}" {% if event and event.coordinator_id == s.id %}selected{% endif %}>
+                                {{ s.full_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-grid-2">
+
+                <!-- Event Name -->
+                <div class="form-group">
+                    <label for="event_name" class="form-label">
+                        <i class="fas fa-heading"></i> Event Name
+                    </label>
+                    <input
+                        id="event_name"
+                        type="text"
+                        name="event_name"
+                        class="form-control"
+                        value="{{ event.event_name if event else '' }}"
+                        placeholder="Enter event name"
+                        required
+                    >
+                </div>
+
+                <!-- Venue -->
+                <div class="form-group">
+                    <label for="venue" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> Venue
+                    </label>
+                    <input
+                        id="venue"
+                        type="text"
+                        name="venue"
+                        class="form-control"
+                        value="{{ event.venue if event else '' }}"
+                        placeholder="Enter venue location"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-grid-3">
+
+                <!-- Event Date -->
+                <div class="form-group">
+                    <label for="event_date" class="form-label">
+                        <i class="fas fa-calendar"></i> Event Date
+                    </label>
+                    <input
+                        id="event_date"
+                        type="date"
+                        name="event_date"
+                        class="form-control"
+                        value="{% if event and event.event_date %}{{ event.event_date.strftime('%Y-%m-%d') if event.event_date.strftime is defined else event.event_date }}{% endif %}"
+                    >
+                </div>
+
+                <!-- Event Time -->
+                <div class="form-group">
+                    <label for="event_time" class="form-label">
+                        <i class="fas fa-clock"></i> Event Time
+                    </label>
+                    <input
+                        id="event_time"
+                        type="time"
+                        name="event_time"
+                        class="form-control"
+                        value="{% if event and event.event_time %}{{ event.event_time.strftime('%H:%M') if event.event_time.strftime is defined else event.event_time }}{% endif %}"
+                    >
+                </div>
+
+                <!-- Registration Deadline -->
+                <div class="form-group">
+                    <label for="registration_deadline" class="form-label">
+                        <i class="fas fa-hourglass-end"></i> Registration Deadline
+                    </label>
+                    <input
+                        id="registration_deadline"
+                        type="date"
+                        name="registration_deadline"
+                        class="form-control"
+                        value="{% if event and event.registration_deadline %}{{ event.registration_deadline.strftime('%Y-%m-%d') if event.registration_deadline.strftime is defined else event.registration_deadline }}{% endif %}"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-grid-2">
+
+                <!-- Registration Fee -->
+                <div class="form-group">
+                    <label for="registration_fee" class="form-label">
+                        <i class="fas fa-rupee-sign"></i> Registration Fee
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input
+                            id="registration_fee"
+                            type="number"
+                            name="registration_fee"
+                            class="form-control"
+                            value="{{ event.registration_fee if event else 0 }}"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                        >
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="form-group">
+                    <label for="status" class="form-label">
+                        <i class="fas fa-circle-notch"></i> Status
+                    </label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="Draft" {% if not event or event.status == "Draft" %}selected{% endif %}>
+                            <i class="fas fa-edit"></i> Draft
+                        </option>
+                        <option value="Published" {% if event and event.status == "Published" %}selected{% endif %}>
+                            <i class="fas fa-globe"></i> Published
+                        </option>
+                        <option value="Closed" {% if event and event.status == "Closed" %}selected{% endif %}>
+                            <i class="fas fa-lock"></i> Closed
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             DESCRIPTION
+        ========================== -->
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-align-left"></i> Description
+            </h2>
+
+            <div class="form-group">
+                <label for="description" class="form-label">
+                    Event Description
+                </label>
+                <textarea
+                    id="description"
+                    name="description"
+                    class="form-control form-textarea"
+                    rows="6"
+                    placeholder="Provide a comprehensive description of the event..."
+                >{{ event.description if event else '' }}</textarea>
+                <small class="form-text">
+                    Include event objectives, highlights, and key information
+                </small>
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             EVENT MEDIA
+        ========================== -->
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-images"></i> Event Media
+            </h2>
+
+            <!-- EVENT BANNER -->
+            <div class="media-upload-group">
+                <div class="media-upload-info">
+                    <h3>
+                        <i class="fas fa-picture-o"></i> Event Banner
+                    </h3>
+                    <p>Upload a banner image for the event listing (recommended: 1200x400px)</p>
+                </div>
+
+                {% if event and event.banner %}
+                    <div class="media-preview-box">
+                        <img
+                            src="{{ url_for('static', filename=event.banner) }}"
+                            alt="Current event banner"
+                            class="media-preview-img"
+                        >
+                        <input type="hidden" name="old_banner" value="{{ event.banner }}">
+                        <p class="media-preview-label">Current Banner</p>
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="banner" class="form-label">
+                        {% if event and event.banner %}Replace Banner{% else %}Upload Banner{% endif %}
+                    </label>
+                    <input
+                        id="banner"
+                        type="file"
+                        name="banner"
+                        class="form-control"
+                        accept="image/*"
+                    >
+                    <small class="form-text">JPG, PNG, or WebP. Max 5MB.</small>
+                </div>
+            </div>
+
+            <!-- EVENT IMAGE -->
+            <div class="media-upload-group">
+                <div class="media-upload-info">
+                    <h3>
+                        <i class="fas fa-image"></i> Event Image
+                    </h3>
+                    <p>Upload the main event image (recommended: 800x600px)</p>
+                </div>
+
+                {% if event and event.image %}
+                    <div class="media-preview-box">
+                        <img
+                            src="{{ url_for('static', filename=event.image) }}"
+                            alt="Current event image"
+                            class="media-preview-img"
+                        >
+                        <input type="hidden" name="old_image" value="{{ event.image }}">
+                        <p class="media-preview-label">Current Image</p>
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="image" class="form-label">
+                        {% if event and event.image %}Replace Image{% else %}Upload Image{% endif %}
+                    </label>
+                    <input
+                        id="image"
+                        type="file"
+                        name="image"
+                        class="form-control"
+                        accept="image/*"
+                    >
+                    <small class="form-text">JPG, PNG, or WebP. Max 5MB.</small>
+                </div>
+            </div>
+
+            <!-- UPI QR CODE -->
+            <div class="media-upload-group">
+                <div class="media-upload-info">
+                    <h3>
+                        <i class="fas fa-qrcode"></i> UPI QR Code
+                    </h3>
+                    <p>Upload the payment QR code for student registration fees</p>
+                </div>
+
+                {% if event and event.qr_image %}
+                    <div class="media-preview-box">
+                        <img
+                            src="{{ url_for('static', filename=event.qr_image) }}"
+                            alt="Current UPI QR Code"
+                            class="media-preview-img qr-code-preview"
+                        >
+                        <input type="hidden" name="old_qr_image" value="{{ event.qr_image }}">
+                        <p class="media-preview-label">Current QR Code</p>
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="qr_image" class="form-label">
+                        {% if event and event.qr_image %}Replace QR Code{% else %}Upload QR Code{% endif %}
+                    </label>
+                    <input
+                        id="qr_image"
+                        type="file"
+                        name="qr_image"
+                        class="form-control"
+                        accept="image/png,image/jpeg,image/jpg,image/webp"
+                    >
+                    <small class="form-text">PNG or JPG format. Max 2MB.</small>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             EVENT RULES
+        ========================== -->
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-list-check"></i> Event Rules
+            </h2>
+
+            <p class="section-description">
+                Define the rules and guidelines participants must follow
+            </p>
+
+            <div id="rules-container" class="rules-container">
+                {% if rules %}
+                    {% for r in rules %}
+                        <div class="rule-row">
+                            <input
+                                type="text"
+                                name="rules"
+                                class="form-control"
+                                value="{{ r.rule_text }}"
+                                placeholder="Enter event rule"
+                            >
+                            <button
+                                type="button"
+                                class="btn btn-danger btn-sm remove-rule"
+                                title="Remove this rule"
+                            >
+                                <i class="fas fa-trash-alt"></i> Remove
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="rule-row">
+                        <input
+                            type="text"
+                            name="rules"
+                            class="form-control"
+                            placeholder="Enter event rule"
+                        >
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-sm remove-rule"
+                            title="Remove this rule"
+                        >
+                            <i class="fas fa-trash-alt"></i> Remove
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            <button
+                type="button"
+                id="add-rule"
+                class="btn btn-success btn-add-rule"
+            >
+                <i class="fas fa-plus"></i> Add Rule
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             FORM ACTIONS
+        ========================== -->
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-{% if event %}save{% else %}plus{% endif %}"></i>
+                {{ "Update Event" if event else "Create Event" }}
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+
+
+    </form>
+
+</section>
+
+<!-- =========================
+     STYLING
+========================== -->
+
+<style>
+    .event-form-section {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .event-form-header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: slideDown 0.5s ease-out;
+    }
+
+    .event-form-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .event-form-title i {
+        color: #007bff;
+        font-size: 2.2rem;
+    }
+
+    .event-form-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .event-form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e8e8e8;
+    }
+
+    .form-section {
+        margin-bottom: 35px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .form-section:last-of-type {
+        border-bottom: none;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-title i {
+        color: #007bff;
+        font-size: 1.3rem;
+    }
+
+    .section-description {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: #007bff;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: all 0.3s ease;
+        background-color: #f9f9f9;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #007bff;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-text {
+        padding: 12px 15px;
+        background-color: #f0f0f0;
+        border: 2px solid #e0e0e0;
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 8px 8px 0;
+        border-left: none;
+    }
+
+    .media-upload-group {
+        background: #f9f9f9;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border-left: 4px solid #007bff;
+    }
+
+    .media-upload-info h3 {
+        margin: 0 0 8px 0;
+        color: #1a1a2e;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .media-upload-info h3 i {
+        color: #007bff;
+    }
+
+    .media-upload-info p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .media-preview-box {
+        margin: 15px 0;
+        text-align: center;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 2px dashed #007bff;
+    }
+
+    .media-preview-img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+
+    .qr-code-preview {
+        max-height: 220px;
+        width: 220px;
+        margin: 0 auto;
+    }
+
+    .media-preview-label {
+        margin: 10px 0 0 0;
+        font-size: 0.85rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .rules-container {
+        margin-bottom: 15px;
+    }
+
+    .rule-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+        align-items: center;
+    }
+
+    .rule-row .form-control {
+        flex: 1;
+    }
+
+    .rule-row .btn {
+        white-space: nowrap;
+    }
+
+    .btn-add-rule {
+        margin-top: 10px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 35px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+        flex-wrap: wrap;
+    }
+
+    .btn-lg {
+        padding: 12px 28px;
+        font-size: 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0056b3, #003d82);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 10px 16px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .event-form-card {
+            padding: 20px;
+        }
+
+        .event-form-title {
+            font-size: 1.8rem;
+        }
+
+        .form-grid-2,
+        .form-grid-3 {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-lg {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addRuleButton = document.getElementById('add-rule');
+        const rulesContainer = document.getElementById('rules-container');
+
+        if (!addRuleButton || !rulesContainer) return;
+
+        function attachRemoveButton(button) {
+            if (!button) return;
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const row = button.closest('.rule-row');
+                if (row) row.remove();
+            });
+        }
+
+        // Attach to existing remove buttons
+        document.querySelectorAll('.remove-rule').forEach(attachRemoveButton);
+
+        // Add new rule
+        addRuleButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            const row = document.createElement('div');
+            row.className = 'rule-row';
+            row.innerHTML = `
+                <input
+                    type="text"
+                    name="rules"
+                    class="form-control"
+                    placeholder="Enter event rule"
+                >
+                <button type="button" class="btn btn-danger btn-sm remove-rule" title="Remove this rule">
+                    <i class="fas fa-trash-alt"></i> Remove
+                </button>
+            `;
+            rulesContainer.appendChild(row);
+            attachRemoveButton(row.querySelector('.remove-rule'));
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,1466 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Verification - College Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="payment-page">
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="payment-header">
+
+        <div class="payment-header-content">
+
+            <div class="payment-header-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+
+            <div>
+
+                <span class="payment-eyebrow">
+                    ADMINISTRATION
+                </span>
+
+                <h1>
+                    Payment Verification
+                </h1>
+
+                <p>
+                    Review student payment submissions, check receipts,
+                    and verify or reject payments.
+                </p>
+
+            </div>
+
+        </div>
+
+        <a
+            href="{{ url_for('admin_dashboard') }}"
+            class="payment-back-btn"
+        >
+            <i class="fas fa-arrow-left"></i>
+            Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- =========================================
+         PAYMENT SUMMARY
+    ========================================== -->
+
+    {% set total_payments = payments|length if payments else 0 %}
+    {% set pending_count = payments|selectattr('status', 'in', ['Submitted', 'Pending'])|list|length if payments else 0 %}
+    {% set verified_count = payments|selectattr('status', 'equalto', 'Verified')|list|length if payments else 0 %}
+    {% set rejected_count = payments|selectattr('status', 'equalto', 'Rejected')|list|length if payments else 0 %}
+
+    <div class="payment-stats-grid">
+
+        <!-- Total -->
+        <div class="payment-stat-card">
+
+            <div class="payment-stat-icon total-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+
+            <div>
+                <span>Total Payments</span>
+                <strong>{{ total_payments }}</strong>
+                <small>Payment records</small>
+            </div>
+
+        </div>
+
+
+        <!-- Pending -->
+        <div class="payment-stat-card pending-card">
+
+            <div class="payment-stat-icon pending-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <div>
+                <span>Pending Review</span>
+                <strong>{{ pending_count }}</strong>
+                <small>Need verification</small>
+            </div>
+
+        </div>
+
+
+        <!-- Verified -->
+        <div class="payment-stat-card verified-card">
+
+            <div class="payment-stat-icon verified-icon">
+                <i class="fas fa-circle-check"></i>
+            </div>
+
+            <div>
+                <span>Verified</span>
+                <strong>{{ verified_count }}</strong>
+                <small>Approved payments</small>
+            </div>
+
+        </div>
+
+
+        <!-- Rejected -->
+        <div class="payment-stat-card rejected-card">
+
+            <div class="payment-stat-icon rejected-icon">
+                <i class="fas fa-circle-xmark"></i>
+            </div>
+
+            <div>
+                <span>Rejected</span>
+                <strong>{{ rejected_count }}</strong>
+                <small>Rejected payments</small>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         PAYMENT TABLE CARD
+    ========================================== -->
+
+    <div class="payment-card">
+
+        <div class="payment-card-header">
+
+            <div>
+
+                <span class="card-eyebrow">
+                    PAYMENT RECORDS
+                </span>
+
+                <h2>
+                    Submitted Payments
+                </h2>
+
+                <p>
+                    Verify student transactions using the uploaded receipts.
+                </p>
+
+            </div>
+
+            <div class="payment-count">
+                <i class="fas fa-list"></i>
+                {{ total_payments }} Records
+            </div>
+
+        </div>
+
+
+        {% if payments %}
+
+        <div class="payment-table-wrapper">
+
+            <table class="payment-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>
+                            <i class="fas fa-user"></i>
+                            Student
+                        </th>
+
+                        <th>
+                            <i class="fas fa-calendar-check"></i>
+                            Event
+                        </th>
+
+                        <th>
+                            <i class="fas fa-indian-rupee-sign"></i>
+                            Amount
+                        </th>
+
+                        <th>
+                            <i class="fas fa-file-invoice"></i>
+                            Receipt
+                        </th>
+
+                        <th>
+                            <i class="fas fa-circle-info"></i>
+                            Status
+                        </th>
+
+                        <th>
+                            <i class="fas fa-sliders"></i>
+                            Action
+                        </th>
+
+                        <th>
+                            <i class="fas fa-file-pdf"></i>
+                            Registration
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for p in payments %}
+
+                    <tr>
+
+                        <!-- Number -->
+                        <td>
+
+                            <span class="payment-number">
+                                {{ loop.index }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Student -->
+                        <td>
+
+                            <div class="student-payment">
+
+                                <div class="student-payment-avatar">
+                                    {{ (p.full_name or 'U')[0]|upper }}
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ p.full_name or 'Unknown Student' }}
+                                    </strong>
+
+                                    {% if p.email %}
+                                        <small>
+                                            {{ p.email }}
+                                        </small>
+                                    {% else %}
+                                        <small>
+                                            Student account
+                                        </small>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Event -->
+                        <td>
+
+                            <div class="event-payment">
+
+                                <i class="fas fa-calendar-days"></i>
+
+                                <span>
+                                    {{ p.event_name or 'Unknown Event' }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Amount -->
+                        <td>
+
+                            <div class="payment-amount">
+
+                                ₹{{ "%.2f"|format((p.amount or 0)|float) }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Receipt -->
+                        <td>
+
+                            {% if p.receipt_path %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'static',
+                                        filename=p.receipt_path
+                                    ) }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="receipt-btn"
+                                >
+
+                                    <i class="fas fa-file-invoice"></i>
+
+                                    View Receipt
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="no-receipt">
+                                    <i class="fas fa-file-circle-xmark"></i>
+                                    No Receipt
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Status -->
+                        <td>
+
+                            {% if p.status == 'Verified' %}
+
+                                <span class="payment-status status-verified">
+
+                                    <i class="fas fa-circle-check"></i>
+
+                                    Verified
+
+                                </span>
+
+                            {% elif p.status == 'Rejected' %}
+
+                                <span class="payment-status status-rejected">
+
+                                    <i class="fas fa-circle-xmark"></i>
+
+                                    Rejected
+
+                                </span>
+
+                            {% elif p.status in ['Submitted', 'Pending'] %}
+
+                                <span class="payment-status status-pending">
+
+                                    <i class="fas fa-clock"></i>
+
+                                    {{ p.status }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="payment-status status-unknown">
+
+                                    <i class="fas fa-circle-question"></i>
+
+                                    {{ p.status or 'Unknown' }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Action -->
+                        <td>
+
+                            {% if p.status in ['Submitted', 'Pending'] %}
+
+                                <div class="payment-actions">
+
+                                    <!-- Verify -->
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'payment_action',
+                                            pid=p.id,
+                                            action='verify'
+                                        ) }}"
+                                        onsubmit="return confirmVerify();"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="payment-action-btn verify-btn"
+                                        >
+
+                                            <i class="fas fa-check"></i>
+
+                                            Verify
+
+                                        </button>
+
+                                    </form>
+
+
+                                    <!-- Reject -->
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'payment_action',
+                                            pid=p.id,
+                                            action='reject'
+                                        ) }}"
+                                        onsubmit="return confirmReject();"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="payment-action-btn reject-btn"
+                                        >
+
+                                            <i class="fas fa-xmark"></i>
+
+                                            Reject
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            {% else %}
+
+                                <span class="completed-action">
+
+                                    <i class="fas fa-check-double"></i>
+
+                                    Complete
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Registration PDF -->
+                        <td>
+
+                            {% set reg_id =
+                                p.registration_id
+                                if p.registration_id is defined
+                                else p.id
+                            %}
+
+                            {% if reg_id %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'registration_pdf',
+                                        rid=reg_id
+                                    ) }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="pdf-btn"
+                                >
+
+                                    <i class="fas fa-file-pdf"></i>
+
+                                    PDF
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="not-available">
+                                    Not Available
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Table Footer -->
+
+        <div class="payment-table-footer">
+
+            <div>
+
+                <i class="fas fa-shield-halved"></i>
+
+                Payment verification should be completed carefully
+                before approving a registration.
+
+            </div>
+
+            <strong>
+                {{ total_payments }} total records
+            </strong>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =========================================
+             EMPTY STATE
+        ========================================== -->
+
+        <div class="payment-empty-state">
+
+            <div class="empty-payment-icon">
+
+                <i class="fas fa-credit-card"></i>
+
+            </div>
+
+            <span class="empty-eyebrow">
+                ALL CLEAR
+            </span>
+
+            <h3>
+                No payments to verify
+            </h3>
+
+            <p>
+                There are currently no submitted student payments
+                waiting for verification.
+            </p>
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="empty-dashboard-btn"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+<style>
+
+/* =====================================================
+   PAYMENT PAGE
+===================================================== */
+
+.payment-page {
+    width: min(1500px, 100%);
+    margin: 0 auto;
+    padding: 35px 22px 60px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+
+.payment-header-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+
+.payment-header-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #8b5cf6
+    );
+
+    color: white;
+    font-size: 25px;
+
+    box-shadow:
+        0 15px 35px rgba(99,102,241,0.25);
+}
+
+
+.payment-eyebrow,
+.card-eyebrow,
+.empty-eyebrow {
+    display: block;
+    color: #818cf8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    margin-bottom: 5px;
+}
+
+
+.payment-header h1 {
+    color: #f8fafc;
+    font-size: 32px;
+    font-weight: 850;
+    margin: 0 0 7px;
+}
+
+
+.payment-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 13px;
+}
+
+
+.payment-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 16px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    color: #cbd5e1;
+
+    background: rgba(30,41,59,0.65);
+
+    border: 1px solid rgba(148,163,184,0.14);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition: 0.25s ease;
+}
+
+
+.payment-back-btn:hover {
+    color: white;
+    transform: translateY(-2px);
+    border-color: rgba(129,140,248,0.35);
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.payment-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+
+.payment-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background: rgba(15,23,42,0.78);
+
+    border: 1px solid rgba(148,163,184,0.10);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.16);
+
+    transition: 0.25s ease;
+}
+
+
+.payment-stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(129,140,248,0.25);
+}
+
+
+.payment-stat-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 18px;
+}
+
+
+.total-icon {
+    color: #a5b4fc;
+    background: rgba(99,102,241,0.12);
+}
+
+
+.pending-icon {
+    color: #fbbf24;
+    background: rgba(245,158,11,0.12);
+}
+
+
+.verified-icon {
+    color: #4ade80;
+    background: rgba(34,197,94,0.12);
+}
+
+
+.rejected-icon {
+    color: #fb7185;
+    background: rgba(244,63,94,0.12);
+}
+
+
+.payment-stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+
+.payment-stat-card strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 25px;
+    font-weight: 850;
+    line-height: 1.1;
+}
+
+
+.payment-stat-card small {
+    color: #475569;
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   MAIN CARD
+===================================================== */
+
+.payment-card {
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background: rgba(15,23,42,0.86);
+
+    border: 1px solid rgba(148,163,184,0.11);
+
+    box-shadow: 0 25px 70px rgba(0,0,0,0.20);
+
+    backdrop-filter: blur(18px);
+}
+
+
+.payment-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    padding: 25px 28px;
+
+    border-bottom: 1px solid rgba(148,163,184,0.09);
+}
+
+
+.payment-card-header h2 {
+    color: #f8fafc;
+    font-size: 21px;
+    font-weight: 800;
+    margin: 0 0 5px;
+}
+
+
+.payment-card-header p {
+    color: #64748b;
+    font-size: 12px;
+    margin: 0;
+}
+
+
+.payment-count {
+    white-space: nowrap;
+
+    padding: 9px 13px;
+
+    border-radius: 10px;
+
+    background: rgba(99,102,241,0.09);
+
+    border: 1px solid rgba(99,102,241,0.14);
+
+    color: #a5b4fc;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.payment-count i {
+    margin-right: 5px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.payment-table-wrapper {
+    overflow-x: auto;
+}
+
+
+.payment-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+}
+
+
+.payment-table thead {
+    background: rgba(30,41,59,0.45);
+}
+
+
+.payment-table th {
+    padding: 14px 15px;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid rgba(148,163,184,0.08);
+}
+
+
+.payment-table th i {
+    margin-right: 4px;
+    color: #818cf8;
+}
+
+
+.payment-table td {
+    padding: 17px 15px;
+
+    color: #cbd5e1;
+
+    font-size: 12px;
+
+    border-bottom: 1px solid rgba(148,163,184,0.07);
+
+    vertical-align: middle;
+}
+
+
+.payment-table tbody tr {
+    transition: 0.20s ease;
+}
+
+
+.payment-table tbody tr:hover {
+    background: rgba(99,102,241,0.035);
+}
+
+
+.payment-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Number */
+
+.payment-number {
+    width: 30px;
+    height: 30px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: rgba(148,163,184,0.07);
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   STUDENT
+===================================================== */
+
+.student-payment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 180px;
+}
+
+
+.student-payment-avatar {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #8b5cf6
+    );
+
+    color: white;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.student-payment strong {
+    display: block;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.student-payment small {
+    display: block;
+    color: #475569;
+    font-size: 10px;
+    margin-top: 3px;
+
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   EVENT
+===================================================== */
+
+.event-payment {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 160px;
+}
+
+
+.event-payment i {
+    color: #818cf8;
+}
+
+
+.event-payment span {
+    color: #cbd5e1;
+}
+
+
+/* =====================================================
+   AMOUNT
+===================================================== */
+
+.payment-amount {
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   RECEIPT
+===================================================== */
+
+.receipt-btn,
+.pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 8px 11px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    transition: 0.2s ease;
+}
+
+
+.receipt-btn {
+    color: #a5b4fc;
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.14);
+}
+
+
+.receipt-btn:hover {
+    color: white;
+    background: rgba(99,102,241,0.16);
+}
+
+
+.pdf-btn {
+    color: #c4b5fd;
+    background: rgba(139,92,246,0.08);
+    border: 1px solid rgba(139,92,246,0.14);
+}
+
+
+.pdf-btn:hover {
+    color: white;
+    background: rgba(139,92,246,0.16);
+}
+
+
+.no-receipt,
+.not-available {
+    color: #475569;
+    font-size: 10px;
+}
+
+
+.no-receipt i {
+    margin-right: 4px;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.payment-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 7px 9px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.status-verified {
+    color: #86efac;
+    background: rgba(34,197,94,0.10);
+    border: 1px solid rgba(34,197,94,0.14);
+}
+
+
+.status-rejected {
+    color: #fda4af;
+    background: rgba(244,63,94,0.10);
+    border: 1px solid rgba(244,63,94,0.14);
+}
+
+
+.status-pending {
+    color: #fcd34d;
+    background: rgba(245,158,11,0.10);
+    border: 1px solid rgba(245,158,11,0.14);
+}
+
+
+.status-unknown {
+    color: #94a3b8;
+    background: rgba(148,163,184,0.08);
+    border: 1px solid rgba(148,163,184,0.10);
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.payment-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+
+.payment-actions form {
+    margin: 0;
+}
+
+
+.payment-action-btn {
+    border: none;
+
+    padding: 8px 10px;
+
+    border-radius: 9px;
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.verify-btn {
+    background: rgba(34,197,94,0.13);
+    color: #86efac;
+    border: 1px solid rgba(34,197,94,0.16);
+}
+
+
+.verify-btn:hover {
+    background: rgba(34,197,94,0.22);
+    transform: translateY(-1px);
+}
+
+
+.reject-btn {
+    background: rgba(244,63,94,0.12);
+    color: #fda4af;
+    border: 1px solid rgba(244,63,94,0.16);
+}
+
+
+.reject-btn:hover {
+    background: rgba(244,63,94,0.22);
+    transform: translateY(-1px);
+}
+
+
+.completed-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #475569;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.payment-table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    padding: 15px 25px;
+
+    border-top: 1px solid rgba(148,163,184,0.08);
+
+    color: #475569;
+
+    font-size: 10px;
+}
+
+
+.payment-table-footer i {
+    color: #6366f1;
+    margin-right: 5px;
+}
+
+
+.payment-table-footer strong {
+    color: #64748b;
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.payment-empty-state {
+    padding: 75px 25px;
+
+    text-align: center;
+}
+
+
+.empty-payment-icon {
+    width: 78px;
+    height: 78px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 22px;
+
+    background: rgba(99,102,241,0.08);
+
+    border: 1px solid rgba(99,102,241,0.12);
+
+    color: #818cf8;
+
+    font-size: 28px;
+}
+
+
+.payment-empty-state h3 {
+    color: #e2e8f0;
+    font-size: 21px;
+    font-weight: 800;
+    margin: 7px 0 8px;
+}
+
+
+.payment-empty-state p {
+    max-width: 440px;
+
+    margin: 0 auto 22px;
+
+    color: #64748b;
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+.empty-dashboard-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 10px 15px;
+
+    border-radius: 10px;
+
+    color: #c7d2fe;
+
+    background: rgba(99,102,241,0.10);
+
+    border: 1px solid rgba(99,102,241,0.15);
+
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    transition: 0.2s ease;
+}
+
+
+.empty-dashboard-btn:hover {
+    color: white;
+    transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .payment-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .payment-page {
+        padding: 25px 14px 45px;
+    }
+
+    .payment-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .payment-header h1 {
+        font-size: 26px;
+    }
+
+    .payment-header-content {
+        align-items: flex-start;
+    }
+
+    .payment-header-icon {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        font-size: 20px;
+    }
+
+    .payment-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .payment-table-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .payment-header-content {
+        gap: 12px;
+    }
+
+    .payment-header-icon {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+        border-radius: 13px;
+    }
+
+    .payment-header h1 {
+        font-size: 22px;
+    }
+
+    .payment-header p {
+        font-size: 11px;
+    }
+
+    .payment-stat-card {
+        padding: 16px;
+    }
+
+    .payment-card {
+        border-radius: 17px;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+/* =====================================================
+   PAYMENT CONFIRMATIONS
+===================================================== */
+
+function confirmVerify() {
+
+    return confirm(
+        "Are you sure you want to VERIFY this payment?\n\n" +
+        "Make sure the payment receipt has been checked."
+    );
+
+}
+
+
+function confirmReject() {
+
+    return confirm(
+        "Are you sure you want to REJECT this payment?\n\n" +
+        "The submitted payment will be marked as rejected."
+    );
+
+}
+
+
+/* =====================================================
+   ACTION LOADING STATE
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const actionForms = document.querySelectorAll(
+        ".payment-actions form"
+    );
+
+    actionForms.forEach(function (form) {
+
+        form.addEventListener("submit", function () {
+
+            const button = form.querySelector("button");
+
+            if (!button) {
+                return;
+            }
+
+            button.disabled = true;
+
+            button.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

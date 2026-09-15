@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Receipt Submitted - College Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+    <div class="page-head">
+        <span class="eyebrow">Payment</span>
+        <h1>Receipt Submitted</h1>
+
+        <p>
+            Thank you! Your receipt has been uploaded and your payment
+            has been marked as <strong>Submitted</strong>.
+            The admin will verify it shortly.
+        </p>
+    </div>
+
+
+    <div class="card">
+
+        <h2>Submitted Payments</h2>
+
+        {% if payments %}
+
+            <ul class="payment-list">
+
+                {% for p in payments %}
+
+                    <li>
+                        <strong>{{ p.event_name }}</strong>
+                        —
+                        ₹{{ p.amount or 0 }}
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No payment details available.</p>
+
+        {% endif %}
+
+
+        <!-- Uploaded Receipt -->
+        {% if receipt_path %}
+
+            <div class="receipt-section">
+
+                <p>
+                    <strong>Uploaded Receipt:</strong>
+                </p>
+
+                <a
+                    href="{{ url_for('static', filename=receipt_path) }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-secondary"
+                >
+                    View / Download Receipt
+                </a>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- QR Codes -->
+        {% if qr_images %}
+
+            <div class="qr-section">
+
+                <h3>Scan to Pay</h3>
+
+                <p>
+                    If payment has not yet been completed,
+                    scan one of the available UPI QR codes.
+                </p>
+
+                <div class="qr-list">
+
+                    {% for qr in qr_images %}
+
+                        <img
+                            src="{{ url_for('static', filename=qr) }}"
+                            alt="UPI Payment QR Code"
+                            class="qr-code"
+                            loading="lazy"
+                        >
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Dashboard Button -->
+    <div class="section-actions">
+
+        <a
+            class="btn btn-primary"
+            href="{{ url_for('student_dashboard') }}"
+        >
+            Back to Dashboard
+        </a>
+
+        <a
+            class="btn btn-secondary"
+            href="{{ url_for('event_list') }}"
+        >
+            Browse Events
+        </a>
+
+    </div>
+
+</section>
+
+
+<style>
+.payment-list {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.payment-list li {
+    margin-bottom: 0.5rem;
+}
+
+.receipt-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+.qr-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+.qr-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.qr-code {
+    width: 160px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.section-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+</style>
+
+{% endblock %}

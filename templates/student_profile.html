@@ -1,0 +1,1586 @@
+{% extends "base.html" %}
+
+{% block title %}Student Profile - College Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="student-profile-page">
+
+    <div class="profile-container">
+
+        <!-- =====================================================
+             PROFILE HEADER
+        ====================================================== -->
+
+        <div class="profile-hero">
+
+            <div class="profile-avatar">
+                {{ student.full_name[0]|upper
+                   if student and student.full_name
+                   else 'S' }}
+            </div>
+
+            <div class="profile-main-info">
+
+                <span class="profile-eyebrow">
+                    <i class="fas fa-user-graduate"></i>
+                    STUDENT PROFILE
+                </span>
+
+                <h1>
+                    {{ student.full_name if student else 'Student' }}
+                </h1>
+
+                <p>
+                    <i class="fas fa-id-card"></i>
+
+                    {{ student.register_number
+                       if student and student.register_number
+                       else 'Register number not available' }}
+                </p>
+
+            </div>
+
+            <div class="profile-status">
+
+                <span class="active-dot"></span>
+
+                Active Student
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             PROFILE CONTENT
+        ====================================================== -->
+
+        <div class="profile-grid">
+
+            <!-- =================================================
+                 LEFT COLUMN
+            ================================================== -->
+
+            <div class="profile-left">
+
+
+                <!-- =============================================
+                     PERSONAL INFORMATION
+                ============================================== -->
+
+                <div class="profile-card">
+
+                    <div class="card-header-custom">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon purple">
+                                <i class="fas fa-user"></i>
+                            </div>
+
+                            <div>
+                                <span>PROFILE</span>
+                                <h2>Personal Information</h2>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-list">
+
+                        <!-- Full Name -->
+                        <div class="information-item">
+
+                            <div class="info-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+
+                            <div>
+                                <span class="info-label">
+                                    Full Name
+                                </span>
+
+                                <strong>
+                                    {{ student.full_name
+                                       if student and student.full_name
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Register Number -->
+                        <div class="information-item">
+
+                            <div class="info-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+
+                            <div>
+                                <span class="info-label">
+                                    Register Number
+                                </span>
+
+                                <strong>
+                                    {{ student.register_number
+                                       if student and student.register_number
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="information-item">
+
+                            <div class="info-icon blue">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+
+                            <div>
+                                <span class="info-label">
+                                    Email Address
+                                </span>
+
+                                <strong>
+                                    {{ student.email
+                                       if student and student.email
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Mobile -->
+                        <div class="information-item">
+
+                            <div class="info-icon green">
+                                <i class="fas fa-phone"></i>
+                            </div>
+
+                            <div>
+                                <span class="info-label">
+                                    Mobile Number
+                                </span>
+
+                                <strong>
+                                    {{ student.mobile
+                                       if student and student.mobile
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     ACADEMIC INFORMATION
+                ============================================== -->
+
+                <div class="profile-card">
+
+                    <div class="card-header-custom">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon blue">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+
+                            <div>
+                                <span>EDUCATION</span>
+                                <h2>Academic Information</h2>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="academic-grid">
+
+                        <!-- College -->
+                        <div class="academic-item">
+
+                            <div class="academic-icon">
+                                <i class="fas fa-building-columns"></i>
+                            </div>
+
+                            <div>
+                                <span>College</span>
+
+                                <strong>
+                                    {{ student.college_name
+                                       if student and student.college_name
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Department -->
+                        <div class="academic-item">
+
+                            <div class="academic-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+
+                            <div>
+                                <span>Department</span>
+
+                                <strong>
+                                    {{ student.department
+                                       if student and student.department
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Course -->
+                        <div class="academic-item">
+
+                            <div class="academic-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+
+                            <div>
+                                <span>Course</span>
+
+                                <strong>
+                                    {{ student.course
+                                       if student and student.course
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Year -->
+                        <div class="academic-item">
+
+                            <div class="academic-icon">
+                                <i class="fas fa-calendar-days"></i>
+                            </div>
+
+                            <div>
+                                <span>Year / Semester</span>
+
+                                <strong>
+                                    {{ student.year_semester
+                                       if student and student.year_semester
+                                       else 'Not available' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     EVENTS ATTENDED
+                ============================================== -->
+
+                <div class="profile-card">
+
+                    <div class="card-header-custom">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon green">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+
+                            <div>
+                                <span>ACTIVITY HISTORY</span>
+                                <h2>Events Attended</h2>
+                            </div>
+
+                        </div>
+
+                        {% if events_attended %}
+
+                        <span class="count-badge">
+                            {{ events_attended|length }}
+                            Event{% if events_attended|length != 1 %}s{% endif %}
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if events_attended %}
+
+                    <div class="attendance-list">
+
+                        {% for event in events_attended %}
+
+                        <div class="attendance-item">
+
+                            <div class="attendance-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+
+                            <div class="attendance-info">
+
+                                <strong>
+                                    {{ event.event_name or 'Unknown Event' }}
+                                </strong>
+
+                                <span>
+                                    <i class="fas fa-calendar"></i>
+                                    {{ event.event_date or 'Date not available' }}
+                                </span>
+
+                            </div>
+
+                            <span class="attended-badge">
+                                <i class="fas fa-circle-check"></i>
+                                {{ event.status or 'Attended' }}
+                            </span>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="empty-events">
+
+                        <div class="empty-events-icon">
+                            <i class="fas fa-calendar-xmark"></i>
+                        </div>
+
+                        <h3>No Events Attended</h3>
+
+                        <p>
+                            Participate in college events to build
+                            your activity history and earn points.
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 RIGHT COLUMN
+            ================================================== -->
+
+            <div class="profile-right">
+
+
+                <!-- =============================================
+                     ACHIEVEMENT CARD
+                ============================================== -->
+
+                <div class="achievement-card">
+
+                    <div class="achievement-top">
+
+                        <div class="achievement-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+
+                        <div>
+                            <span>
+                                ACHIEVEMENTS
+                            </span>
+
+                            <h2>
+                                Student Progress
+                            </h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="achievement-stats">
+
+                        <!-- Points -->
+                        <div class="achievement-stat">
+
+                            <strong>
+                                {{ points.points
+                                   if points and points.points is not none
+                                   else 0 }}
+                            </strong>
+
+                            <span>
+                                Total Points
+                            </span>
+
+                        </div>
+
+
+                        <!-- Events -->
+                        <div class="achievement-stat">
+
+                            <strong>
+                                {{ points.total_events
+                                   if points and points.total_events is not none
+                                   else 0 }}
+                            </strong>
+
+                            <span>
+                                Events Attended
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="achievement-message">
+
+                        <i class="fas fa-star"></i>
+
+                        <span>
+                            Keep participating to improve your
+                            leaderboard ranking!
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     PARTICIPATION SUMMARY
+                ============================================== -->
+
+                <div class="profile-card">
+
+                    <div class="card-header-custom">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon gold">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+
+                            <div>
+                                <span>SUMMARY</span>
+                                <h2>Participation</h2>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-list">
+
+                        <div class="summary-row">
+
+                            <span>
+                                <i class="fas fa-ticket"></i>
+                                Total Registrations
+                            </span>
+
+                            <strong>
+                                {{ points.total_events
+                                   if points and points.total_events is not none
+                                   else 0 }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <span>
+                                <i class="fas fa-calendar-check"></i>
+                                Events Completed
+                            </span>
+
+                            <strong class="success-text">
+                                {{ events_attended|length
+                                   if events_attended
+                                   else 0 }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <span>
+                                <i class="fas fa-star"></i>
+                                Achievement Points
+                            </span>
+
+                            <strong class="points-text">
+                                {{ points.points
+                                   if points and points.points is not none
+                                   else 0 }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     QUICK ACTIONS
+                ============================================== -->
+
+                <div class="profile-card">
+
+                    <div class="card-header-custom">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon purple">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+
+                            <div>
+                                <span>QUICK ACTIONS</span>
+                                <h2>Explore</h2>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-actions">
+
+                        <a
+                            href="{{ url_for('event_list') }}"
+                            class="profile-action"
+                        >
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Browse Events</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+
+                        <a
+                            href="{{ url_for('calendar_view') }}"
+                            class="profile-action"
+                        >
+                            <i class="fas fa-calendar-days"></i>
+                            <span>Event Calendar</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+
+                        <a
+                            href="{{ url_for('leaderboard') }}"
+                            class="profile-action"
+                        >
+                            <i class="fas fa-trophy"></i>
+                            <span>View Leaderboard</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+
+                        <a
+                            href="{{ url_for('wishlist') }}"
+                            class="profile-action"
+                        >
+                            <i class="fas fa-heart"></i>
+                            <span>My Wishlist</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     PROFILE NOTE
+                ============================================== -->
+
+                <div class="profile-note">
+
+                    <div class="note-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Account Information
+                        </strong>
+
+                        <p>
+                            Your student information is used for
+                            event registration and participation
+                            tracking.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.student-profile-page {
+    min-height: calc(100vh - 80px);
+    padding: 45px 20px 70px;
+}
+
+.profile-container {
+    width: min(1180px, 100%);
+    margin: auto;
+}
+
+
+/* =========================================================
+   PROFILE HERO
+========================================================= */
+
+.profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding: 28px;
+
+    margin-bottom: 24px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30,41,59,.92),
+            rgba(15,23,42,.88)
+        );
+
+    border: 1px solid rgba(139,92,246,.16);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.22);
+}
+
+.profile-avatar {
+    width: 82px;
+    height: 82px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    color: white;
+
+    font-size: 32px;
+    font-weight: 900;
+
+    box-shadow:
+        0 15px 35px rgba(124,58,237,.28);
+}
+
+.profile-main-info {
+    flex: 1;
+}
+
+.profile-eyebrow {
+    color: #a78bfa;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 1.7px;
+}
+
+.profile-main-info h1 {
+    margin: 5px 0 7px;
+
+    color: #f8fafc;
+
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.profile-main-info p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+.profile-main-info p i {
+    margin-right: 5px;
+
+    color: #8b5cf6;
+}
+
+.profile-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    border-radius: 10px;
+
+    background: rgba(34,197,94,.08);
+
+    border: 1px solid rgba(34,197,94,.14);
+
+    color: #4ade80;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.active-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #4ade80;
+
+    box-shadow: 0 0 10px rgba(74,222,128,.7);
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.profile-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.55fr)
+        minmax(300px, .85fr);
+
+    gap: 20px;
+}
+
+.profile-left,
+.profile-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* =========================================================
+   COMMON CARD
+========================================================= */
+
+.profile-card {
+    overflow: hidden;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.91),
+            rgba(30,41,59,.70)
+        );
+
+    border: 1px solid rgba(148,163,184,.11);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.18);
+}
+
+.card-header-custom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px;
+
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-heading > div:last-child span {
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.3px;
+}
+
+.card-heading h2 {
+    margin: 3px 0 0;
+
+    color: #f1f5f9;
+
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.heading-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    font-size: 15px;
+}
+
+.heading-icon.purple {
+    background: rgba(139,92,246,.12);
+    color: #a78bfa;
+}
+
+.heading-icon.blue {
+    background: rgba(59,130,246,.11);
+    color: #60a5fa;
+}
+
+.heading-icon.green {
+    background: rgba(34,197,94,.10);
+    color: #4ade80;
+}
+
+.heading-icon.gold {
+    background: rgba(245,158,11,.11);
+    color: #fbbf24;
+}
+
+
+/* =========================================================
+   INFORMATION
+========================================================= */
+
+.information-list {
+    padding: 6px 20px 12px;
+}
+
+.information-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid rgba(255,255,255,.055);
+}
+
+.information-item:last-child {
+    border-bottom: 0;
+}
+
+.info-icon {
+    width: 37px;
+    height: 37px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: rgba(139,92,246,.09);
+
+    color: #a78bfa;
+
+    font-size: 13px;
+}
+
+.info-icon.blue {
+    background: rgba(59,130,246,.09);
+    color: #60a5fa;
+}
+
+.info-icon.green {
+    background: rgba(34,197,94,.09);
+    color: #4ade80;
+}
+
+.info-label {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.information-item strong {
+    display: block;
+
+    color: #dbe4ef;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   ACADEMIC
+========================================================= */
+
+.academic-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    padding: 20px;
+}
+
+.academic-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 14px;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,.025);
+
+    border: 1px solid rgba(255,255,255,.055);
+}
+
+.academic-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: rgba(59,130,246,.08);
+
+    color: #60a5fa;
+
+    font-size: 12px;
+}
+
+.academic-item span {
+    display: block;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    margin-bottom: 4px;
+}
+
+.academic-item strong {
+    display: block;
+
+    color: #dbe4ef;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ACHIEVEMENT
+========================================================= */
+
+.achievement-card {
+    padding: 21px;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(88,28,135,.32),
+            rgba(30,41,59,.88)
+        );
+
+    border: 1px solid rgba(167,139,250,.20);
+
+    box-shadow:
+        0 18px 40px rgba(76,29,149,.15);
+}
+
+.achievement-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.achievement-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: rgba(245,158,11,.12);
+
+    color: #fbbf24;
+
+    font-size: 19px;
+}
+
+.achievement-top span {
+    color: #c4b5fd;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.3px;
+}
+
+.achievement-top h2 {
+    margin: 3px 0 0;
+
+    color: #f8fafc;
+
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.achievement-stats {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    margin-top: 22px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.achievement-stat {
+    text-align: center;
+}
+
+.achievement-stat + .achievement-stat {
+    border-left: 1px solid rgba(255,255,255,.08);
+}
+
+.achievement-stat strong {
+    display: block;
+
+    color: #f8fafc;
+
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.achievement-stat span {
+    color: #94a3b8;
+
+    font-size: 9px;
+}
+
+.achievement-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 18px;
+    padding: 10px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.035);
+
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+.achievement-message i {
+    color: #fbbf24;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.summary-list {
+    padding: 10px 20px;
+}
+
+.summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid rgba(255,255,255,.055);
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.summary-row:last-child {
+    border-bottom: 0;
+}
+
+.summary-row span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.summary-row span i {
+    color: #8b5cf6;
+}
+
+.summary-row strong {
+    color: #f1f5f9;
+
+    font-size: 14px;
+}
+
+.success-text {
+    color: #4ade80 !important;
+}
+
+.points-text {
+    color: #fbbf24 !important;
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+.count-badge {
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: rgba(34,197,94,.09);
+
+    color: #4ade80;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.attendance-list {
+    padding: 8px 20px 15px;
+}
+
+.attendance-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid rgba(255,255,255,.055);
+}
+
+.attendance-item:last-child {
+    border-bottom: 0;
+}
+
+.attendance-icon {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: rgba(34,197,94,.10);
+
+    color: #4ade80;
+
+    font-size: 12px;
+}
+
+.attendance-info {
+    flex: 1;
+}
+
+.attendance-info strong {
+    display: block;
+
+    color: #e2e8f0;
+
+    font-size: 12px;
+}
+
+.attendance-info span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+.attendance-info span i {
+    margin-right: 4px;
+
+    color: #8b5cf6;
+}
+
+.attended-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    background: rgba(34,197,94,.09);
+
+    color: #4ade80;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty-events {
+    padding: 35px 20px;
+
+    text-align: center;
+}
+
+.empty-events-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: auto auto 12px;
+
+    border-radius: 15px;
+
+    background: rgba(139,92,246,.08);
+
+    color: #a78bfa;
+
+    font-size: 19px;
+}
+
+.empty-events h3 {
+    margin: 0 0 5px;
+
+    color: #e2e8f0;
+
+    font-size: 14px;
+}
+
+.empty-events p {
+    max-width: 380px;
+
+    margin: auto;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.profile-actions {
+    padding: 8px 15px 15px;
+}
+
+.profile-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 5px;
+
+    color: #94a3b8;
+
+    text-decoration: none;
+
+    border-bottom: 1px solid rgba(255,255,255,.055);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+.profile-action:last-child {
+    border-bottom: 0;
+}
+
+.profile-action > i:first-child {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: rgba(139,92,246,.08);
+
+    color: #a78bfa;
+}
+
+.profile-action > i:last-child {
+    margin-left: auto;
+
+    color: #475569;
+}
+
+.profile-action:hover {
+    padding-left: 5px;
+
+    color: #f1f5f9;
+}
+
+.profile-action:hover > i:last-child {
+    color: #a78bfa;
+
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.profile-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    background: rgba(59,130,246,.045);
+
+    border: 1px solid rgba(59,130,246,.10);
+}
+
+.note-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: rgba(59,130,246,.09);
+
+    color: #60a5fa;
+
+    font-size: 12px;
+}
+
+.profile-note strong {
+    display: block;
+
+    color: #dbeafe;
+
+    font-size: 11px;
+}
+
+.profile-note p {
+    margin: 3px 0 0;
+
+    color: #64748b;
+
+    font-size: 9px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .student-profile-page {
+        padding: 30px 14px 50px;
+    }
+
+    .profile-hero {
+        flex-wrap: wrap;
+
+        padding: 20px;
+    }
+
+    .profile-avatar {
+        width: 65px;
+        height: 65px;
+
+        border-radius: 19px;
+
+        font-size: 25px;
+    }
+
+    .profile-main-info h1 {
+        font-size: 24px;
+    }
+
+    .profile-status {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+    .academic-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-header-custom {
+        padding: 16px;
+    }
+
+    .information-list,
+    .attendance-list {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .profile-main-info h1 {
+        font-size: 21px;
+    }
+
+    .profile-eyebrow {
+        font-size: 8px;
+    }
+
+    .achievement-stats {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .achievement-stat + .achievement-stat {
+        padding-top: 15px;
+
+        border-left: 0;
+        border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .attendance-item {
+        align-items: flex-start;
+    }
+
+    .attended-badge {
+        display: none;
+    }
+
+}
+
+</style>
+
+{% endblock %}

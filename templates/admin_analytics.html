@@ -1,0 +1,652 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - College Events Hub{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid analytics-page">
+
+```
+<!-- =========================================
+     PAGE HEADER
+     ========================================= -->
+<div class="analytics-header mb-4">
+    <div>
+        <span class="analytics-eyebrow">ADMIN ANALYTICS</span>
+
+        <h1 class="analytics-title">
+            Analytics Dashboard
+        </h1>
+
+        <p class="analytics-subtitle">
+            Monitor students, events, registrations, payments and attendance
+            from one place.
+        </p>
+    </div>
+
+    <div class="analytics-status">
+        <i class="fas fa-chart-line"></i>
+        Live Overview
+    </div>
+</div>
+
+
+<!-- =========================================
+     KEY METRICS
+     ========================================= -->
+<div class="row g-4 mb-4">
+
+    <!-- Total Students -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="analytics-card metric-card students-card h-100">
+
+            <div class="metric-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+
+            <div class="metric-content">
+                <span class="metric-label">
+                    Total Students
+                </span>
+
+                <h2 class="metric-value">
+                    {{ stats.total_students|default(0) }}
+                </h2>
+
+                <span class="metric-description">
+                    Registered students
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Total Events -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="analytics-card metric-card events-card h-100">
+
+            <div class="metric-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+
+            <div class="metric-content">
+                <span class="metric-label">
+                    Total Events
+                </span>
+
+                <h2 class="metric-value">
+                    {{ stats.total_events|default(0) }}
+                </h2>
+
+                <span class="metric-description">
+                    Available college events
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Registrations -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="analytics-card metric-card registrations-card h-100">
+
+            <div class="metric-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+
+            <div class="metric-content">
+                <span class="metric-label">
+                    Registrations
+                </span>
+
+                <h2 class="metric-value">
+                    {{ stats.total_registrations|default(0) }}
+                </h2>
+
+                <span class="metric-description">
+                    Total event registrations
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Revenue -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="analytics-card metric-card revenue-card h-100">
+
+            <div class="metric-icon">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+
+            <div class="metric-content">
+                <span class="metric-label">
+                    Total Revenue
+                </span>
+
+                <h2 class="metric-value">
+                    ₹{{ "%.0f"|format(stats.total_revenue|default(0)) }}
+                </h2>
+
+                <span class="metric-description">
+                    Verified payment revenue
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Pending Payments -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="analytics-card metric-card pending-card h-100">
+
+            <div class="metric-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <div class="metric-content">
+                <span class="metric-label">
+                    Pending Payments
+                </span>
+
+                <h2 class="metric-value">
+                    {{ stats.pending_payments|default(0) }}
+                </h2>
+
+                <span class="metric-description">
+                    Awaiting verification
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Attended -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="analytics-card metric-card attendance-card h-100">
+
+            <div class="metric-icon">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+
+            <div class="metric-content">
+                <span class="metric-label">
+                    Students Attended
+                </span>
+
+                <h2 class="metric-value">
+                    {{ stats.attended_count|default(0) }}
+                </h2>
+
+                <span class="metric-description">
+                    Confirmed attendance
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     QUICK SUMMARY
+     ========================================= -->
+<div class="row g-4 mb-4">
+
+    <!-- Registration Summary -->
+    <div class="col-lg-6">
+        <div class="analytics-panel h-100">
+
+            <div class="panel-header">
+                <div>
+                    <span class="panel-eyebrow">
+                        REGISTRATION OVERVIEW
+                    </span>
+
+                    <h4>
+                        Registration Summary
+                    </h4>
+                </div>
+
+                <div class="panel-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+
+            <div class="summary-list">
+
+                <div class="summary-item">
+                    <span>
+                        <i class="fas fa-user-plus"></i>
+                        Total Registrations
+                    </span>
+
+                    <strong>
+                        {{ stats.total_registrations|default(0) }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>
+                        <i class="fas fa-user-check"></i>
+                        Students Attended
+                    </span>
+
+                    <strong class="success-text">
+                        {{ stats.attended_count|default(0) }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>
+                        <i class="fas fa-hourglass-half"></i>
+                        Pending Payments
+                    </span>
+
+                    <strong class="warning-text">
+                        {{ stats.pending_payments|default(0) }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Financial Summary -->
+    <div class="col-lg-6">
+        <div class="analytics-panel h-100">
+
+            <div class="panel-header">
+                <div>
+                    <span class="panel-eyebrow">
+                        FINANCIAL OVERVIEW
+                    </span>
+
+                    <h4>
+                        Payment Summary
+                    </h4>
+                </div>
+
+                <div class="panel-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </div>
+
+            <div class="summary-list">
+
+                <div class="summary-item">
+                    <span>
+                        <i class="fas fa-money-bill-wave"></i>
+                        Total Revenue
+                    </span>
+
+                    <strong class="success-text">
+                        ₹{{ "%.2f"|format(stats.total_revenue|default(0)) }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>
+                        <i class="fas fa-clock"></i>
+                        Pending Payments
+                    </span>
+
+                    <strong class="warning-text">
+                        {{ stats.pending_payments|default(0) }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>
+                        <i class="fas fa-receipt"></i>
+                        Verified Transactions
+                    </span>
+
+                    <strong>
+                        {{ stats.verified_payments|default(0) }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     EVENT-WISE STATISTICS
+     ========================================= -->
+<div class="analytics-panel mb-4">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-eyebrow">
+                EVENT PERFORMANCE
+            </span>
+
+            <h4>
+                Event-wise Statistics
+            </h4>
+
+            <p>
+                Compare registrations, attendance, payments and revenue
+                for each event.
+            </p>
+        </div>
+
+        <div class="panel-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table analytics-table align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Event Name</th>
+                    <th>Registrations</th>
+                    <th>Attended</th>
+                    <th>Verified Payments</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% if event_stats %}
+
+                    {% for stat in event_stats %}
+
+                    <tr>
+
+                        <td class="table-number">
+                            {{ loop.index }}
+                        </td>
+
+                        <td>
+                            <div class="event-name">
+                                <div class="event-table-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+
+                                <strong>
+                                    {{ stat.event_name|default("Unknown Event") }}
+                                </strong>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="analytics-badge info-badge">
+                                {{ stat.registrations|default(0) }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="analytics-badge success-badge">
+                                {{ stat.attended|default(0) }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="analytics-badge warning-badge">
+                                {{ stat.verified_payments|default(0) }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong class="revenue-value">
+                                ₹{{ "%.2f"|format(stat.revenue|default(0)) }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="6">
+
+                            <div class="empty-state">
+                                <i class="fas fa-chart-bar"></i>
+
+                                <h5>
+                                    No Event Statistics
+                                </h5>
+
+                                <p>
+                                    Event statistics will appear here
+                                    once registrations are available.
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     CATEGORY-WISE STATISTICS
+     ========================================= -->
+<div class="analytics-panel mb-4">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-eyebrow">
+                CATEGORY PERFORMANCE
+            </span>
+
+            <h4>
+                Category-wise Statistics
+            </h4>
+
+            <p>
+                View event and registration performance by category.
+            </p>
+        </div>
+
+        <div class="panel-icon">
+            <i class="fas fa-layer-group"></i>
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table analytics-table align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Total Events</th>
+                    <th>Total Registrations</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% if category_stats %}
+
+                    {% for stat in category_stats %}
+
+                    <tr>
+
+                        <td class="table-number">
+                            {{ loop.index }}
+                        </td>
+
+                        <td>
+                            <div class="event-name">
+
+                                <div class="event-table-icon category-icon">
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+
+                                <strong>
+                                    {{ stat.name|default("Unknown Category") }}
+                                </strong>
+
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="analytics-badge primary-badge">
+                                {{ stat.events|default(0) }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="analytics-badge info-badge">
+                                {{ stat.registrations|default(0) }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="4">
+
+                            <div class="empty-state">
+
+                                <i class="fas fa-layer-group"></i>
+
+                                <h5>
+                                    No Category Statistics
+                                </h5>
+
+                                <p>
+                                    Category statistics will appear here
+                                    once events are created.
+                                </p>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     EXPORT REPORTS
+     ========================================= -->
+<div class="analytics-panel export-panel mb-5">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-eyebrow">
+                REPORTS
+            </span>
+
+            <h4>
+                Export Reports
+            </h4>
+
+            <p>
+                Download event and student information for further analysis.
+            </p>
+        </div>
+
+        <div class="panel-icon">
+            <i class="fas fa-file-export"></i>
+        </div>
+
+    </div>
+
+
+    <div class="export-buttons">
+
+        <a
+            href="{{ url_for('export_leaderboard') }}"
+            class="analytics-btn leaderboard-btn"
+        >
+            <i class="fas fa-trophy"></i>
+
+            <span>
+                <strong>Export Leaderboard</strong>
+                <small>Download student rankings</small>
+            </span>
+
+            <i class="fas fa-arrow-right"></i>
+        </a>
+
+
+        <a
+            href="{{ url_for('all_registrations_csv') }}"
+            class="analytics-btn csv-btn"
+        >
+            <i class="fas fa-file-csv"></i>
+
+            <span>
+                <strong>Export Registrations</strong>
+                <small>Download CSV data</small>
+            </span>
+
+            <i class="fas fa-arrow-right"></i>
+        </a>
+
+
+        <a
+            href="{{ url_for('all_registrations_pdf') }}"
+            class="analytics-btn pdf-btn"
+        >
+            <i class="fas fa-file-pdf"></i>
+
+            <span>
+                <strong>Download PDF Report</strong>
+                <small>Generate printable report</small>
+            </span>
+
+            <i class="fas fa-arrow-right"></i>
+        </a>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

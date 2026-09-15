@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Campus Events Hub{% endblock %}
+
+{% block content %}
+<div class="error-container" style="text-align: center; padding: 100px 20px;">
+    <h1 style="font-size: 48px; color: #ff7bd5; margin-bottom: 20px;">500</h1>
+    <h2 style="color: #f5f9ff; margin-bottom: 20px;">Internal Server Error</h2>
+    <p style="color: #9aa9c2; margin-bottom: 30px;">
+        Something went wrong on our end. We're working to fix it. Please try again later.
+    </p>
+    <a href="{{ url_for('home') }}" class="btn btn-primary" style="margin-top: 20px;">
+        <i class="fas fa-home"></i> Back to Home
+    </a>
+</div>
+{% endblock %}

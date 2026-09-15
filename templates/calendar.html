@@ -1,0 +1,2183 @@
+{% extends "base.html" %}
+
+{% block title %}Event Calendar - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section calendar-page">
+
+    <!-- ============================= -->
+    <!-- PAGE HEADER -->
+    <!-- ============================= -->
+
+    <div class="calendar-page-header">
+
+        <div class="calendar-header-content">
+
+            <div class="calendar-header-icon">
+                <i class="fas fa-calendar-days"></i>
+            </div>
+
+            <div>
+                <span class="eyebrow calendar-eyebrow">
+                    <i class="fas fa-clock"></i>
+                    Event Schedule
+                </span>
+
+                <h1>Event Calendar</h1>
+
+                <p>
+                    Explore upcoming college events, view their schedules,
+                    venues and event details in one place.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="calendar-header-actions">
+
+            <a href="{{ url_for('event_list') }}"
+               class="calendar-btn calendar-btn-primary">
+
+                <i class="fas fa-calendar-check"></i>
+
+                View All Events
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- QUICK SUMMARY -->
+    <!-- ============================= -->
+
+    <div class="calendar-summary-grid">
+
+        <div class="calendar-summary-card">
+
+            <div class="summary-icon">
+                <i class="fas fa-calendar-days"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Total Events
+                </span>
+
+                <strong class="summary-number">
+                    {{ events|length }}
+                </strong>
+
+                <span class="summary-description">
+                    Scheduled events
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="calendar-summary-card">
+
+            <div class="summary-icon upcoming-icon">
+                <i class="fas fa-calendar-plus"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Upcoming
+                </span>
+
+                <strong class="summary-number">
+                    {{ events|length }}
+                </strong>
+
+                <span class="summary-description">
+                    Events available
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="calendar-summary-card">
+
+            <div class="summary-icon venue-icon">
+                <i class="fas fa-location-dot"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Venues
+                </span>
+
+                <strong class="summary-number">
+                    {{ events
+                       |map(attribute='venue')
+                       |select
+                       |list
+                       |unique
+                       |list
+                       |length }}
+                </strong>
+
+                <span class="summary-description">
+                    Event locations
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="calendar-summary-card">
+
+            <div class="summary-icon category-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Categories
+                </span>
+
+                <strong class="summary-number">
+                    {{ events
+                       |map(attribute='category_name')
+                       |select
+                       |list
+                       |unique
+                       |list
+                       |length }}
+                </strong>
+
+                <span class="summary-description">
+                    Event categories
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- CALENDAR -->
+    <!-- ============================= -->
+
+    <div class="calendar-card">
+
+        <div class="calendar-card-header">
+
+            <div class="calendar-card-title">
+
+                <div class="calendar-card-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+
+                <div>
+
+                    <span class="calendar-card-eyebrow">
+                        Schedule Overview
+                    </span>
+
+                    <h2>College Event Calendar</h2>
+
+                    <p>
+                        Click any event to view complete details.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="calendar-legend">
+
+                <span>
+                    <span class="legend-dot"></span>
+                    Events
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="calendar-card-body">
+
+            <div id="calendar"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- UPCOMING EVENTS HEADER -->
+    <!-- ============================= -->
+
+    <div class="upcoming-section-header">
+
+        <div>
+
+            <span class="eyebrow">
+                <i class="fas fa-calendar-check"></i>
+                Upcoming Schedule
+            </span>
+
+            <h2>Upcoming Events</h2>
+
+            <p>
+                Quickly view event dates, categories, timings and venues.
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('event_list') }}"
+           class="calendar-outline-btn">
+
+            <i class="fas fa-arrow-right"></i>
+            Browse Events
+
+        </a>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- EVENTS TABLE -->
+    <!-- ============================= -->
+
+    {% if events %}
+
+    <div class="events-table-card">
+
+        <div class="events-table-header">
+
+            <div>
+
+                <span class="table-eyebrow">
+                    Event Directory
+                </span>
+
+                <h3>
+                    Scheduled Events
+                </h3>
+
+            </div>
+
+            <span class="events-count">
+                {{ events|length }} Events
+            </span>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table events-calendar-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            <i class="fas fa-calendar-day"></i>
+                            Date
+                        </th>
+
+                        <th>
+                            <i class="fas fa-star"></i>
+                            Event
+                        </th>
+
+                        <th>
+                            <i class="fas fa-layer-group"></i>
+                            Category
+                        </th>
+
+                        <th>
+                            <i class="fas fa-clock"></i>
+                            Time
+                        </th>
+
+                        <th>
+                            <i class="fas fa-location-dot"></i>
+                            Venue
+                        </th>
+
+                        <th class="text-end">
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for event in events %}
+
+                    <tr>
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <div class="event-date-box">
+
+                                <div class="event-date-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ event.event_date or 'TBA' }}
+                                    </strong>
+
+                                    <span>
+                                        Event Date
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EVENT -->
+
+                        <td>
+
+                            <div class="event-name-cell">
+
+                                <div class="event-table-icon">
+                                    <i class="fas fa-ticket"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ event.event_name or 'Untitled Event' }}
+                                    </strong>
+
+                                    <span>
+                                        Campus Event
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td>
+
+                            <span class="event-category-badge">
+
+                                <i class="fas fa-tag"></i>
+
+                                {{ event.category_name or 'General' }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- TIME -->
+
+                        <td>
+
+                            <div class="event-time">
+
+                                <i class="fas fa-clock"></i>
+
+                                <span>
+                                    {{ event.event_time or 'Time TBA' }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- VENUE -->
+
+                        <td>
+
+                            <div class="event-venue">
+
+                                <i class="fas fa-location-dot"></i>
+
+                                <span>
+                                    {{ event.venue or 'Venue TBA' }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- ACTION -->
+
+                        <td class="text-end">
+
+                            <a href="{{ url_for('event_detail', eid=event.id) }}"
+                               class="event-view-btn">
+
+                                <span>View</span>
+
+                                <i class="fas fa-arrow-right"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- TABLE FOOTER -->
+
+        <div class="events-table-footer">
+
+            <span>
+                <i class="fas fa-circle-info"></i>
+                Select an event to view complete information.
+            </span>
+
+            <span class="footer-event-count">
+                Showing {{ events|length }} event{{ '' if events|length == 1 else 's' }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- ============================= -->
+    <!-- EMPTY STATE -->
+    <!-- ============================= -->
+
+    <div class="calendar-empty-state">
+
+        <div class="empty-calendar-icon">
+            <i class="fas fa-calendar-xmark"></i>
+        </div>
+
+        <span class="empty-eyebrow">
+            No Events Found
+        </span>
+
+        <h3>No Upcoming Events</h3>
+
+        <p>
+            There are currently no upcoming college events available.
+            Please check again later for new events and schedules.
+        </p>
+
+        <a href="{{ url_for('event_list') }}"
+           class="calendar-btn calendar-btn-primary">
+
+            <i class="fas fa-calendar-plus"></i>
+
+            Explore Events
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ================================= -->
+<!-- FULLCALENDAR -->
+<!-- ================================= -->
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css"
+>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js">
+</script>
+
+
+<script id="calendar-events-data" type="application/json">
+
+[
+
+    {% for event in events %}
+
+    {
+        "id": {{ event.id | tojson }},
+        "title": {{ event.event_name | default('Event', true) | tojson }},
+        "start": {{ (
+            event.event_date|string +
+            ('T' + event.event_time|string if event.event_time else '')
+        ) | tojson }},
+        "url": {{ url_for('event_detail', eid=event.id) | tojson }},
+        "extendedProps": {
+            "category": {{ event.category_name | default('General', true) | tojson }},
+            "venue": {{ event.venue | default('Venue TBA', true) | tojson }},
+            "time": {{ event.event_time | default('Time TBA', true) | tojson }}
+        },
+        "allDay": {{ 'false' if event.event_time else 'true' }}
+    }{% if not loop.last %},{% endif %}
+
+    {% endfor %}
+
+]
+
+</script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const calendarElement = document.getElementById("calendar");
+
+    if (!calendarElement) {
+        return;
+    }
+
+
+    /*
+     * Convert Flask/Jinja event data
+     * into safe JavaScript objects.
+     */
+
+    const calendarEvents = JSON.parse(
+        document.getElementById("calendar-events-data").textContent
+    );
+
+
+    /*
+     * Initialize FullCalendar
+     */
+
+    const calendar = new FullCalendar.Calendar(
+        calendarElement,
+        {
+
+            initialView: "dayGridMonth",
+
+            height: "auto",
+
+            contentHeight: "auto",
+
+            expandRows: true,
+
+            dayMaxEvents: 3,
+
+            nowIndicator: true,
+
+            editable: false,
+
+            selectable: false,
+
+            eventDisplay: "block",
+
+            firstDay: 1,
+
+
+            headerToolbar: {
+
+                left: "prev,next today",
+
+                center: "title",
+
+                right:
+                    "dayGridMonth,timeGridWeek,listMonth"
+
+            },
+
+
+            buttonText: {
+
+                today: "Today",
+
+                month: "Month",
+
+                week: "Week",
+
+                list: "List"
+
+            },
+
+
+            events: calendarEvents,
+
+
+            /*
+             * Event click
+             */
+
+            eventClick: function (info) {
+
+                if (info.event.url) {
+
+                    info.jsEvent.preventDefault();
+
+                    window.location.href =
+                        info.event.url;
+
+                }
+
+            },
+
+
+            /*
+             * Event tooltip
+             */
+
+            eventDidMount: function (info) {
+
+                const props =
+                    info.event.extendedProps;
+
+                let tooltip =
+                    info.event.title;
+
+
+                if (props.category) {
+
+                    tooltip +=
+                        "\nCategory: " +
+                        props.category;
+
+                }
+
+
+                if (props.time) {
+
+                    tooltip +=
+                        "\nTime: " +
+                        props.time;
+
+                }
+
+
+                if (props.venue) {
+
+                    tooltip +=
+                        "\nVenue: " +
+                        props.venue;
+
+                }
+
+
+                info.el.setAttribute(
+                    "title",
+                    tooltip
+                );
+
+            }
+
+        }
+    );
+
+
+    calendar.render();
+
+});
+
+</script>
+
+
+<!-- ================================= -->
+<!-- PAGE CSS -->
+<!-- ================================= -->
+
+<style>
+
+/* =====================================
+   PAGE
+===================================== */
+
+.calendar-page {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+
+
+/* =====================================
+   HEADER
+===================================== */
+
+.calendar-page-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 28px;
+
+    padding: 30px;
+
+    border: 1px solid rgba(148, 163, 184, 0.14);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30, 41, 59, 0.90),
+            rgba(15, 23, 42, 0.96)
+        );
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.20);
+
+}
+
+
+.calendar-header-content {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+}
+
+
+.calendar-header-icon {
+
+    width: 68px;
+
+    height: 68px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    color: white;
+
+    font-size: 28px;
+
+    box-shadow:
+        0 12px 30px rgba(124, 58, 237, 0.30);
+
+}
+
+
+.calendar-eyebrow {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.calendar-page-header h1 {
+
+    margin: 5px 0 8px;
+
+    color: #f8fafc;
+
+    font-size: clamp(2rem, 4vw, 2.8rem);
+
+    font-weight: 800;
+
+}
+
+
+.calendar-page-header p {
+
+    margin: 0;
+
+    max-width: 720px;
+
+    color: #94a3b8;
+
+    line-height: 1.7;
+
+}
+
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+.calendar-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 12px 18px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: 0.25s ease;
+
+}
+
+
+.calendar-btn-primary {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 10px 25px rgba(79, 70, 229, 0.25);
+
+}
+
+
+.calendar-btn-primary:hover {
+
+    color: white;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 30px rgba(79, 70, 229, 0.35);
+
+}
+
+
+/* =====================================
+   SUMMARY CARDS
+===================================== */
+
+.calendar-summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+
+}
+
+
+.calendar-summary-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    background:
+        rgba(15, 23, 42, 0.80);
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.14);
+
+    transition: 0.25s ease;
+
+}
+
+
+.calendar-summary-card:hover {
+
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(124, 58, 237, 0.35);
+
+}
+
+
+.summary-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+}
+
+
+.upcoming-icon {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #0891b2
+        );
+
+}
+
+
+.venue-icon {
+
+    background:
+        linear-gradient(
+            135deg,
+            #0891b2,
+            #0d9488
+        );
+
+}
+
+
+.category-icon {
+
+    background:
+        linear-gradient(
+            135deg,
+            #9333ea,
+            #c026d3
+        );
+
+}
+
+
+.summary-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+}
+
+
+.summary-label {
+
+    color: #94a3b8;
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+}
+
+
+.summary-number {
+
+    margin: 2px 0;
+
+    color: #f8fafc;
+
+    font-size: 1.65rem;
+
+    line-height: 1.2;
+
+}
+
+
+.summary-description {
+
+    color: #64748b;
+
+    font-size: 0.75rem;
+
+}
+
+
+/* =====================================
+   CALENDAR CARD
+===================================== */
+
+.calendar-card {
+
+    overflow: hidden;
+
+    border: 1px solid rgba(148, 163, 184, 0.13);
+
+    border-radius: 22px;
+
+    background:
+        rgba(15, 23, 42, 0.90);
+
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.18);
+
+    margin-bottom: 42px;
+
+}
+
+
+.calendar-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 24px 26px;
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.10);
+
+}
+
+
+.calendar-card-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.calendar-card-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 13px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.15);
+
+}
+
+
+.calendar-card-eyebrow {
+
+    color: #8b5cf6;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+}
+
+
+.calendar-card-title h2 {
+
+    margin: 4px 0;
+
+    color: #f8fafc;
+
+    font-size: 1.25rem;
+
+    font-weight: 750;
+
+}
+
+
+.calendar-card-title p {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 0.84rem;
+
+}
+
+
+.calendar-legend {
+
+    color: #94a3b8;
+
+    font-size: 0.8rem;
+
+}
+
+
+.calendar-legend span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.legend-dot {
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #7c3aed;
+
+}
+
+
+.calendar-card-body {
+
+    padding: 24px;
+
+}
+
+
+#calendar {
+
+    width: 100%;
+
+    min-height: 680px;
+
+}
+
+
+/* =====================================
+   FULLCALENDAR
+===================================== */
+
+.fc {
+
+    font-family: inherit;
+
+    color: #cbd5e1;
+
+}
+
+
+.fc .fc-toolbar {
+
+    margin-bottom: 20px;
+
+}
+
+
+.fc .fc-toolbar-title {
+
+    color: #f8fafc;
+
+    font-size: 1.45rem;
+
+    font-weight: 800;
+
+}
+
+
+.fc .fc-button {
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: #1e293b;
+
+    color: #cbd5e1;
+
+    font-weight: 700;
+
+    box-shadow: none;
+
+}
+
+
+.fc .fc-button:hover {
+
+    background: #334155;
+
+}
+
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+}
+
+
+.fc .fc-daygrid-day {
+
+    background: rgba(15, 23, 42, 0.35);
+
+}
+
+
+.fc .fc-daygrid-day:hover {
+
+    background: rgba(124, 58, 237, 0.05);
+
+}
+
+
+.fc .fc-col-header-cell {
+
+    background: #111827;
+
+}
+
+
+.fc .fc-col-header-cell-cushion {
+
+    padding: 10px 4px;
+
+    color: #94a3b8;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.fc .fc-daygrid-day-number {
+
+    color: #94a3b8;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+}
+
+
+.fc .fc-day-today {
+
+    background:
+        rgba(124, 58, 237, 0.10) !important;
+
+}
+
+
+.fc .fc-day-today .fc-daygrid-day-number {
+
+    color: #c4b5fd;
+
+}
+
+
+.fc .fc-event {
+
+    border: 0;
+
+    border-radius: 7px;
+
+    padding: 3px 6px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 10px rgba(79, 70, 229, 0.18);
+
+}
+
+
+.fc .fc-event-title {
+
+    font-weight: 700;
+
+}
+
+
+.fc .fc-daygrid-event {
+
+    white-space: normal;
+
+}
+
+
+.fc .fc-list {
+
+    border-color:
+        rgba(148, 163, 184, 0.12);
+
+}
+
+
+.fc .fc-list-day-cushion {
+
+    background: #111827;
+
+}
+
+
+.fc .fc-list-event:hover td {
+
+    background:
+        rgba(124, 58, 237, 0.08);
+
+}
+
+
+/* =====================================
+   UPCOMING HEADER
+===================================== */
+
+.upcoming-section-header {
+
+    display: flex;
+
+    align-items: end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.upcoming-section-header h2 {
+
+    margin: 5px 0;
+
+    color: #f8fafc;
+
+    font-size: 1.8rem;
+
+    font-weight: 800;
+
+}
+
+
+.upcoming-section-header p {
+
+    margin: 0;
+
+    color: #64748b;
+
+}
+
+
+.calendar-outline-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 15px;
+
+    border: 1px solid rgba(124, 58, 237, 0.35);
+
+    border-radius: 10px;
+
+    color: #c4b5fd;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+
+}
+
+
+.calendar-outline-btn:hover {
+
+    color: white;
+
+    background:
+        rgba(124, 58, 237, 0.15);
+
+}
+
+
+/* =====================================
+   TABLE CARD
+===================================== */
+
+.events-table-card {
+
+    overflow: hidden;
+
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    border-radius: 20px;
+
+    background:
+        rgba(15, 23, 42, 0.88);
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.15);
+
+}
+
+
+.events-table-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 24px;
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.10);
+
+}
+
+
+.table-eyebrow {
+
+    color: #8b5cf6;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+}
+
+
+.events-table-header h3 {
+
+    margin: 5px 0 0;
+
+    color: #f8fafc;
+
+    font-size: 1.15rem;
+
+    font-weight: 750;
+
+}
+
+
+.events-count {
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+}
+
+
+.events-calendar-table {
+
+    margin: 0;
+
+    color: #cbd5e1;
+
+}
+
+
+.events-calendar-table thead th {
+
+    padding: 14px 18px;
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.12);
+
+    background:
+        rgba(30, 41, 59, 0.65);
+
+    color: #94a3b8;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+
+    white-space: nowrap;
+
+}
+
+
+.events-calendar-table thead th i {
+
+    margin-right: 5px;
+
+    color: #8b5cf6;
+
+}
+
+
+.events-calendar-table tbody td {
+
+    padding: 17px 18px;
+
+    border-color:
+        rgba(148, 163, 184, 0.08);
+
+    vertical-align: middle;
+
+}
+
+
+.events-calendar-table tbody tr {
+
+    transition: 0.2s ease;
+
+}
+
+
+.events-calendar-table tbody tr:hover {
+
+    background:
+        rgba(124, 58, 237, 0.045);
+
+}
+
+
+/* =====================================
+   TABLE CONTENT
+===================================== */
+
+.event-date-box,
+.event-name-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+}
+
+
+.event-date-icon,
+.event-table-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+}
+
+
+.event-date-box strong,
+.event-name-cell strong {
+
+    display: block;
+
+    color: #f8fafc;
+
+    font-size: 0.88rem;
+
+}
+
+
+.event-date-box span,
+.event-name-cell span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 0.7rem;
+
+}
+
+
+.event-category-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border-radius: 8px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+    font-size: 0.75rem;
+
+    font-weight: 700;
+
+}
+
+
+.event-time,
+.event-venue {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #94a3b8;
+
+    font-size: 0.82rem;
+
+}
+
+
+.event-time i {
+
+    color: #60a5fa;
+
+}
+
+
+.event-venue i {
+
+    color: #34d399;
+
+}
+
+
+.event-view-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    border: 1px solid rgba(124, 58, 237, 0.28);
+
+    border-radius: 9px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.08);
+
+    text-decoration: none;
+
+    font-size: 0.76rem;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+
+}
+
+
+.event-view-btn:hover {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    border-color: transparent;
+
+    transform: translateX(2px);
+
+}
+
+
+/* =====================================
+   TABLE FOOTER
+===================================== */
+
+.events-table-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 13px 18px;
+
+    border-top:
+        1px solid rgba(148, 163, 184, 0.08);
+
+    color: #64748b;
+
+    font-size: 0.75rem;
+
+}
+
+
+.events-table-footer i {
+
+    color: #8b5cf6;
+
+    margin-right: 5px;
+
+}
+
+
+.footer-event-count {
+
+    color: #94a3b8;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================
+   EMPTY STATE
+===================================== */
+
+.calendar-empty-state {
+
+    padding: 65px 25px;
+
+    text-align: center;
+
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    border-radius: 22px;
+
+    background:
+        rgba(15, 23, 42, 0.82);
+
+}
+
+
+.empty-calendar-icon {
+
+    width: 75px;
+
+    height: 75px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 20px;
+
+    color: #a78bfa;
+
+    background:
+        rgba(124, 58, 237, 0.12);
+
+    font-size: 30px;
+
+}
+
+
+.empty-eyebrow {
+
+    color: #8b5cf6;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+}
+
+
+.calendar-empty-state h3 {
+
+    margin: 8px 0;
+
+    color: #f8fafc;
+
+    font-size: 1.5rem;
+
+}
+
+
+.calendar-empty-state p {
+
+    max-width: 550px;
+
+    margin: 0 auto 22px;
+
+    color: #64748b;
+
+    line-height: 1.7;
+
+}
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 1100px) {
+
+    .calendar-summary-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .calendar-page-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+    .calendar-header-actions {
+
+        width: 100%;
+
+    }
+
+    .calendar-header-actions .calendar-btn {
+
+        width: 100%;
+
+    }
+
+    .calendar-card-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+    .calendar-legend {
+
+        display: none;
+
+    }
+
+    .upcoming-section-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .calendar-page-header {
+
+        padding: 22px;
+
+        border-radius: 18px;
+
+    }
+
+    .calendar-header-icon {
+
+        width: 56px;
+
+        height: 56px;
+
+        font-size: 23px;
+
+    }
+
+    .calendar-header-content {
+
+        align-items: flex-start;
+
+    }
+
+    .calendar-summary-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .calendar-card {
+
+        border-radius: 17px;
+
+    }
+
+    .calendar-card-body {
+
+        padding: 10px;
+
+    }
+
+    #calendar {
+
+        min-height: 550px;
+
+    }
+
+    .fc .fc-toolbar {
+
+        flex-direction: column;
+
+        gap: 10px;
+
+    }
+
+    .fc .fc-toolbar-chunk {
+
+        width: 100%;
+
+        display: flex;
+
+        justify-content: center;
+
+    }
+
+    .fc .fc-toolbar-title {
+
+        font-size: 1.15rem;
+
+    }
+
+    .events-table-header {
+
+        padding: 18px;
+
+    }
+
+    .events-table-footer {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .calendar-page-header {
+
+        padding: 18px;
+
+    }
+
+    .calendar-header-content {
+
+        gap: 13px;
+
+    }
+
+    .calendar-header-icon {
+
+        width: 48px;
+
+        height: 48px;
+
+        border-radius: 13px;
+
+        font-size: 19px;
+
+    }
+
+    .calendar-page-header h1 {
+
+        font-size: 1.75rem;
+
+    }
+
+    .calendar-page-header p {
+
+        font-size: 0.82rem;
+
+    }
+
+    .calendar-summary-card {
+
+        padding: 16px;
+
+    }
+
+    .summary-icon {
+
+        width: 44px;
+
+        height: 44px;
+
+    }
+
+    .calendar-card-header {
+
+        padding: 18px;
+
+    }
+
+    .calendar-card-body {
+
+        padding: 6px;
+
+    }
+
+    .fc .fc-button {
+
+        padding: 6px 9px;
+
+        font-size: 0.72rem;
+
+    }
+
+    .fc .fc-toolbar-title {
+
+        font-size: 1rem;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

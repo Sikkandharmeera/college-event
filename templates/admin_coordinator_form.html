@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ 'Edit Coordinator' if staff else 'New Coordinator' }} - Campus Events Hub
+{% endblock %}
+
+{% block content %}
+
+<section class="section coordinator-form-section">
+
+```
+<div class="container">
+
+    <!-- =========================================
+         PAGE HEADER
+         ========================================= -->
+    <div class="coordinator-page-header">
+
+        <div class="header-content">
+
+            <span class="eyebrow">
+                <i class="fas fa-user-shield"></i>
+                ADMIN PANEL
+            </span>
+
+            <h1>
+                {{ 'Edit Coordinator' if staff else 'Create Coordinator' }}
+            </h1>
+
+            <p>
+                {% if staff %}
+                    Update the coordinator's account information,
+                    password and account status.
+                {% else %}
+                    Create a new coordinator account to manage
+                    college events and registrations.
+                {% endif %}
+            </p>
+
+        </div>
+
+        <div class="coordinator-header-icon">
+            <i class="fas fa-user-tie"></i>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         MAIN FORM CARD
+         ========================================= -->
+    <div class="coordinator-form-card">
+
+        <!-- Card Header -->
+        <div class="coordinator-card-header">
+
+            <div>
+                <span class="form-eyebrow">
+                    ACCOUNT INFORMATION
+                </span>
+
+                <h3>
+                    Coordinator Details
+                </h3>
+
+                <p>
+                    Enter the required information below.
+                </p>
+            </div>
+
+            <div class="form-header-icon">
+                <i class="fas fa-id-card"></i>
+            </div>
+
+        </div>
+
+
+        <!-- Form Body -->
+        <div class="coordinator-card-body">
+
+            <form
+                method="POST"
+                action=""
+                autocomplete="off"
+            >
+
+                <!-- =================================
+                     PERSONAL INFORMATION
+                     ================================= -->
+                <div class="form-section-title">
+
+                    <div class="section-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+
+                    <div>
+                        <h4>Personal Information</h4>
+                        <p>
+                            Basic information about the coordinator.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+
+                        <label
+                            for="full_name"
+                            class="coordinator-label"
+                        >
+                            Full Name
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fas fa-user input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
+                                class="coordinator-input"
+                                value="{{ staff.full_name if staff else '' }}"
+                                placeholder="Enter coordinator full name"
+                                autocomplete="name"
+                                minlength="3"
+                                required
+                            >
+
+                        </div>
+
+                        <small class="input-help">
+                            Enter the coordinator's full name.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+
+                        <label
+                            for="email"
+                            class="coordinator-label"
+                        >
+                            Email Address
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fas fa-envelope input-icon"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="coordinator-input"
+                                value="{{ staff.email if staff else '' }}"
+                                placeholder="coordinator@example.com"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                        <small class="input-help">
+                            Use a valid email address for login.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     SECURITY INFORMATION
+                     ================================= -->
+                <div class="form-section-title security-section">
+
+                    <div class="section-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+
+                    <div>
+                        <h4>Security Information</h4>
+                        <p>
+                            Set or update the coordinator login password.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="password-field">
+
+                    <label
+                        for="password"
+                        class="coordinator-label"
+                    >
+                        Password
+
+                        {% if not staff %}
+                            <span>*</span>
+                        {% endif %}
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fas fa-key input-icon"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="coordinator-input password-input"
+                            placeholder="{% if staff %}Leave blank to keep current password{% else %}Enter a secure password{% endif %}"
+                            autocomplete="new-password"
+                            minlength="6"
+                            {% if not staff %}required{% endif %}
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="toggleCoordinatorPassword()"
+                            aria-label="Show or hide password"
+                        >
+                            <i
+                                class="fas fa-eye"
+                                id="passwordEye"
+                            ></i>
+                        </button>
+
+                    </div>
+
+
+                    {% if staff %}
+
+                        <div class="password-help">
+                            <i class="fas fa-info-circle"></i>
+
+                            <span>
+                                Leave this field empty if you do not
+                                want to change the current password.
+                            </span>
+                        </div>
+
+                    {% else %}
+
+                        <small class="input-help">
+                            Password should contain at least 6 characters.
+                        </small>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- =================================
+                     ACCOUNT STATUS
+                     ================================= -->
+                {% if staff %}
+
+                <div class="form-section-title status-section">
+
+                    <div class="section-icon">
+                        <i class="fas fa-toggle-on"></i>
+                    </div>
+
+                    <div>
+                        <h4>Account Status</h4>
+                        <p>
+                            Control whether this coordinator can access
+                            the system.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="status-box">
+
+                    <div class="status-information">
+
+                        <div class="status-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Coordinator Account
+                            </strong>
+
+                            <p>
+                                {% if staff.active %}
+                                    This coordinator can currently
+                                    access the admin system.
+                                {% else %}
+                                    This coordinator is currently
+                                    disabled and cannot access the system.
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-check form-switch status-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="active"
+                            name="active"
+                            {% if staff.active %}checked{% endif %}
+                        >
+
+                        <label
+                            class="form-check-label"
+                            for="active"
+                        >
+                            Active Coordinator
+                        </label>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- =================================
+                     SECURITY NOTICE
+                     ================================= -->
+                <div class="security-notice">
+
+                    <div class="notice-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Account Security
+                        </strong>
+
+                        <p>
+                            Make sure the coordinator uses a strong
+                            password and do not share login credentials
+                            with unauthorized users.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     FORM ACTIONS
+                     ================================= -->
+                <div class="coordinator-form-actions">
+
+                    <a
+                        href="{{ url_for('admin_coordinators') }}"
+                        class="coordinator-cancel-btn"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Cancel</span>
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="coordinator-save-btn"
+                    >
+
+                        <i class="fas fa-save"></i>
+
+                        <span>
+                            {{ 'Update Coordinator' if staff else 'Create Coordinator' }}
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<!-- =========================================
+     PASSWORD TOGGLE
+     ========================================= -->
+
+<script>
+
+function toggleCoordinatorPassword() {
+
+    const passwordInput =
+        document.getElementById("password");
+
+    const passwordEye =
+        document.getElementById("passwordEye");
+
+    if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+
+        passwordEye.classList.remove("fa-eye");
+        passwordEye.classList.add("fa-eye-slash");
+
+    } else {
+
+        passwordInput.type = "password";
+
+        passwordEye.classList.remove("fa-eye-slash");
+        passwordEye.classList.add("fa-eye");
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

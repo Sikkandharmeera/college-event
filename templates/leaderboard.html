@@ -1,0 +1,1568 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="leaderboard-page">
+
+    <!-- =========================================================
+         PAGE HEADER
+    ========================================================== -->
+    <div class="leaderboard-header">
+
+        <div class="leaderboard-header-content">
+
+            <div class="leaderboard-title-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+
+            <div>
+
+                <span class="leaderboard-eyebrow">
+                    <i class="fas fa-ranking-star"></i>
+                    Student Achievements
+                </span>
+
+                <h1>
+                    Student Leaderboard
+                </h1>
+
+                <p>
+                    Celebrate the students who are actively participating
+                    in campus events and building remarkable achievements.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('event_list') }}"
+            class="leaderboard-action-btn"
+        >
+            <i class="fas fa-calendar-days"></i>
+            Explore Events
+        </a>
+
+    </div>
+
+
+    <!-- =========================================================
+         SUMMARY CARDS
+    ========================================================== -->
+    <div class="leaderboard-stats">
+
+        <div class="leaderboard-stat-card">
+
+            <div class="leaderboard-stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+
+            <div>
+
+                <span class="leaderboard-stat-label">
+                    Participants
+                </span>
+
+                <strong>
+                    {{ leaderboard|length if leaderboard else 0 }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="leaderboard-stat-card">
+
+            <div class="leaderboard-stat-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+
+            <div>
+
+                <span class="leaderboard-stat-label">
+                    Top Rank
+                </span>
+
+                <strong>
+                    {% if leaderboard %}
+                        {{ leaderboard[0].points or 0 }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </strong>
+
+                <small>
+                    Points
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="leaderboard-stat-card">
+
+            <div class="leaderboard-stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+
+            <div>
+
+                <span class="leaderboard-stat-label">
+                    Total Participation
+                </span>
+
+                <strong>
+                    {% if leaderboard %}
+                        {{ leaderboard|sum(attribute='events_attended') }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </strong>
+
+                <small>
+                    Events
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="leaderboard-stat-card">
+
+            <div class="leaderboard-stat-icon">
+                <i class="fas fa-medal"></i>
+            </div>
+
+            <div>
+
+                <span class="leaderboard-stat-label">
+                    Champion
+                </span>
+
+                <strong class="champion-name">
+
+                    {% if leaderboard %}
+                        {{ leaderboard[0].full_name or 'Unknown' }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         TOP 3 PODIUM
+    ========================================================== -->
+
+    {% if leaderboard %}
+
+    <div class="podium-section">
+
+        <div class="section-top">
+
+            <div>
+
+                <span class="leaderboard-eyebrow">
+                    <i class="fas fa-crown"></i>
+                    Top Performers
+                </span>
+
+                <h2>
+                    Campus Champions
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="podium-grid">
+
+            <!-- SECOND PLACE -->
+            {% if leaderboard|length > 1 %}
+
+            {% set second = leaderboard[1] %}
+
+            <div class="podium-card second-place">
+
+                <div class="podium-rank">
+                    <span>2</span>
+                </div>
+
+                <div class="podium-avatar">
+                    {{ (second.full_name or 'S')[0]|upper }}
+                </div>
+
+                <span class="podium-medal">
+                    🥈
+                </span>
+
+                <h3>
+                    {{ second.full_name or 'Unknown Student' }}
+                </h3>
+
+                <p>
+                    {{ second.events_attended or 0 }} Events
+                </p>
+
+                <strong>
+                    {{ second.points or 0 }}
+                    <small>PTS</small>
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- FIRST PLACE -->
+            {% set first = leaderboard[0] %}
+
+            <div class="podium-card first-place">
+
+                <div class="champion-crown">
+                    <i class="fas fa-crown"></i>
+                </div>
+
+                <div class="podium-rank">
+                    <span>1</span>
+                </div>
+
+                <div class="podium-avatar">
+                    {{ (first.full_name or 'S')[0]|upper }}
+                </div>
+
+                <span class="podium-medal">
+                    🥇
+                </span>
+
+                <h3>
+                    {{ first.full_name or 'Unknown Student' }}
+                </h3>
+
+                <p>
+                    {{ first.events_attended or 0 }} Events
+                </p>
+
+                <strong>
+                    {{ first.points or 0 }}
+                    <small>PTS</small>
+                </strong>
+
+                <div class="champion-label">
+                    CAMPUS CHAMPION
+                </div>
+
+            </div>
+
+
+            <!-- THIRD PLACE -->
+            {% if leaderboard|length > 2 %}
+
+            {% set third = leaderboard[2] %}
+
+            <div class="podium-card third-place">
+
+                <div class="podium-rank">
+                    <span>3</span>
+                </div>
+
+                <div class="podium-avatar">
+                    {{ (third.full_name or 'S')[0]|upper }}
+                </div>
+
+                <span class="podium-medal">
+                    🥉
+                </span>
+
+                <h3>
+                    {{ third.full_name or 'Unknown Student' }}
+                </h3>
+
+                <p>
+                    {{ third.events_attended or 0 }} Events
+                </p>
+
+                <strong>
+                    {{ third.points or 0 }}
+                    <small>PTS</small>
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- =========================================================
+         FULL LEADERBOARD
+    ========================================================== -->
+
+    <div class="leaderboard-card">
+
+        <div class="leaderboard-card-header">
+
+            <div>
+
+                <span class="card-eyebrow">
+                    Rankings
+                </span>
+
+                <h2>
+                    All Student Rankings
+                </h2>
+
+                <p>
+                    Students are ranked based on event participation
+                    and achievement points.
+                </p>
+
+            </div>
+
+
+            {% if leaderboard %}
+
+            <span class="participant-count">
+                <i class="fas fa-users"></i>
+                {{ leaderboard|length }} Students
+            </span>
+
+            {% endif %}
+
+        </div>
+
+
+        {% if leaderboard %}
+
+        <div class="leaderboard-table-wrapper">
+
+            <table class="leaderboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Rank
+                        </th>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Points
+                        </th>
+
+                        <th>
+                            Events
+                        </th>
+
+                        <th>
+                            Achievement
+                        </th>
+
+                        <th>
+                            Profile
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for student in leaderboard %}
+
+                    {% set rank = loop.index %}
+
+                    <tr
+                        class="{% if rank <= 3 %}top-rank-row{% endif %}"
+                    >
+
+                        <!-- RANK -->
+                        <td>
+
+                            {% if rank == 1 %}
+
+                                <span class="rank-badge rank-one">
+                                    <i class="fas fa-trophy"></i>
+                                    1
+                                </span>
+
+                            {% elif rank == 2 %}
+
+                                <span class="rank-badge rank-two">
+                                    <i class="fas fa-medal"></i>
+                                    2
+                                </span>
+
+                            {% elif rank == 3 %}
+
+                                <span class="rank-badge rank-three">
+                                    <i class="fas fa-medal"></i>
+                                    3
+                                </span>
+
+                            {% else %}
+
+                                <span class="normal-rank">
+                                    {{ rank }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STUDENT -->
+                        <td>
+
+                            <div class="student-cell">
+
+                                <div class="student-avatar">
+
+                                    {{ (student.full_name or 'S')[0]|upper }}
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ student.full_name or 'Unknown Student' }}
+                                    </strong>
+
+                                    <small>
+                                        Student Participant
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- POINTS -->
+                        <td>
+
+                            <span class="points-badge">
+
+                                <i class="fas fa-star"></i>
+
+                                {{ student.points or 0 }}
+
+                                <small>
+                                    pts
+                                </small>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- EVENTS -->
+                        <td>
+
+                            <span class="events-count">
+
+                                <i class="fas fa-calendar-check"></i>
+
+                                {{ student.events_attended or 0 }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACHIEVEMENT -->
+                        <td>
+
+                            {% if rank == 1 %}
+
+                                <span class="achievement-badge champion">
+                                    <i class="fas fa-crown"></i>
+                                    Champion
+                                </span>
+
+                            {% elif rank == 2 %}
+
+                                <span class="achievement-badge silver">
+                                    <i class="fas fa-medal"></i>
+                                    Runner Up
+                                </span>
+
+                            {% elif rank == 3 %}
+
+                                <span class="achievement-badge bronze">
+                                    <i class="fas fa-medal"></i>
+                                    Top 3
+                                </span>
+
+                            {% elif student.points and student.points >= 100 %}
+
+                                <span class="achievement-badge achiever">
+                                    <i class="fas fa-star"></i>
+                                    Achiever
+                                </span>
+
+                            {% else %}
+
+                                <span class="achievement-badge participant">
+                                    <i class="fas fa-user-check"></i>
+                                    Participant
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- PROFILE -->
+                        <td>
+
+                            {% if student.id %}
+
+                                <a
+                                    href="{{ url_for('student_profile', sid=student.id) }}"
+                                    class="profile-btn"
+                                >
+                                    View Profile
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+
+                            {% else %}
+
+                                <span class="profile-unavailable">
+                                    Unavailable
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="leaderboard-footer">
+
+            <span>
+                <i class="fas fa-circle-info"></i>
+                Rankings are based on participation and achievement points.
+            </span>
+
+            <span>
+                Showing {{ leaderboard|length }} students
+            </span>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =====================================================
+             EMPTY STATE
+        ====================================================== -->
+
+        <div class="leaderboard-empty">
+
+            <div class="empty-trophy">
+
+                <i class="fas fa-trophy"></i>
+
+            </div>
+
+            <span class="leaderboard-eyebrow">
+                Rankings Coming Soon
+            </span>
+
+            <h2>
+                No Leaderboard Data Yet
+            </h2>
+
+            <p>
+                Student rankings will appear here after students
+                participate in college events.
+            </p>
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="home-btn home-btn-primary"
+            >
+                <i class="fas fa-calendar-days"></i>
+                Explore Events
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================================================
+         MOTIVATION BANNER
+    ========================================================== -->
+    {% if leaderboard %}
+
+    <div class="leaderboard-motivation">
+
+        <div class="motivation-icon">
+            <i class="fas fa-rocket"></i>
+        </div>
+
+        <div>
+
+            <span>
+                Your Next Achievement Starts Here
+            </span>
+
+            <h3>
+                Participate in more events and climb the leaderboard.
+            </h3>
+
+        </div>
+
+        <a
+            href="{{ url_for('event_list') }}"
+            class="motivation-btn"
+        >
+            Find Events
+            <i class="fas fa-arrow-right"></i>
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- =============================================================
+     LEADERBOARD CSS
+============================================================= -->
+<style>
+
+.leaderboard-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 0 60px;
+}
+
+
+/* =============================================================
+   HEADER
+============================================================= */
+
+.leaderboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 30px;
+    margin-bottom: 22px;
+    border-radius: 24px;
+    background:
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(124,58,237,.20),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(15,23,42,.96),
+            rgba(17,24,39,.86)
+        );
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+
+.leaderboard-header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.leaderboard-title-icon {
+    width: 65px;
+    height: 65px;
+    flex: 0 0 65px;
+    display: grid;
+    place-items: center;
+    border-radius: 19px;
+    color: #ffffff;
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
+    box-shadow: 0 15px 35px rgba(99,102,241,.25);
+    font-size: 25px;
+}
+
+
+.leaderboard-eyebrow,
+.card-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #a78bfa;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
+
+.leaderboard-header h1 {
+    margin: 6px 0;
+    color: #ffffff;
+    font-size: clamp(28px,4vw,43px);
+    font-weight: 900;
+    letter-spacing: -.8px;
+}
+
+
+.leaderboard-header p {
+    max-width: 700px;
+    margin: 0;
+    color: #8793a6;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+.leaderboard-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 17px;
+    border-radius: 11px;
+    color: #ffffff;
+    background: rgba(124,58,237,.16);
+    border: 1px solid rgba(139,92,246,.25);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+    transition: .25s ease;
+}
+
+
+.leaderboard-action-btn:hover {
+    color: #ffffff;
+    transform: translateY(-2px);
+    background: rgba(124,58,237,.25);
+}
+
+
+/* =============================================================
+   STATS
+============================================================= */
+
+.leaderboard-stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+    margin-bottom: 28px;
+}
+
+
+.leaderboard-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 19px;
+    border-radius: 17px;
+    background: rgba(17,24,39,.68);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+
+.leaderboard-stat-icon {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: #a78bfa;
+    background: rgba(124,58,237,.12);
+}
+
+
+.leaderboard-stat-label {
+    display: block;
+    color: #7f8b9d;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.leaderboard-stat-card strong {
+    display: inline-block;
+    margin-top: 3px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+
+.leaderboard-stat-card small {
+    margin-left: 4px;
+    color: #7f8b9d;
+    font-size: 9px;
+}
+
+
+.champion-name {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =============================================================
+   PODIUM
+============================================================= */
+
+.podium-section {
+    margin-bottom: 30px;
+}
+
+
+.section-top {
+    margin-bottom: 18px;
+}
+
+
+.section-top h2 {
+    margin: 7px 0 0;
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 850;
+}
+
+
+.podium-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    align-items: end;
+    gap: 18px;
+}
+
+
+.podium-card {
+    position: relative;
+    text-align: center;
+    padding: 28px 20px 24px;
+    border-radius: 22px;
+    background: rgba(17,24,39,.70);
+    border: 1px solid rgba(255,255,255,.07);
+    overflow: hidden;
+}
+
+
+.first-place {
+    padding-top: 38px;
+    border-color: rgba(139,92,246,.28);
+    background:
+        radial-gradient(
+            circle at 50% 0,
+            rgba(124,58,237,.18),
+            transparent 55%
+        ),
+        rgba(17,24,39,.82);
+    box-shadow: 0 20px 50px rgba(0,0,0,.20);
+}
+
+
+.podium-rank {
+    position: absolute;
+    top: 14px;
+    left: 15px;
+}
+
+
+.podium-rank span {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    color: #ffffff;
+    background: rgba(255,255,255,.07);
+    font-size: 11px;
+    font-weight: 900;
+}
+
+
+.podium-avatar {
+    width: 75px;
+    height: 75px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    color: #ffffff;
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
+    border: 3px solid rgba(255,255,255,.10);
+    font-size: 25px;
+    font-weight: 900;
+}
+
+
+.first-place .podium-avatar {
+    width: 90px;
+    height: 90px;
+    font-size: 31px;
+    border-color: rgba(167,139,250,.35);
+}
+
+
+.champion-crown {
+    margin-bottom: 5px;
+    color: #fbbf24;
+    font-size: 20px;
+}
+
+
+.podium-medal {
+    font-size: 19px;
+}
+
+
+.podium-card h3 {
+    margin: 8px 0 4px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 850;
+}
+
+
+.podium-card p {
+    margin: 0 0 12px;
+    color: #7f8b9d;
+    font-size: 11px;
+}
+
+
+.podium-card > strong {
+    color: #a78bfa;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+
+.podium-card > strong small {
+    color: #78859a;
+    font-size: 8px;
+    letter-spacing: 1px;
+}
+
+
+.champion-label {
+    display: inline-block;
+    margin-top: 13px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    color: #c4b5fd;
+    background: rgba(124,58,237,.12);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+
+/* =============================================================
+   MAIN CARD
+============================================================= */
+
+.leaderboard-card {
+    overflow: hidden;
+    border-radius: 22px;
+    background: rgba(17,24,39,.72);
+    border: 1px solid rgba(255,255,255,.07);
+    box-shadow: 0 20px 55px rgba(0,0,0,.16);
+}
+
+
+.leaderboard-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 25px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+
+.leaderboard-card-header h2 {
+    margin: 7px 0 4px;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 850;
+}
+
+
+.leaderboard-card-header p {
+    margin: 0;
+    color: #7f8b9d;
+    font-size: 11px;
+}
+
+
+.participant-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 11px;
+    border-radius: 9px;
+    color: #a78bfa;
+    background: rgba(124,58,237,.10);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =============================================================
+   TABLE
+============================================================= */
+
+.leaderboard-table-wrapper {
+    overflow-x: auto;
+}
+
+
+.leaderboard-table {
+    width: 100%;
+    min-width: 850px;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+
+.leaderboard-table th {
+    padding: 15px 18px;
+    color: #69768a;
+    background: rgba(15,23,42,.65);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+
+.leaderboard-table td {
+    padding: 17px 18px;
+    color: #9aa6b8;
+    border-bottom: 1px solid rgba(255,255,255,.055);
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+
+.leaderboard-table tbody tr {
+    transition: .2s ease;
+}
+
+
+.leaderboard-table tbody tr:hover {
+    background: rgba(124,58,237,.045);
+}
+
+
+.leaderboard-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.top-rank-row {
+    background: rgba(124,58,237,.025);
+}
+
+
+/* RANK */
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 42px;
+    padding: 7px 8px;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+
+.rank-one {
+    color: #fbbf24;
+    background: rgba(251,191,36,.10);
+}
+
+
+.rank-two {
+    color: #cbd5e1;
+    background: rgba(203,213,225,.10);
+}
+
+
+.rank-three {
+    color: #d97706;
+    background: rgba(217,119,6,.10);
+}
+
+
+.normal-rank {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    color: #9aa6b8;
+    font-weight: 800;
+}
+
+
+/* STUDENT */
+
+.student-cell {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+
+.student-avatar {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    color: #c4b5fd;
+    background: linear-gradient(
+        135deg,
+        rgba(124,58,237,.28),
+        rgba(37,99,235,.20)
+    );
+    font-size: 13px;
+    font-weight: 900;
+}
+
+
+.student-cell strong,
+.student-cell small {
+    display: block;
+}
+
+
+.student-cell strong {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+
+.student-cell small {
+    margin-top: 3px;
+    color: #69768a;
+    font-size: 9px;
+}
+
+
+/* POINTS */
+
+.points-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    color: #c4b5fd;
+    background: rgba(124,58,237,.10);
+    font-weight: 900;
+}
+
+
+.points-badge i {
+    color: #fbbf24;
+}
+
+
+.points-badge small {
+    color: #78859a;
+    font-size: 8px;
+}
+
+
+/* EVENTS */
+
+.events-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #9aa6b8;
+    font-weight: 700;
+}
+
+
+.events-count i {
+    color: #8b5cf6;
+}
+
+
+/* ACHIEVEMENT */
+
+.achievement-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 850;
+}
+
+
+.achievement-badge.champion {
+    color: #fbbf24;
+    background: rgba(251,191,36,.10);
+}
+
+
+.achievement-badge.silver {
+    color: #cbd5e1;
+    background: rgba(203,213,225,.09);
+}
+
+
+.achievement-badge.bronze {
+    color: #d97706;
+    background: rgba(217,119,6,.10);
+}
+
+
+.achievement-badge.achiever {
+    color: #a78bfa;
+    background: rgba(124,58,237,.10);
+}
+
+
+.achievement-badge.participant {
+    color: #60a5fa;
+    background: rgba(37,99,235,.10);
+}
+
+
+/* PROFILE */
+
+.profile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 11px;
+    border-radius: 9px;
+    color: #a78bfa;
+    background: rgba(124,58,237,.08);
+    border: 1px solid rgba(139,92,246,.14);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 850;
+    transition: .2s ease;
+}
+
+
+.profile-btn:hover {
+    color: #ffffff;
+    background: #7c3aed;
+}
+
+
+.profile-unavailable {
+    color: #566274;
+    font-size: 10px;
+}
+
+
+/* FOOTER */
+
+.leaderboard-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 18px;
+    color: #687588;
+    background: rgba(15,23,42,.45);
+    border-top: 1px solid rgba(255,255,255,.055);
+    font-size: 9px;
+}
+
+
+.leaderboard-footer i {
+    margin-right: 4px;
+    color: #8b5cf6;
+}
+
+
+/* =============================================================
+   EMPTY STATE
+============================================================= */
+
+.leaderboard-empty {
+    padding: 75px 25px;
+    text-align: center;
+}
+
+
+.empty-trophy {
+    width: 80px;
+    height: 80px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 20px;
+    border-radius: 25px;
+    color: #fbbf24;
+    background: rgba(251,191,36,.08);
+    font-size: 32px;
+}
+
+
+.leaderboard-empty h2 {
+    margin: 10px 0 8px;
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 850;
+}
+
+
+.leaderboard-empty p {
+    max-width: 500px;
+    margin: 0 auto 23px;
+    color: #7f8b9d;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* =============================================================
+   MOTIVATION
+============================================================= */
+
+.leaderboard-motivation {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 25px;
+    padding: 23px;
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,58,237,.13),
+            rgba(37,99,235,.07)
+        );
+    border: 1px solid rgba(139,92,246,.14);
+}
+
+
+.motivation-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: #a78bfa;
+    background: rgba(124,58,237,.13);
+}
+
+
+.leaderboard-motivation div:nth-child(2) {
+    flex: 1;
+}
+
+
+.leaderboard-motivation span {
+    color: #8b5cf6;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+
+.leaderboard-motivation h3 {
+    margin: 5px 0 0;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+
+.motivation-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border-radius: 9px;
+    color: #ffffff;
+    background: #7c3aed;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 850;
+}
+
+
+.motivation-btn:hover {
+    color: #ffffff;
+    background: #6d28d9;
+}
+
+
+/* =============================================================
+   RESPONSIVE
+============================================================= */
+
+@media (max-width: 1050px) {
+
+    .leaderboard-stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .leaderboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .leaderboard-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .podium-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .first-place {
+        order: -1;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .leaderboard-page {
+        padding: 10px 0 40px;
+    }
+
+    .leaderboard-header {
+        padding: 22px;
+        border-radius: 19px;
+    }
+
+    .leaderboard-header-content {
+        align-items: flex-start;
+    }
+
+    .leaderboard-title-icon {
+        width: 50px;
+        height: 50px;
+        flex-basis: 50px;
+        font-size: 18px;
+    }
+
+    .leaderboard-header h1 {
+        font-size: 28px;
+    }
+
+    .leaderboard-header p {
+        font-size: 11px;
+    }
+
+    .leaderboard-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+    }
+
+    .leaderboard-stat-card {
+        padding: 14px;
+    }
+
+    .leaderboard-stat-icon {
+        width: 37px;
+        height: 37px;
+        flex-basis: 37px;
+    }
+
+    .leaderboard-stat-card strong {
+        font-size: 17px;
+    }
+
+    .leaderboard-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .leaderboard-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .leaderboard-motivation {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .motivation-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .leaderboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

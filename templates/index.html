@@ -1,0 +1,1927 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Home - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+
+    <!-- =========================================================
+         HERO SECTION
+    ========================================================== -->
+    <section class="home-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-eyebrow">
+                <span class="eyebrow-dot"></span>
+                {{ home.hero_small if home and home.hero_small else 'College Event Platform' }}
+            </div>
+
+            <h1>
+                {{ home.hero_title if home and home.hero_title else 'Discover. Participate. Create.' }}
+            </h1>
+
+            <p class="hero-description">
+                {{ home.hero_description if home and home.hero_description else
+                'Discover vibrant college experiences, competitions, workshops, seminars and cultural events.' }}
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    href="{{ home.hero_button_link if home and home.hero_button_link else url_for('event_list') }}"
+                    class="home-btn home-btn-primary"
+                >
+                    <i class="fas fa-calendar-days"></i>
+                    {{ home.hero_button_text if home and home.hero_button_text else 'Explore Events' }}
+                    <i class="fas fa-arrow-right btn-arrow"></i>
+                </a>
+
+                {% if not session.get('user_id') %}
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="home-btn home-btn-secondary"
+                >
+                    <i class="fas fa-user-plus"></i>
+                    Join Campus
+                </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- SEARCH -->
+            <form
+                class="home-search"
+                method="GET"
+                action="{{ url_for('event_list') }}"
+            >
+
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request.args.get('q', '') }}"
+                    placeholder="Search events, workshops, competitions..."
+                    autocomplete="off"
+                    aria-label="Search events"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="hero-mini-info">
+
+                <span>
+                    <i class="fas fa-circle-check"></i>
+                    Easy Registration
+                </span>
+
+                <span>
+                    <i class="fas fa-bolt"></i>
+                    Live Event Updates
+                </span>
+
+                <span>
+                    <i class="fas fa-users"></i>
+                    Student Community
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             HERO VISUAL
+        ====================================================== -->
+        <div class="hero-visual" aria-hidden="true">
+
+            <div class="hero-glow glow-one"></div>
+            <div class="hero-glow glow-two"></div>
+
+            <div class="hero-ring ring-one"></div>
+            <div class="hero-ring ring-two"></div>
+            <div class="hero-ring ring-three"></div>
+
+
+            <div class="floating-event-card">
+
+                <div class="floating-card-top">
+
+                    <div class="floating-calendar-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+
+                    <span class="live-badge">
+                        <span></span>
+                        LIVE
+                    </span>
+
+                </div>
+
+
+                <div class="floating-card-content">
+
+                    <small>
+                        UPCOMING EVENT
+                    </small>
+
+                    <h3>
+                        Intercollege Meet
+                    </h3>
+
+                    <p>
+                        Registration is now open
+                    </p>
+
+                </div>
+
+
+                <div class="floating-card-footer">
+
+                    <span>
+                        <i class="fas fa-users"></i>
+                        Students
+                    </span>
+
+                    <span>
+                        <i class="fas fa-arrow-up-right-from-square"></i>
+                        Join Now
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="floating-mini-card mini-card-one">
+                <i class="fas fa-trophy"></i>
+                <div>
+                    <strong>Competitions</strong>
+                    <small>Win &amp; Achieve</small>
+                </div>
+            </div>
+
+
+            <div class="floating-mini-card mini-card-two">
+                <i class="fas fa-graduation-cap"></i>
+                <div>
+                    <strong>Workshops</strong>
+                    <small>Learn &amp; Grow</small>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         STATISTICS
+    ========================================================== -->
+    <section class="home-stats">
+
+        <div class="home-stat-card">
+
+            <div class="home-stat-icon">
+                <i class="fas fa-calendar-days"></i>
+            </div>
+
+            <div>
+                <strong>120+</strong>
+                <span>Events Hosted</span>
+            </div>
+
+        </div>
+
+
+        <div class="home-stat-card">
+
+            <div class="home-stat-icon">
+                <i class="fas fa-user-group"></i>
+            </div>
+
+            <div>
+                <strong>18K+</strong>
+                <span>Students Engaged</span>
+            </div>
+
+        </div>
+
+
+        <div class="home-stat-card">
+
+            <div class="home-stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+
+            <div>
+                <strong>34</strong>
+                <span>Clubs &amp; Communities</span>
+            </div>
+
+        </div>
+
+
+        <div class="home-stat-card">
+
+            <div class="home-stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+
+            <div>
+                <strong>96%</strong>
+                <span>Participation Rate</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         CATEGORIES
+    ========================================================== -->
+    <section class="home-section">
+
+        <div class="home-section-header">
+
+            <div>
+
+                <span class="home-eyebrow">
+                    <i class="fas fa-compass"></i>
+                    Browse by Category
+                </span>
+
+                <h2>
+                    Explore What Interests You
+                </h2>
+
+                <p>
+                    Find events based on your interests, skills and career goals.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="home-view-link"
+            >
+                View All Events
+                <i class="fas fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        <div class="home-category-grid">
+
+            {% if categories %}
+
+                {% for c in categories %}
+
+                    <a
+                        href="{{ url_for('event_list', category_id=c.id) }}"
+                        class="home-category-card"
+                    >
+
+                        <div class="category-card-icon">
+
+                            {% if 'seminar' in c.name|lower %}
+                                <i class="fas fa-chalkboard-user"></i>
+
+                            {% elif 'workshop' in c.name|lower %}
+                                <i class="fas fa-screwdriver-wrench"></i>
+
+                            {% elif 'competition' in c.name|lower %}
+                                <i class="fas fa-trophy"></i>
+
+                            {% elif 'webinar' in c.name|lower %}
+                                <i class="fas fa-video"></i>
+
+                            {% elif 'conference' in c.name|lower %}
+                                <i class="fas fa-building-columns"></i>
+
+                            {% elif 'cultural' in c.name|lower %}
+                                <i class="fas fa-masks-theater"></i>
+
+                            {% else %}
+                                <i class="fas fa-star"></i>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="category-card-content">
+
+                            <h3>
+                                {{ c.name }}
+                            </h3>
+
+                            <p>
+                                Explore {{ c.name }} experiences and
+                                student opportunities.
+                            </p>
+
+                            <span class="category-explore">
+                                Explore
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="home-empty-state">
+
+                    <div>
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+
+                    <h3>
+                        No Categories Available
+                    </h3>
+
+                    <p>
+                        Event categories will appear here once they are added.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         UPCOMING EVENTS
+    ========================================================== -->
+    <section class="home-section">
+
+        <div class="home-section-header">
+
+            <div>
+
+                <span class="home-eyebrow">
+                    <i class="fas fa-sparkles"></i>
+                    Featured Events
+                </span>
+
+                <h2>
+                    Upcoming Events
+                </h2>
+
+                <p>
+                    Don't miss the latest activities happening on campus.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('event_list') }}"
+                class="home-view-link"
+            >
+                View All
+                <i class="fas fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        <div class="home-event-grid">
+
+            {% if events %}
+
+                {% for e in events %}
+
+                    <a
+                        href="{{ url_for('event_detail', eid=e.id) }}"
+                        class="home-event-card"
+                    >
+
+                        <!-- EVENT IMAGE -->
+                        <div class="home-event-image">
+
+                            {% if e.banner %}
+
+                                <img
+                                    src="{{ url_for('static', filename=e.banner) }}"
+                                    alt="{{ e.event_name or 'Event' }}"
+                                    loading="lazy"
+                                >
+
+                            {% else %}
+
+                                <div class="event-image-placeholder">
+
+                                    <i class="fas fa-calendar-days"></i>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- CATEGORY -->
+                            <span class="event-category-badge">
+
+                                <i class="fas fa-tag"></i>
+
+                                {{ e.category_name or 'General' }}
+
+                            </span>
+
+
+                            <!-- STATUS -->
+                            <span class="event-status-badge">
+
+                                {% if e.status and e.status|lower == 'published' %}
+
+                                    <span class="status-dot"></span>
+                                    Open
+
+                                {% elif e.status %}
+
+                                    {{ e.status }}
+
+                                {% else %}
+
+                                    Upcoming
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- EVENT BODY -->
+                        <div class="home-event-body">
+
+                            <div class="event-meta">
+
+                                <span>
+                                    <i class="fas fa-calendar"></i>
+
+                                    {% if e.event_date %}
+                                        {{ e.event_date }}
+                                    {% else %}
+                                        Date TBA
+                                    {% endif %}
+
+                                </span>
+
+
+                                {% if e.event_time %}
+
+                                    <span>
+                                        <i class="fas fa-clock"></i>
+                                        {{ e.event_time }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <h3>
+                                {{ e.event_name or 'Untitled Event' }}
+                            </h3>
+
+
+                            {% if e.description %}
+
+                                <p>
+                                    {{ e.description[:125] }}
+
+                                    {% if e.description|length > 125 %}
+                                        ...
+                                    {% endif %}
+                                </p>
+
+                            {% else %}
+
+                                <p>
+                                    Discover more about this exciting
+                                    college event and join the campus
+                                    community.
+                                </p>
+
+                            {% endif %}
+
+
+                            {% if e.venue %}
+
+                                <div class="event-location">
+
+                                    <i class="fas fa-location-dot"></i>
+
+                                    <span>
+                                        {{ e.venue }}
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="event-card-footer">
+
+                                <span class="event-fee">
+
+                                    {% if e.registration_fee and e.registration_fee > 0 %}
+
+                                        ₹{{ e.registration_fee }}
+
+                                    {% else %}
+
+                                        Free
+
+                                    {% endif %}
+
+                                </span>
+
+
+                                <span class="event-details-link">
+
+                                    View Details
+
+                                    <i class="fas fa-arrow-right"></i>
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="home-events-empty">
+
+                    <div class="empty-event-icon">
+                        <i class="fas fa-calendar-xmark"></i>
+                    </div>
+
+                    <span class="home-eyebrow">
+                        Event Updates
+                    </span>
+
+                    <h3>
+                        No Upcoming Events
+                    </h3>
+
+                    <p>
+                        There are no published events available right now.
+                        Check back soon for new campus activities.
+                    </p>
+
+                    <a
+                        href="{{ url_for('event_list') }}"
+                        class="home-btn home-btn-primary"
+                    >
+                        Browse Events
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         WHY CAMPUS EVENTS HUB
+    ========================================================== -->
+    <section class="home-section home-benefits-section">
+
+        <div class="home-section-header centered">
+
+            <span class="home-eyebrow">
+                <i class="fas fa-bolt"></i>
+                Why Campus Events Hub?
+            </span>
+
+            <h2>
+                Everything You Need in One Place
+            </h2>
+
+            <p>
+                A simple platform for discovering, joining and managing
+                college events.
+            </p>
+
+        </div>
+
+
+        <div class="benefits-grid">
+
+            <div class="benefit-card">
+
+                <div class="benefit-icon">
+                    <i class="fas fa-magnifying-glass"></i>
+                </div>
+
+                <h3>
+                    Discover Events
+                </h3>
+
+                <p>
+                    Easily find seminars, competitions, workshops,
+                    webinars and other campus activities.
+                </p>
+
+            </div>
+
+
+            <div class="benefit-card">
+
+                <div class="benefit-icon">
+                    <i class="fas fa-pen-to-square"></i>
+                </div>
+
+                <h3>
+                    Easy Registration
+                </h3>
+
+                <p>
+                    Register for your favourite events using a simple
+                    and student-friendly registration process.
+                </p>
+
+            </div>
+
+
+            <div class="benefit-card">
+
+                <div class="benefit-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+
+                <h3>
+                    Stay Updated
+                </h3>
+
+                <p>
+                    Get important event announcements, registration
+                    updates and notifications in one place.
+                </p>
+
+            </div>
+
+
+            <div class="benefit-card">
+
+                <div class="benefit-icon">
+                    <i class="fas fa-chart-simple"></i>
+                </div>
+
+                <h3>
+                    Track Participation
+                </h3>
+
+                <p>
+                    Keep track of your registrations, achievements
+                    and participation history.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         CALL TO ACTION
+    ========================================================== -->
+    <section class="home-cta">
+
+        <div class="cta-content">
+
+            <span class="home-eyebrow">
+                <i class="fas fa-rocket"></i>
+                Get Involved
+            </span>
+
+            <h2>
+                Turn Your Campus Experience Into Something Memorable.
+            </h2>
+
+            <p>
+                Discover new opportunities, meet other students,
+                improve your skills and take part in exciting college events.
+            </p>
+
+        </div>
+
+
+        <div class="cta-actions">
+
+            {% if not session.get('user_id') %}
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="home-btn home-btn-primary"
+                >
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </a>
+
+                <a
+                    href="{{ url_for('event_list') }}"
+                    class="home-btn home-btn-secondary"
+                >
+                    Explore Events
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{{ url_for('event_list') }}"
+                    class="home-btn home-btn-primary"
+                >
+                    <i class="fas fa-calendar-days"></i>
+                    Explore Events
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =============================================================
+     HOME PAGE CSS
+============================================================= -->
+<style>
+
+.home-page {
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/* =============================================================
+   HERO
+============================================================= */
+
+.home-hero {
+    position: relative;
+    min-height: 620px;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    align-items: center;
+    gap: 60px;
+    padding: 70px 5%;
+    margin-bottom: 30px;
+    border-radius: 32px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 75% 30%, rgba(124, 58, 237, .22), transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(37, 99, 235, .18), transparent 35%),
+        linear-gradient(135deg, #0b1120, #111827 55%, #0f172a);
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 30px 80px rgba(0,0,0,.28);
+}
+
+
+.hero-content {
+    position: relative;
+    z-index: 5;
+    max-width: 720px;
+}
+
+
+.hero-eyebrow,
+.home-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #a78bfa;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+
+.eyebrow-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #8b5cf6;
+    box-shadow: 0 0 15px rgba(139,92,246,.9);
+}
+
+
+.home-hero h1 {
+    margin: 18px 0;
+    max-width: 700px;
+    color: #ffffff;
+    font-size: clamp(42px, 6vw, 78px);
+    line-height: 1.02;
+    font-weight: 900;
+    letter-spacing: -2.5px;
+}
+
+
+.hero-description {
+    max-width: 650px;
+    margin: 0 0 30px;
+    color: #aab5c7;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+
+.home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 0 22px;
+    border-radius: 13px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    transition: .25s ease;
+}
+
+
+.home-btn-primary {
+    color: #ffffff;
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
+    box-shadow: 0 12px 30px rgba(99,102,241,.28);
+}
+
+
+.home-btn-primary:hover {
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(99,102,241,.38);
+}
+
+
+.home-btn-secondary {
+    color: #e5e7eb;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+}
+
+
+.home-btn-secondary:hover {
+    color: #ffffff;
+    background: rgba(255,255,255,.10);
+    transform: translateY(-3px);
+}
+
+
+.btn-arrow {
+    font-size: 12px;
+}
+
+
+/* SEARCH */
+
+.home-search {
+    display: flex;
+    align-items: center;
+    max-width: 650px;
+    min-height: 58px;
+    padding: 7px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.10);
+    backdrop-filter: blur(15px);
+}
+
+
+.search-icon {
+    width: 44px;
+    display: flex;
+    justify-content: center;
+    color: #8b5cf6;
+}
+
+
+.home-search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+
+.home-search input::placeholder {
+    color: #78859a;
+}
+
+
+.home-search button {
+    min-height: 44px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 11px;
+    color: #ffffff;
+    background: #2563eb;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+
+.home-search button:hover {
+    background: #3b82f6;
+}
+
+
+.hero-mini-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+
+.hero-mini-info span {
+    color: #8f9bad;
+    font-size: 12px;
+}
+
+
+.hero-mini-info i {
+    margin-right: 5px;
+    color: #8b5cf6;
+}
+
+
+/* =============================================================
+   HERO VISUAL
+============================================================= */
+
+.hero-visual {
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(20px);
+}
+
+
+.glow-one {
+    width: 250px;
+    height: 250px;
+    background: rgba(124,58,237,.22);
+}
+
+
+.glow-two {
+    width: 180px;
+    height: 180px;
+    right: 10%;
+    bottom: 5%;
+    background: rgba(37,99,235,.18);
+}
+
+
+.hero-ring {
+    position: absolute;
+    border: 1px solid rgba(139,92,246,.18);
+    border-radius: 50%;
+}
+
+
+.ring-one {
+    width: 400px;
+    height: 400px;
+}
+
+
+.ring-two {
+    width: 300px;
+    height: 300px;
+}
+
+
+.ring-three {
+    width: 210px;
+    height: 210px;
+}
+
+
+.floating-event-card {
+    position: relative;
+    z-index: 4;
+    width: min(360px, 80%);
+    padding: 24px;
+    border-radius: 22px;
+    background: rgba(17,24,39,.78);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 30px 70px rgba(0,0,0,.35);
+    backdrop-filter: blur(20px);
+}
+
+
+.floating-card-top,
+.floating-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.floating-calendar-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: #ffffff;
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
+}
+
+
+.live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 9px;
+    border-radius: 20px;
+    color: #c4b5fd;
+    background: rgba(139,92,246,.10);
+    font-size: 10px;
+    font-weight: 900;
+}
+
+
+.live-badge span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a78bfa;
+}
+
+
+.floating-card-content {
+    padding: 35px 0;
+}
+
+
+.floating-card-content small {
+    color: #8b5cf6;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+
+.floating-card-content h3 {
+    margin: 9px 0 5px;
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 850;
+}
+
+
+.floating-card-content p {
+    margin: 0;
+    color: #8f9bad;
+    font-size: 13px;
+}
+
+
+.floating-card-footer {
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+
+.floating-card-footer span {
+    color: #8995a8;
+    font-size: 11px;
+}
+
+
+.floating-card-footer i {
+    color: #8b5cf6;
+    margin-right: 4px;
+}
+
+
+.floating-mini-card {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-radius: 15px;
+    background: rgba(17,24,39,.85);
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: 0 20px 40px rgba(0,0,0,.28);
+    backdrop-filter: blur(15px);
+}
+
+
+.floating-mini-card > i {
+    color: #a78bfa;
+}
+
+
+.floating-mini-card strong,
+.floating-mini-card small {
+    display: block;
+}
+
+
+.floating-mini-card strong {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+
+.floating-mini-card small {
+    margin-top: 3px;
+    color: #78859a;
+    font-size: 9px;
+}
+
+
+.mini-card-one {
+    top: 10%;
+    right: 0;
+}
+
+
+.mini-card-two {
+    bottom: 8%;
+    left: 0;
+}
+
+
+/* =============================================================
+   STATS
+============================================================= */
+
+.home-stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 16px;
+    margin: 0 0 70px;
+}
+
+
+.home-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px;
+    border-radius: 18px;
+    background: rgba(17,24,39,.65);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+
+.home-stat-icon {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: #a78bfa;
+    background: rgba(139,92,246,.10);
+}
+
+
+.home-stat-card strong,
+.home-stat-card span {
+    display: block;
+}
+
+
+.home-stat-card strong {
+    color: #ffffff;
+    font-size: 23px;
+    font-weight: 900;
+}
+
+
+.home-stat-card span {
+    margin-top: 3px;
+    color: #78859a;
+    font-size: 11px;
+}
+
+
+/* =============================================================
+   SECTIONS
+============================================================= */
+
+.home-section {
+    margin-bottom: 80px;
+}
+
+
+.home-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 28px;
+}
+
+
+.home-section-header h2 {
+    margin: 9px 0 6px;
+    color: #ffffff;
+    font-size: clamp(27px,3vw,38px);
+    font-weight: 850;
+    letter-spacing: -.8px;
+}
+
+
+.home-section-header p {
+    margin: 0;
+    color: #7f8b9d;
+    font-size: 14px;
+}
+
+
+.home-section-header.centered {
+    display: block;
+    text-align: center;
+}
+
+
+.home-view-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #a78bfa;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+
+.home-view-link:hover {
+    color: #c4b5fd;
+}
+
+
+/* =============================================================
+   CATEGORIES
+============================================================= */
+
+.home-category-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 18px;
+}
+
+
+.home-category-card {
+    display: flex;
+    gap: 17px;
+    padding: 23px;
+    text-decoration: none;
+    border-radius: 20px;
+    background: rgba(17,24,39,.58);
+    border: 1px solid rgba(255,255,255,.07);
+    transition: .25s ease;
+}
+
+
+.home-category-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(139,92,246,.30);
+    background: rgba(30,41,59,.72);
+    box-shadow: 0 18px 40px rgba(0,0,0,.22);
+}
+
+
+.category-card-icon {
+    width: 50px;
+    height: 50px;
+    flex: 0 0 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    color: #c4b5fd;
+    background: linear-gradient(
+        135deg,
+        rgba(124,58,237,.18),
+        rgba(37,99,235,.14)
+    );
+    font-size: 19px;
+}
+
+
+.category-card-content h3 {
+    margin: 1px 0 6px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+.category-card-content p {
+    margin: 0;
+    color: #7f8b9d;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+.category-explore {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 12px;
+    color: #a78bfa;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.home-empty-state {
+    grid-column: 1/-1;
+    padding: 45px;
+    text-align: center;
+    border-radius: 20px;
+    background: rgba(17,24,39,.55);
+    border: 1px dashed rgba(255,255,255,.12);
+}
+
+
+.home-empty-state > div {
+    font-size: 35px;
+    color: #7c3aed;
+}
+
+
+.home-empty-state h3 {
+    margin: 12px 0 6px;
+    color: #ffffff;
+}
+
+
+.home-empty-state p {
+    margin: 0;
+    color: #78859a;
+}
+
+
+/* =============================================================
+   EVENT GRID
+============================================================= */
+
+.home-event-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 22px;
+}
+
+
+.home-event-card {
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 21px;
+    background: rgba(17,24,39,.65);
+    border: 1px solid rgba(255,255,255,.07);
+    transition: .3s ease;
+}
+
+
+.home-event-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(139,92,246,.28);
+    box-shadow: 0 25px 50px rgba(0,0,0,.28);
+}
+
+
+.home-event-image {
+    position: relative;
+    height: 205px;
+    overflow: hidden;
+    background: #111827;
+}
+
+
+.home-event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+}
+
+
+.home-event-card:hover .home-event-image img {
+    transform: scale(1.06);
+}
+
+
+.event-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: #8b5cf6;
+    background:
+        radial-gradient(circle at center,rgba(124,58,237,.16),transparent 55%),
+        #111827;
+    font-size: 38px;
+}
+
+
+.event-category-badge,
+.event-status-badge {
+    position: absolute;
+    top: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    backdrop-filter: blur(10px);
+    font-size: 9px;
+    font-weight: 850;
+}
+
+
+.event-category-badge {
+    left: 13px;
+    color: #ffffff;
+    background: rgba(15,23,42,.75);
+}
+
+
+.event-status-badge {
+    right: 13px;
+    color: #c4b5fd;
+    background: rgba(76,29,149,.72);
+}
+
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a78bfa;
+}
+
+
+.home-event-body {
+    padding: 20px;
+}
+
+
+.event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    color: #7f8b9d;
+    font-size: 10px;
+}
+
+
+.event-meta i {
+    margin-right: 4px;
+    color: #8b5cf6;
+}
+
+
+.home-event-body h3 {
+    margin: 11px 0 8px;
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 850;
+}
+
+
+.home-event-body > p {
+    min-height: 42px;
+    margin: 0;
+    color: #7f8b9d;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+.event-location {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 13px;
+    color: #8995a8;
+    font-size: 11px;
+}
+
+
+.event-location i {
+    color: #8b5cf6;
+}
+
+
+.event-location span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+
+.event-fee {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+
+.event-details-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #a78bfa;
+    font-size: 10px;
+    font-weight: 850;
+}
+
+
+.home-events-empty {
+    grid-column: 1/-1;
+    padding: 60px 25px;
+    text-align: center;
+    border-radius: 22px;
+    background: rgba(17,24,39,.55);
+    border: 1px dashed rgba(255,255,255,.10);
+}
+
+
+.empty-event-icon {
+    width: 65px;
+    height: 65px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 18px;
+    border-radius: 20px;
+    color: #a78bfa;
+    background: rgba(124,58,237,.12);
+    font-size: 25px;
+}
+
+
+.home-events-empty h3 {
+    margin: 10px 0;
+    color: #ffffff;
+}
+
+
+.home-events-empty p {
+    max-width: 520px;
+    margin: 0 auto 22px;
+    color: #7f8b9d;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* =============================================================
+   BENEFITS
+============================================================= */
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 17px;
+    margin-top: 30px;
+}
+
+
+.benefit-card {
+    padding: 25px;
+    border-radius: 19px;
+    background: rgba(17,24,39,.58);
+    border: 1px solid rgba(255,255,255,.07);
+    transition: .25s ease;
+}
+
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(139,92,246,.25);
+}
+
+
+.benefit-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    color: #a78bfa;
+    background: rgba(124,58,237,.12);
+}
+
+
+.benefit-card h3 {
+    margin: 0 0 8px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+.benefit-card p {
+    margin: 0;
+    color: #7f8b9d;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* =============================================================
+   CTA
+============================================================= */
+
+.home-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 45px;
+    margin-bottom: 30px;
+    border-radius: 27px;
+    background:
+        radial-gradient(circle at 85% 50%,rgba(37,99,235,.20),transparent 35%),
+        linear-gradient(135deg,rgba(76,29,149,.34),rgba(15,23,42,.88));
+    border: 1px solid rgba(139,92,246,.18);
+}
+
+
+.cta-content {
+    max-width: 700px;
+}
+
+
+.home-cta h2 {
+    margin: 10px 0 10px;
+    color: #ffffff;
+    font-size: clamp(25px,3vw,39px);
+    line-height: 1.15;
+    font-weight: 900;
+}
+
+
+.home-cta p {
+    margin: 0;
+    color: #9aa6b8;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+.cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+
+/* =============================================================
+   RESPONSIVE
+============================================================= */
+
+@media (max-width: 1100px) {
+
+    .home-hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .hero-visual {
+        min-height: 400px;
+    }
+
+    .home-category-grid,
+    .home-event-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .benefits-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .home-stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .home-cta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .home-hero {
+        padding: 45px 22px;
+        border-radius: 22px;
+    }
+
+    .home-hero h1 {
+        font-size: 42px;
+        letter-spacing: -1.5px;
+    }
+
+    .hero-description {
+        font-size: 14px;
+    }
+
+    .hero-mini-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .home-search {
+        min-height: auto;
+        flex-wrap: wrap;
+        padding: 8px;
+    }
+
+    .search-icon {
+        width: 35px;
+    }
+
+    .home-search input {
+        min-width: calc(100% - 50px);
+    }
+
+    .home-search button {
+        width: 100%;
+        margin-top: 7px;
+    }
+
+    .hero-visual {
+        min-height: 330px;
+    }
+
+    .floating-event-card {
+        width: 85%;
+    }
+
+    .floating-mini-card {
+        display: none;
+    }
+
+    .home-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .home-stat-card {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .home-stat-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    .home-stat-card strong {
+        font-size: 18px;
+    }
+
+    .home-stat-card span {
+        font-size: 9px;
+    }
+
+    .home-section-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .home-category-grid,
+    .home-event-grid,
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-cta {
+        padding: 30px 22px;
+    }
+
+}
+
+
+@media (max-width: 420px) {
+
+    .home-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .home-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<!-- =============================================================
+     SMALL INTERACTION SCRIPT
+============================================================= -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* Prevent accidental double-click navigation */
+    const eventCards = document.querySelectorAll(".home-event-card");
+
+    eventCards.forEach(function (card) {
+
+        card.addEventListener("mouseenter", function () {
+            card.setAttribute("data-hovered", "true");
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

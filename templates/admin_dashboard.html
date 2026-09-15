@@ -1,0 +1,650 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Campus Events Hub{% endblock %}
+
+{% block content %}
+
+<section class="section admin-dashboard">
+
+    <div class="container-fluid">
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+        <div class="admin-page-header">
+
+            <div class="admin-header-content">
+
+                <div class="admin-header-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+
+                <div>
+                    <span class="eyebrow">
+                        Administration
+                    </span>
+
+                    <h1>
+                        Admin Dashboard
+                    </h1>
+
+                    <p>
+                        Manage events, students, coordinators, payments,
+                        registrations, and reports from one place.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Header Actions -->
+            <div class="admin-header-actions">
+
+                <a href="{{ url_for('event_new') }}"
+                   class="admin-btn admin-btn-primary">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Event</span>
+                </a>
+
+                <a href="{{ url_for('admin_home') }}"
+                   class="admin-btn admin-btn-secondary">
+                    <i class="fas fa-home"></i>
+                    <span>Edit Home</span>
+                </a>
+
+                <a href="{{ url_for('admin_students') }}"
+                   class="admin-btn admin-btn-secondary">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+
+                <a href="{{ url_for('admin_coordinators') }}"
+                   class="admin-btn admin-btn-accent">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Coordinators</span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STATISTICS
+        ====================================================== -->
+        <div class="admin-stats-grid">
+
+            <!-- Students -->
+            <div class="admin-stat-card">
+
+                <div class="stat-icon students-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Total Students
+                    </span>
+
+                    <strong>
+                        {{ stats[0]|default(0) }}
+                    </strong>
+
+                    <small>
+                        Registered students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- Events -->
+            <div class="admin-stat-card">
+
+                <div class="stat-icon events-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Total Events
+                    </span>
+
+                    <strong>
+                        {{ stats[1]|default(0) }}
+                    </strong>
+
+                    <small>
+                        Created events
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- Registrations -->
+            <div class="admin-stat-card">
+
+                <div class="stat-icon registration-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Total Registrations
+                    </span>
+
+                    <strong>
+                        {{ stats[2]|default(0) }}
+                    </strong>
+
+                    <small>
+                        Event registrations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- Payments -->
+            <div class="admin-stat-card">
+
+                <div class="stat-icon payment-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Pending Payments
+                    </span>
+
+                    <strong>
+                        {{ stats[3]|default(0) }}
+                    </strong>
+
+                    <small>
+                        Need verification
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             QUICK ACTIONS
+        ====================================================== -->
+        <div class="quick-actions-card">
+
+            <div class="quick-actions-header">
+
+                <div>
+                    <span class="card-eyebrow">
+                        Quick Access
+                    </span>
+
+                    <h2>
+                        Dashboard Tools
+                    </h2>
+
+                    <p>
+                        Quickly access frequently used administration tools.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions-grid">
+
+                <!-- Payment Verification -->
+                <a href="{{ url_for('payments') }}"
+                   class="quick-action payment-action">
+
+                    <div class="quick-action-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Payment Verification
+                        </strong>
+
+                        <span>
+                            Review and verify student payments
+                        </span>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+
+                </a>
+
+
+                <!-- Analytics -->
+                <a href="{{ url_for('admin_analytics') }}"
+                   class="quick-action analytics-action">
+
+                    <div class="quick-action-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Analytics
+                        </strong>
+
+                        <span>
+                            View event and registration statistics
+                        </span>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+
+                </a>
+
+
+                <!-- PDF -->
+                <a href="{{ url_for('all_registrations_pdf') }}"
+                   class="quick-action pdf-action"
+                   target="_blank">
+
+                    <div class="quick-action-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Registration PDF
+                        </strong>
+
+                        <span>
+                            Download complete registration report
+                        </span>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+
+                </a>
+
+
+                <!-- CSV -->
+                <a href="{{ url_for('all_registrations_csv') }}"
+                   class="quick-action csv-action"
+                   target="_blank">
+
+                    <div class="quick-action-icon">
+                        <i class="fas fa-file-csv"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Registration CSV
+                        </strong>
+
+                        <span>
+                            Export registration data
+                        </span>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             EVENTS MANAGEMENT
+        ====================================================== -->
+        <div class="events-management-card">
+
+            <!-- Card Header -->
+            <div class="events-card-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        Event Management
+                    </span>
+
+                    <h2>
+                        Manage Events
+                    </h2>
+
+                    <p>
+                        View, edit, download registrations, or remove events.
+                    </p>
+
+                </div>
+
+
+                <a href="{{ url_for('event_new') }}"
+                   class="new-event-btn">
+
+                    <i class="fas fa-plus"></i>
+                    Create Event
+
+                </a>
+
+            </div>
+
+
+            <div class="events-card-body">
+
+                {% if events %}
+
+                <div class="table-responsive">
+
+                    <table class="table admin-events-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Event</th>
+                                <th>Category</th>
+                                <th>Coordinator</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for e in events %}
+
+                            <tr>
+
+                                <!-- Number -->
+                                <td class="event-number">
+                                    {{ loop.index }}
+                                </td>
+
+
+                                <!-- Event -->
+                                <td>
+
+                                    <div class="event-info">
+
+                                        <div class="event-icon">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </div>
+
+                                        <div class="event-details">
+
+                                            <strong>
+                                                {{ e.event_name|default('Untitled Event') }}
+                                            </strong>
+
+                                            <small>
+                                                Event ID: #{{ e.id }}
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Category -->
+                                <td>
+
+                                    {% if e.category_name %}
+
+                                        <span class="category-badge">
+                                            <i class="fas fa-layer-group"></i>
+                                            {{ e.category_name }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="not-assigned">
+                                            Not assigned
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Coordinator -->
+                                <td>
+
+                                    {% if e.coordinator_name %}
+
+                                        <div class="coordinator-cell">
+
+                                            <div class="mini-avatar">
+                                                {{ e.coordinator_name[0]|upper }}
+                                            </div>
+
+                                            <span>
+                                                {{ e.coordinator_name }}
+                                            </span>
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <span class="not-assigned">
+                                            Not assigned
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Date -->
+                                <td>
+
+                                    <div class="date-cell">
+
+                                        <i class="fas fa-calendar-day"></i>
+
+                                        <span>
+                                            {{ e.event_date|default('Date TBA') }}
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    {% if e.status == 'Published' %}
+
+                                        <span class="event-status status-published">
+                                            <span class="status-dot"></span>
+                                            Published
+                                        </span>
+
+                                    {% elif e.status == 'Draft' %}
+
+                                        <span class="event-status status-draft">
+                                            <span class="status-dot"></span>
+                                            Draft
+                                        </span>
+
+                                    {% elif e.status %}
+
+                                        <span class="event-status status-other">
+                                            <span class="status-dot"></span>
+                                            {{ e.status }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="event-status status-draft">
+                                            <span class="status-dot"></span>
+                                            Unknown
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Actions -->
+                                <td>
+
+                                    <div class="event-actions">
+
+                                        <!-- Edit -->
+                                        <a
+                                            href="{{ url_for('event_edit', eid=e.id) }}"
+                                            class="event-action edit-action"
+                                            title="Edit event"
+                                        >
+                                            <i class="fas fa-edit"></i>
+                                            <span>Edit</span>
+                                        </a>
+
+
+                                        <!-- PDF -->
+                                        <a
+                                            href="{{ url_for('event_registrations_pdf', eid=e.id) }}"
+                                            class="event-action pdf-event-action"
+                                            target="_blank"
+                                            title="Download registrations PDF"
+                                        >
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>PDF</span>
+                                        </a>
+
+
+                                        <!-- Delete -->
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for('event_delete', eid=e.id) }}"
+                                            class="event-delete-form"
+                                            data-event-name="{{ e.event_name|default('this event')|e }}"
+                                            onsubmit="return confirmEventDelete(this.dataset.eventName);"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="event-action delete-action"
+                                                title="Delete event"
+                                            >
+                                                <i class="fas fa-trash-alt"></i>
+                                                <span>Delete</span>
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Table Footer -->
+                <div class="events-table-footer">
+
+                    <div class="footer-message">
+
+                        <i class="fas fa-info-circle"></i>
+
+                        <span>
+                            You can manage all event information directly from this dashboard.
+                        </span>
+
+                    </div>
+
+                    <span class="event-count">
+                        {{ events|length }}
+                        Event{{ 's' if events|length != 1 else '' }}
+                    </span>
+
+                </div>
+
+
+                {% else %}
+
+                <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+                <div class="events-empty-state">
+
+                    <div class="empty-event-icon">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+
+                    <h3>
+                        No Events Found
+                    </h3>
+
+                    <p>
+                        No events have been created yet.
+                        Create your first event to start managing
+                        registrations and participants.
+                    </p>
+
+                    <a href="{{ url_for('event_new') }}"
+                       class="create-first-event">
+
+                        <i class="fas fa-plus"></i>
+                        Create First Event
+
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+<script>
+
+function confirmEventDelete(eventName) {
+
+    return confirm(
+        "Delete Event\n\n" +
+        "Are you sure you want to delete \"" +
+        eventName +
+        "\"?\n\n" +
+        "This action cannot be undone."
+    );
+
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Event Gallery - College Events Hub{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>{{ event.event_name }} - Photo Gallery</h2>
+            <p class="text-muted mb-0">
+                Photos from this event
+            </p>
+        </div>
+
+        <a href="{{ url_for('event_detail', eid=event.id) }}"
+           class="btn btn-outline-secondary">
+            ← Back to Event
+        </a>
+    </div>
+
+
+    <!-- Admin Upload Section -->
+    {% if session.get('role') == 'admin' %}
+
+    <div class="card mb-4 shadow-sm">
+
+        <div class="card-body">
+
+            <h5 class="card-title">
+                <i class="fas fa-cloud-upload-alt"></i>
+                Upload Photos
+            </h5>
+
+            <p class="text-muted">
+                Select one or more images to add to this event gallery.
+            </p>
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                <div class="mb-3">
+
+                    <input
+                        type="file"
+                        class="form-control"
+                        name="photos"
+                        multiple
+                        accept="image/*"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="fas fa-upload"></i>
+                    Upload Photos
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Gallery -->
+    {% if photos %}
+
+    <div class="row g-4">
+
+        {% for photo in photos %}
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+
+            <div class="card h-100 shadow-sm">
+
+                <img
+                    src="{{ url_for('static', filename=photo.photo_path) }}"
+                    class="card-img-top gallery-image"
+                    alt="{{ event.event_name }} photo"
+                    loading="lazy"
+                >
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        <i class="far fa-clock"></i>
+                        {{ photo.uploaded_at }}
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- Empty Gallery -->
+    <div class="alert alert-info text-center">
+
+        <i class="fas fa-images fa-2x mb-2"></i>
+
+        <h5>No Photos Yet</h5>
+
+        <p class="mb-0">
+            Photos for this event will appear here once they are uploaded.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
