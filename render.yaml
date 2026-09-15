@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: college-event
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: SECRET_KEY
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: college_events_hub
+      - key: MERCHANT_UPI_ID
+        sync: false
+      - key: MERCHANT_UPI_NAME
+        value: College Events Hub
